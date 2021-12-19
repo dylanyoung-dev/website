@@ -7,9 +7,7 @@ const Home = ({ allPosts }) => {
             <SectionHero title="Hi, I'm Dylan">Welcome to my personal website, where you can read my latest blog posts and learn more about me</SectionHero>
 
             <div className="post-feed">
-                <div className="post-feed-inside">
-                    <SectionPosts articles={allPosts}></SectionPosts>
-                </div>
+                <div className="post-feed-inside">{/* <SectionPosts articles={allPosts}></SectionPosts> */}</div>
             </div>
         </Layout>
     );
@@ -17,9 +15,9 @@ const Home = ({ allPosts }) => {
 
 export default Home;
 
-export async function getStaticProps() {
-    const allPosts = await getClient(preview).fetch(indexQuery);
-    return {
-        props: { allPosts }
-    };
-}
+// export async function getStaticProps() {
+//     // const allPosts = await getClient(preview).fetch(indexQuery);
+//     // return {
+//     //     props: { allPosts }
+//     // };
+// }

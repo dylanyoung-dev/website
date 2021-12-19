@@ -4,10 +4,9 @@
     "version": "0.1.0",
     "license": "MIT",
     "scripts": {
-        "dev": "next dev",
+        "dev": "cd web && next dev",
         "develop": "next dev",
-        "build": "next build && next export",
-        "postinstall": "(cd studio && npm install) && (cd web && npm install)",
+        "postinstall": "(cd studio && npm install) && (cd ..\\web && npm install)",
         "start": "npm run start:next && npm run start:sanity",
         "start:sanity": "cd studio && sanity start",
         "start:next": "cd web && next start"
