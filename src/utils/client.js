@@ -1,7 +1,7 @@
 import sanityClient from '@sanity/client';
 
 export default sanityClient({
-    projectId: 'lanua4su',
-    dataset: 'production',
+    projectId: process.env.projectId,
+    dataset: process.env.dataset,
     useCdn: true
 });
