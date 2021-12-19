@@ -6,7 +6,6 @@
     "scripts": {
         "dev": "next dev",
         "develop": "next dev",
-        "fetch": "sourcebit fetch",
         "build": "next build && next export",
         "postinstall": "cd studio && npm install",
         "start": "npm run start:next && npm run start:sanity",
@@ -18,7 +17,7 @@
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.6",
         "groq": "^2.15.0",
-        "lodash": "^4.17.20",
+        "lodash": "^4.17.21",
         "marked": "^2.0.0",
         "moment": "^2.29.1",
         "moment-strftime": "^0.5.0",
