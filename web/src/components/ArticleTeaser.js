@@ -1,27 +1,32 @@
+import Link from 'next/link';
+
 const ArticleTeaser = ({ post }) => {
+    console.log(post);
+    var fullPath = `/insights/${post.slug.current}`;
+
     return (
         <article className="post post-card">
             <div className="post-inside">
-                {post.thumbImage && (
-                    <Link className="post-thumbnail" href={postUrl}>
-                        <img src={withPrefix(thumbImage)} alt={thumbImageAlt} />
+                {post.mainImageUrl && (
+                    <Link className="post-thumbnail" href="#">
+                        <img src={post.mainImageUrl} alt={post.mainImage.alt} />
                     </Link>
                 )}
                 <header className="post-header">
                     <h3 className="post-title">
-                        <Link href={postUrl} rel="bookmark">
-                            {title}
+                        <Link href={fullPath} rel="bookmark">
+                            <a>{post.title}</a>
                         </Link>
                     </h3>
                 </header>
-                {excerpt && (
+                {post.excerpt && (
                     <div className="post-content">
-                        <p>{excerpt}</p>
+                        <p>{post.excerpt}</p>
                     </div>
                 )}
                 <footer className="post-meta">
-                    <time className="published" dateTime={dateTimeAttr}>
-                        {formattedDate}
+                    <time className="published" dateTime={post.dateTimeAttr}>
+                        {post.formattedDate}
                     </time>
                 </footer>
             </div>

@@ -7,12 +7,6 @@ const Footer = ({}) => {
             <p className="site-info">
                 <span className="copyright">Copyright 2022</span>
             </p>
-            <Link id="to-top" className="to-top" href="#page">
-                <a>
-                    <span className="icon-arrow-up" aria-hidden="true" />
-                    <span className="screen-reader-text">Back to top</span>
-                </a>
-            </Link>
         </footer>
     );
 };

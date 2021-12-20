@@ -1,11 +1,13 @@
 import client from '../../utils/client';
 import groq from 'groq';
+import Layout from '../../components/Layout';
+import SectionHero from '../../components/SectionHero';
 
 const Post = ({ post }) => {
     return (
-        <article>
-            <h1> {post?.slug?.current} </h1>
-        </article>
+        <Layout metaTitle="" metaDescription="">
+            <SectionHero title={post.title}></SectionHero>
+        </Layout>
     );
 };
 

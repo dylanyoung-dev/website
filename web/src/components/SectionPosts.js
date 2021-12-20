@@ -1,13 +1,10 @@
 import React from 'react';
 import _ from 'lodash';
-import moment from 'moment-strftime';
+import ArticleTeaser from '../components/ArticleTeaser';
 
-import { getPageUrl, Link, withPrefix } from '../utils';
-import CtaButtons from './CtaButtons';
-
-const SectionPosts = ({ articles }) => {
+const SectionPosts = ({ title, articles }) => {
     return (
-        <section id={sectionId} className="block block-posts">
+        <section id="articles" className="block block-posts">
             {title && <h2 className="block-title underline inner-sm">{title}</h2>}
             <div className="post-feed">
                 <div className="post-feed-inside">
@@ -24,3 +21,5 @@ const SectionPosts = ({ articles }) => {
         </section>
     );
 };
+
+export default SectionPosts;
