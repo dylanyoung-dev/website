@@ -1,4 +1,4 @@
 [build]
-publish = "web/.next/"
+publish = ".next/"
 command = "npm run build"
 environment = { NODE_VERSION = "12" }
