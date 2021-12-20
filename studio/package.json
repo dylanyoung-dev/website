@@ -1,34 +1,37 @@
 {
-    "name": "dylanyoung-studio",
-    "private": true,
-    "version": "1.0.0",
-    "description": "",
-    "main": "package.json",
-    "author": "Dylan Young <dylany@gmail.com>",
-    "license": "UNLICENSED",
-    "scripts": {
-        "start": "sanity start",
-        "build": "sanity build"
-    },
-    "keywords": [
-        "sanity"
-    ],
-    "dependencies": {
-        "@sanity/base": "^2.23.1",
-        "@sanity/core": "^2.23.1",
-        "@sanity/cli": "^2.23.1",
-        "@sanity/default-layout": "^2.23.1",
-        "@sanity/default-login": "^2.23.1",
-        "@sanity/desk-tool": "^2.23.1",
-        "@sanity/vision": "^2.23.1",
-        "prop-types": "^15.7",
-        "react": "^17.0",
-        "react-dom": "^17.0",
-        "styled-components": "^5.2.0"
-    },
-    "devDependencies": {},
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/dylanyoung-dev/website.git"
-    }
+  "name": "dylanyoung-studio",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "package.json",
+  "author": "Dylan Young <dylany@gmail.com>",
+  "license": "UNLICENSED",
+  "scripts": {
+    "start": "sanity start",
+    "build": "sanity build"
+  },
+  "keywords": [
+    "sanity"
+  ],
+  "dependencies": {
+    "@sanity/base": "^2.23.2",
+    "@sanity/cli": "^2.23.1",
+    "@sanity/code-input": "^2.23.2",
+    "@sanity/core": "^2.23.2",
+    "@sanity/default-layout": "^2.23.2",
+    "@sanity/default-login": "^2.23.2",
+    "@sanity/desk-tool": "^2.23.2",
+    "@sanity/vision": "^2.23.2",
+    "prop-types": "^15.7",
+    "react": "^17.0",
+    "react-dom": "^17.0",
+    "sanity-plugin-markdown": "^2.1.0",
+    "sanity-plugin-media": "^1.4.4",
+    "styled-components": "^5.2.0"
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dylanyoung-dev/website.git"
+  }
 }
