@@ -1,5 +1,4 @@
 [build]
-base = "web/"
-publish = "out/"
+publish = "web/out/"
 command = "npm run build"
 environment = { NODE_VERSION = "12" }
