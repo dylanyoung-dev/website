@@ -5,7 +5,7 @@ export default class MyDocument extends Document {
         return (
             <Html>
                 <Head />
-                <body className="palette-green style-simple">
+                <body className="palette-orange style-simple">
                     <Main />
                     <script src="/js/plugins.js" />
                     <NextScript />
