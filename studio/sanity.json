@@ -14,7 +14,8 @@
     "@sanity/desk-tool",
     "media",
     "@sanity/code-input",
-    "markdown"
+    "markdown",
+    "@sanity/dashboard"
   ],
   "env": {
     "development": {
