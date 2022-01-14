@@ -1,7 +1,7 @@
 import Link from 'next/link';
+import Moment from 'react-moment';
 
 const ArticleTeaser = ({ post }) => {
-    console.log(post);
     var fullPath = `/insights/${post.slug.current}`;
 
     return (
@@ -25,8 +25,8 @@ const ArticleTeaser = ({ post }) => {
                     </div>
                 )}
                 <footer className="post-meta">
-                    <time className="published" dateTime={post.dateTimeAttr}>
-                        {post.formattedDate}
+                    <time className="published" dateTime={post.publishedAt}>
+                        <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
                     </time>
                 </footer>
             </div>
