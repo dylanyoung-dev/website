@@ -3,6 +3,7 @@ import groq from 'groq';
 import Layout from '../../components/Layout';
 import SectionHero from '../../components/SectionHero';
 import markdownify from '../../utils/markdownify';
+import Moment from 'react-moment';
 
 const Post = ({ post }) => {
     return (
@@ -10,6 +11,9 @@ const Post = ({ post }) => {
             <article className="post post-full">
                 <header className="post-header inner-sm">
                     <h1 className="post-title underline">{post.title}</h1>
+                    <div>
+                        <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishAt}</Moment>
+                    </div>
                 </header>
 
                 {post.landscapeImage && (
