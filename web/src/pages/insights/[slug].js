@@ -12,7 +12,7 @@ const Post = ({ post }) => {
                 <header className="post-header inner-sm">
                     <h1 className="post-title underline">{post.title}</h1>
                     <div>
-                        <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishAt}</Moment>
+                        <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
                     </div>
                 </header>
 
