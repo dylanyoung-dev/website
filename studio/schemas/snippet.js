@@ -24,6 +24,12 @@ export default {
             of: [{ type: 'reference', to: { type: 'snippetCategory' } }]
         },
         {
+            name: 'tagging',
+            title: 'Snippet Tags',
+            type: 'array',
+            of: [{ type: 'reference', to: { type: 'tagging' } }]
+        },
+        {
             name: 'excerpt',
             title: 'Excerpt',
             type: 'text'
