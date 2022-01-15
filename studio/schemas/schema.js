@@ -7,6 +7,7 @@ import schemaTypes from 'all:part:@sanity/base/schema-type';
 // We import object and document schemas
 import articleCategory from './articleCategory';
 import snippetCategory from './snippetCategory';
+import tagging from './tagging';
 import post from './post';
 import snippet from './snippet';
 
@@ -19,6 +20,7 @@ export default createSchema({
     types: schemaTypes.concat([
         // The following are document types which will appear
         // in the studio.
+        tagging,
         post,
         articleCategory,
         snippetCategory,

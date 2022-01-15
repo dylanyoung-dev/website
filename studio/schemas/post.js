@@ -18,6 +18,15 @@ export default {
             }
         },
         {
+            name: 'mainNote',
+            type: 'note',
+            options: {
+                headline: 'Hold up!',
+                message: 'Main Image requires an image of 500x260 dimension only.',
+                tone: 'caution'
+            }
+        },
+        {
             name: 'mainImage',
             title: 'Main image',
             type: 'image',
@@ -31,6 +40,15 @@ export default {
                     type: 'string'
                 }
             ]
+        },
+        {
+            name: 'landscapeNote',
+            type: 'note',
+            options: {
+                headline: 'Hold up!',
+                message: 'Landscape Image requires an image of 1280x720 dimension only.',
+                tone: 'caution'
+            }
         },
         {
             name: 'landscapeImage',
@@ -52,6 +70,12 @@ export default {
             title: 'Categories',
             type: 'array',
             of: [{ type: 'reference', to: { type: 'articleCategory' } }]
+        },
+        {
+            name: 'tagging',
+            title: 'Tagging',
+            type: 'array',
+            of: [{ type: 'reference', to: { type: 'tagging' } }]
         },
         {
             name: 'publishedAt',
