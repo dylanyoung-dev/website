@@ -3,12 +3,7 @@ publish = "out/"
 command = "npm run build"
 environment = { NODE_VERSION = "12" }
 [[redirects]]
-from = "www.sitecoremaster.com/*"
-to = "dylanyoung.dev/"
-status = 301
-force = true
-[[redirects]]
-from = "sitecoremaster.com/*"
-to = "dylanyoung.dev/"
+from = "*.sitecoremaster.com/*"
+to = "https://dylanyoung.dev/"
 status = 301
 force = true
