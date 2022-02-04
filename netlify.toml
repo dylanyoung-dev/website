@@ -2,3 +2,9 @@
 publish = "out"
 command = "npm run build"
 environment = { NODE_VERSION = "12" }
+
+[[redirects]]
+from = "*.sitecoremaster.com/*"
+to = "https://dylanyoung.dev/"
+status = 301
+force = true
