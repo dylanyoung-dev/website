@@ -9,9 +9,6 @@ const Home = ({ allPosts }) => {
     return (
         <Layout metaTitle="Dylanyoung.dev | Sitecore, .Net, Azure, CDP, AI/ML Learnings" metaDescription="">
             <SectionHero title="Hi, I'm Dylan">Welcome to my personal website, where you can read my latest blog posts and learn more about me</SectionHero>
-            <SectionContent sectionId="welcome" title="Coming Soon">
-                Website is currently under development
-            </SectionContent>
             <SectionPosts articles={allPosts} title="Latest Posts"></SectionPosts>
         </Layout>
     );
