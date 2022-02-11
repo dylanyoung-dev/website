@@ -21,7 +21,7 @@ export default Home;
 
 export async function getStaticProps() {
     const allPosts = await client.fetch(
-        groq`*[_type == "post" && defined(slug.current)]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`
+        groq`*[_type == "post" && defined(slug.current)] | order(publishedAt desc){..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`
     );
 
     return {
