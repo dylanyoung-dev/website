@@ -8,8 +8,10 @@ const ArticleTeaser = ({ post }) => {
         <article className="post post-card">
             <div className="post-inside">
                 {post.mainImageUrl && (
-                    <Link className="post-thumbnail" href="#">
-                        <img src={post.mainImageUrl} alt={post.mainImage.alt} />
+                    <Link className="post-thumbnail" href={fullPath}>
+                        <a>
+                            <img src={post.mainImageUrl} alt={post.mainImage.alt} />
+                        </a>
                     </Link>
                 )}
                 <header className="post-header">

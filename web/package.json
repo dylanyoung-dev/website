@@ -11,6 +11,7 @@
     },
     "dependencies": {
         "@sanity/client": "^2.23.1",
+        "next-share": "^0.13.0",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.6",
         "groq": "^2.15.0",

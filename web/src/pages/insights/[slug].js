@@ -3,9 +3,10 @@ import groq from 'groq';
 import Layout from '../../components/Layout';
 import SectionHero from '../../components/SectionHero';
 import markdownify from '../../utils/markdownify';
+import { TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from 'next-share';
 import Moment from 'react-moment';
 
-const Post = ({ post }) => {
+const Post = ({ post, url }) => {
     return (
         <Layout metaTitle="" metaDescription="">
             <article className="post post-full">
@@ -13,6 +14,15 @@ const Post = ({ post }) => {
                     <h1 className="post-title underline">{post.title}</h1>
                     <div>
                         <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
+                    </div>
+                    <div>
+                        <TwitterShareButton url={`${url}/insights/${post.slug.current}`}>
+                            <TwitterIcon size={32} />
+                        </TwitterShareButton>
+                        &nbsp;
+                        <LinkedinShareButton url={`${url}/insights/${post.slug.current}`}>
+                            <LinkedinIcon size={32} />
+                        </LinkedinShareButton>
                     </div>
                 </header>
 
@@ -38,6 +48,10 @@ export async function getStaticPaths() {
 
 export async function getStaticProps(context) {
     const { slug = '' } = context.params;
+    const url = process.env.HOST_URL;
+
+    console.log(url);
+
     const post = await client.fetch(
         groq`*[_type == "post" && slug.current == $slug][0]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`,
         { slug }
@@ -45,7 +59,8 @@ export async function getStaticProps(context) {
 
     return {
         props: {
-            post
+            post,
+            url
         }
     };
 }
