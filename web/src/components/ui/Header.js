@@ -2,7 +2,7 @@ import React from 'react';
 import Router from 'next/router';
 import Link from 'next/link';
 
-import { classNames } from '../utils/classNames';
+import { classNames } from '../../utils/classNames';
 import Icon from './Icon';
 
 const Header = ({ props }) => {

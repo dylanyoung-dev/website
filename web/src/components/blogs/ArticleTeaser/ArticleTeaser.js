@@ -30,6 +30,13 @@ const ArticleTeaser = ({ post }) => {
                     <time className="published" dateTime={post.publishedAt}>
                         <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
                     </time>
+                    <div>
+                        {post.categories.map((category, index) => {
+                            {
+                                category;
+                            }
+                        })}
+                    </div>
                 </footer>
             </div>
         </article>

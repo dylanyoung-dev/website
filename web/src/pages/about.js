@@ -1,6 +1,6 @@
-import Layout from '../components/Layout';
-import SectionHero from '../components/SectionHero';
-import SectionTimeline from '../components/SectionTimeline';
+import Layout from '../components/ui/Layout';
+import SectionHero from '../components/ui/SectionHero';
+import SectionTimeline from '../components/ui/SectionTimeline';
 
 const AboutPage = ({}) => {
     return (

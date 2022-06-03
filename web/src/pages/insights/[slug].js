@@ -1,14 +1,15 @@
 import client from '../../utils/client';
 import groq from 'groq';
-import Layout from '../../components/Layout';
-import SectionHero from '../../components/SectionHero';
+import Layout from '../../components/ui/Layout';
+import SectionHero from '../../components/ui/SectionHero';
 import markdownify from '../../utils/markdownify';
 import { TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from 'next-share';
 import Moment from 'react-moment';
 
 const Post = ({ post, url }) => {
+    const fullPath = `${url}/insights/${post.slug.current}`;
     return (
-        <Layout metaTitle="" metaDescription="">
+        <Layout metaTitle={post.title} metaDescription={post.excerpt} ogPhoto={post.landscapeImageUrl} ogUrl={fullPath}>
             <article className="post post-full">
                 <header className="post-header inner-sm">
                     <h1 className="post-title underline">{post.title}</h1>
@@ -16,11 +17,11 @@ const Post = ({ post, url }) => {
                         <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
                     </div>
                     <div>
-                        <TwitterShareButton url={`${url}/insights/${post.slug.current}`}>
+                        <TwitterShareButton url={fullPath}>
                             <TwitterIcon size={32} />
                         </TwitterShareButton>
                         &nbsp;
-                        <LinkedinShareButton url={`${url}/insights/${post.slug.current}`}>
+                        <LinkedinShareButton url={fullPath}>
                             <LinkedinIcon size={32} />
                         </LinkedinShareButton>
                     </div>
@@ -49,8 +50,6 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     const { slug = '' } = context.params;
     const url = process.env.HOST_URL;
-
-    console.log(url);
 
     const post = await client.fetch(
         groq`*[_type == "post" && slug.current == $slug][0]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`,

@@ -10,6 +10,8 @@
         "start": "next start"
     },
     "dependencies": {
+        "@formium/client": "^0.1.4",
+        "@formium/react": "^0.2.0",
         "@sanity/client": "^2.23.1",
         "next-share": "^0.13.0",
         "babel-runtime": "^6.26.0",

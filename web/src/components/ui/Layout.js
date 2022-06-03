@@ -1,12 +1,11 @@
 import React from 'react';
 import Head from 'next/head';
 
-import { classNames } from '../utils/classNames';
-import Header from './Header';
-import Footer from './Footer';
+import Header from '../ui/Header';
+import Footer from '../ui/Footer';
+import { useRouter } from 'next/router';
 
-const Layout = ({ children, metaTitle, metaDescription }) => {
-
+const Layout = ({ children, metaTitle, metaDescription, ogPhoto, ogUrl }) => {
     return (
         <>
             <Head>
@@ -17,6 +16,11 @@ const Layout = ({ children, metaTitle, metaDescription }) => {
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="google" content="notranslate" />
                 <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i&display=swap" rel="stylesheet" />
+                <meta property="og:title" content={metaTitle} />
+                <meta property="og:description" content={metaDescription} />
+                {ogPhoto && <meta property="og:image" content={ogPhoto} />}
+                {ogUrl && <meta property="og:url" content={ogUrl} />}
+                <meta property="og:type" content="website" />
             </Head>
 
             <div id="page" className="site">
@@ -31,7 +35,7 @@ const Layout = ({ children, metaTitle, metaDescription }) => {
                 </div>
             </div>
         </>
-    )
-}
+    );
+};
 
 export default Layout;

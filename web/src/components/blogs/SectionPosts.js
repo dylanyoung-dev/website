@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import ArticleTeaser from '../components/ArticleTeaser';
+import ArticleTeaser from './ArticleTeaser/ArticleTeaser';
 
 const SectionPosts = ({ title, articles }) => {
     return (
@@ -9,7 +9,7 @@ const SectionPosts = ({ title, articles }) => {
             <div className="post-feed">
                 <div className="post-feed-inside">
                     {_.map(articles, (post, index) => (
-                        <ArticleTeaser post={post}></ArticleTeaser>
+                        <ArticleTeaser key={index} post={post}></ArticleTeaser>
                     ))}
                 </div>
             </div>
