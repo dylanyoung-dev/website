@@ -1,23 +1,28 @@
 import Link from 'next/link';
 import Moment from 'react-moment';
+import { Post } from '../../../interfaces/posts';
 
-const ArticleTeaser = ({ post }) => {
-    var fullPath = `/insights/${post.slug.current}`;
+interface ArticleTeaserProps {
+    post: Post;
+}
+
+const ArticleTeaser = ({ post }: ArticleTeaserProps) => {
+    const fullPath = `/insights/${post.slug.current}`;
 
     return (
         <article className="post post-card">
             <div className="post-inside">
                 {post.mainImageUrl && (
-                    <Link className="post-thumbnail" href={fullPath}>
-                        <a>
+                    <Link href={fullPath}>
+                        <a className="post-thumbnail">
                             <img src={post.mainImageUrl} alt={post.mainImage.alt} />
                         </a>
                     </Link>
                 )}
                 <header className="post-header">
                     <h3 className="post-title">
-                        <Link href={fullPath} rel="bookmark">
-                            <a>{post.title}</a>
+                        <Link href={fullPath}>
+                            <a rel="bookmark">{post.title}</a>
                         </Link>
                     </h3>
                 </header>
@@ -27,7 +32,7 @@ const ArticleTeaser = ({ post }) => {
                     </div>
                 )}
                 <footer className="post-meta">
-                    <time className="published" dateTime={post.publishedAt}>
+                    <time className="published">
                         <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
                     </time>
                     <div>

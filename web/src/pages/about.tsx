@@ -1,8 +1,11 @@
+import { FC } from 'react';
 import Layout from '../components/ui/Layout';
 import SectionHero from '../components/ui/SectionHero';
 import SectionTimeline from '../components/ui/SectionTimeline';
 
-const AboutPage = ({}) => {
+interface AboutPageProps {}
+
+const AboutPage: FC<AboutPageProps> = ({}) => {
     return (
         <Layout metaTitle="Dylan Young: The journey of Sitecore Master" metaDescription="">
             <SectionHero title="About Me">

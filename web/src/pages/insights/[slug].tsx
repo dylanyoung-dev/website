@@ -1,12 +1,18 @@
 import client from '../../utils/client';
 import groq from 'groq';
 import Layout from '../../components/ui/Layout';
-import SectionHero from '../../components/ui/SectionHero';
 import markdownify from '../../utils/markdownify';
 import { TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from 'next-share';
 import Moment from 'react-moment';
+import { Post } from '../../interfaces/posts';
+import { FC } from 'react';
 
-const Post = ({ post, url }) => {
+interface PostProps {
+    post: Post;
+    url: string;
+}
+
+const Post: FC<PostProps> = ({ post, url }: PostProps) => {
     const fullPath = `${url}/insights/${post.slug.current}`;
     return (
         <Layout metaTitle={post.title} metaDescription={post.excerpt} ogPhoto={post.landscapeImageUrl} ogUrl={fullPath}>
@@ -42,7 +48,7 @@ export async function getStaticPaths() {
     const paths = await client.fetch(groq`*[_type == "post" && defined(slug.current)][].slug.current`);
 
     return {
-        paths: paths.map((slug) => ({ params: { slug } })),
+        paths: paths.map((slug: string) => ({ params: { slug } })),
         fallback: false
     };
 }

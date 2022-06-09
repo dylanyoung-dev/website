@@ -1,11 +1,19 @@
-import React from 'react';
+import React, { FC } from 'react';
 import Head from 'next/head';
 
-import Header from '../ui/Header';
-import Footer from '../ui/Footer';
+import Header from './Header';
+import Footer from './Footer';
 import { useRouter } from 'next/router';
 
-const Layout = ({ children, metaTitle, metaDescription, ogPhoto, ogUrl }) => {
+interface LayoutProps {
+    children: React.ReactNode;
+    metaTitle: string;
+    metaDescription: string;
+    ogPhoto?: string;
+    ogUrl?: string;
+}
+
+const Layout: FC<LayoutProps> = ({ children, metaTitle, metaDescription, ogPhoto, ogUrl }) => {
     return (
         <>
             <Head>

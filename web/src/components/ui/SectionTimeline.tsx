@@ -1,4 +1,8 @@
-const SectionTimeline = () => {
+import { FC } from 'react';
+
+interface SectionTimeLineProps {}
+
+const SectionTimeline: FC<SectionTimeLineProps> = () => {
     return (
         <section id="timeline" className="timeline">
             <div className="item">

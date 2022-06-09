@@ -1,8 +1,14 @@
-import React from 'react';
+import React, { FC } from 'react';
 import _ from 'lodash';
 import ArticleTeaser from './ArticleTeaser/ArticleTeaser';
+import { Post } from '../../interfaces/posts';
 
-const SectionPosts = ({ title, articles }) => {
+interface SectionPostsProps {
+    title: string;
+    articles: Post[];
+}
+
+const SectionPosts: FC<SectionPostsProps> = ({ title, articles }) => {
     return (
         <section id="articles" className="block block-posts">
             {title && <h2 className="block-title underline inner-sm">{title}</h2>}
