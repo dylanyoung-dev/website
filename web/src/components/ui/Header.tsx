@@ -2,7 +2,6 @@ import React from 'react';
 import Router from 'next/router';
 import Link from 'next/link';
 
-import { SocialMediaIconsReact } from 'social-media-icons-react';
 import { DevTo, GitHub, Instagram, LinkedIn, Twitter, YouTube } from './Icons';
 
 interface HeaderProps {}
