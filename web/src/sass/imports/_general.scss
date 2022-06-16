@@ -22,7 +22,8 @@ a {
     transition: border 0.3s ease, color 0.3s ease;
 
     &:hover {
-        border-color: currentColor;
+        border-color: none;
+        border: none;
         text-decoration: none;
     }
 }
