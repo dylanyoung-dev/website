@@ -5,7 +5,7 @@ interface ContactPageProps {}
 
 const ContactPage: FC<ContactPageProps> = ({}) => {
     return (
-        <Layout metaTitle="" metaDescription="">
+        <Layout metaTitle="Dylan Young | Contact Me for more information" metaDescription="">
             Coming Soon
         </Layout>
     );

@@ -13,7 +13,7 @@ interface PostProps {
 }
 
 const Post: FC<PostProps> = ({ post, url }: PostProps) => {
-    const fullPath = `${url}/insights/${post.slug.current}`;
+    const fullPath = `${url}/insights/${post.slug.current}/`;
     return (
         <Layout metaTitle={post.title} metaDescription={post.excerpt} ogPhoto={post.landscapeImageUrl} ogUrl={fullPath}>
             <article className="post post-full">

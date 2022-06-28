@@ -7,7 +7,7 @@ import groq from 'groq';
 
 const Home = ({ allPosts }) => {
     return (
-        <Layout metaTitle="Dylan Young Sitecore Developer | Sitecore, .Net, CDP, React, Next.Js" metaDescription="">
+        <Layout metaTitle="Dylan Young Developer | Sitecore, .Net, CDP, React, Next.Js" metaDescription="">
             <SectionHero title="Hi, I'm Dylan">Welcome to my personal website, where you can read my latest blog posts and learn more about me</SectionHero>
             <SectionPosts articles={allPosts} title="Latest Posts"></SectionPosts>
         </Layout>
