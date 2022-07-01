@@ -13,9 +13,5 @@ module.exports = {
     },
     webpack: (config, { webpack }) => {
         return config;
-    },
-    i18n: {
-        locales: ['en'],
-        defaultLocale: 'en'
     }
 };
