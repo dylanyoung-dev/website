@@ -94,7 +94,7 @@ export default {
             rows: 4
         },
         {
-            name: 'Notion-Item-Database-ID',
+            name: 'notionitemdatabaseid',
             title: 'Notion Link (Ignore)',
             type: 'text',
             readOnly: true
