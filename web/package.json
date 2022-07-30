@@ -10,6 +10,8 @@
         "start": "next start"
     },
     "dependencies": {
+        "@formium/client": "^0.1.4",
+        "@formium/react": "^0.2.0",
         "@sanity/client": "^2.23.1",
         "babel-runtime": "^6.26.0",
         "classnames": "^2.2.6",
@@ -19,6 +21,7 @@
         "moment": "^2.29.1",
         "moment-strftime": "^0.5.0",
         "next": "^12.0.7",
+        "next-share": "^0.13.0",
         "node-sass": "^5.0.0",
         "react": "^17.0.2",
         "react-dom": "17.0.2",
@@ -27,10 +30,15 @@
         "react-html-parser": "^2.0.2",
         "react-moment": "^1.1.1",
         "react-script-tag": "^1.1.2",
-        "webpack": "^5.24.1"
+        "react-sitecore-personalize": "1.0.3",
+        "webpack": "^5.24.1",
+        "@netlify/plugin-nextjs": "4.9.3"
     },
     "devDependencies": {
+        "@types/node": "^17.0.41",
+        "@types/react": "^17.0.2",
         "eslint": "^8.5.0",
-        "prettier": "^2.2.1"
+        "prettier": "^2.2.1",
+        "typescript": "^4.7.3"
     }
 }

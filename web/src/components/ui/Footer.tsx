@@ -1,7 +1,8 @@
-import React from 'react';
-import Link from 'next/link';
+import React, { FC } from 'react';
 
-const Footer = ({}) => {
+interface FooterProps {}
+
+const Footer: FC<FooterProps> = () => {
     return (
         <footer id="colophon" className="site-footer inner-sm">
             <p className="site-info">

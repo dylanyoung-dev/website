@@ -2,16 +2,17 @@ import React from 'react';
 import Router from 'next/router';
 import Link from 'next/link';
 
-import { classNames } from '../utils/classNames';
-import Icon from './Icon';
+import { DevTo, GitHub, Instagram, LinkedIn, Twitter, YouTube } from './Icons';
 
-const Header = ({ props }) => {
-    function handleWindowResize() {
-        const menuOpenElm = _.get(this.menuOpenRef, 'current.offsetParent');
-        if (menuOpenElm === null) {
-            document.body.classList.remove('menu--opened');
-        }
-    }
+interface HeaderProps {}
+
+const Header = () => {
+    // function handleWindowResize() {
+    //     const menuOpenElm = _.get(this.menuOpenRef, 'current.offsetParent');
+    //     if (menuOpenElm === null) {
+    //         document.body.classList.remove('menu--opened');
+    //     }
+    // }
 
     function handleRouteChange() {
         document.body.classList.remove('menu--opened');
@@ -54,55 +55,56 @@ const Header = ({ props }) => {
                             <div className="site-nav-inside">
                                 <ul className="menu">
                                     <li className="menu-item">
-                                        <Link href="/" className="">
+                                        <Link href="/">
                                             <a>Home</a>
                                         </Link>
                                     </li>
-                                    {/* <li className="menu-item">
-                                        <Link href="/blog" className="">
-                                            <a>Blog</a>
-                                        </Link>
-                                    </li> */}
                                     <li className="menu-item">
-                                        <Link href="/about" className="">
+                                        <Link href="/about">
                                             <a>About Me</a>
                                         </Link>
                                     </li>
                                     <li className="menu-item">
-                                        <Link href="/contact" className="">
+                                        <Link href="/contact">
                                             <a>Contact</a>
                                         </Link>
                                     </li>
                                 </ul>
                                 <div className="social-links">
-                                    <Link href="https://dev.to/dylanyoung_dev" target="blank" className="">
-                                        <a>
-                                            <Icon icon="dev" />
+                                    <Link href="https://dev.to/dylanyoung_dev">
+                                        <a target="_blank">
+                                            <DevTo />
                                             <span className="screen-reader-text">Dev to</span>
                                         </a>
                                     </Link>
-                                    <Link href="https://github.com/dylanyoung-dev" target="_blank" className="">
-                                        <a>
-                                            <Icon icon="github" />
+                                    <Link href="https://github.com/dylanyoung-dev">
+                                        <a target="_blank">
+                                            <GitHub />
                                             <span className="screen-reader-text">Github</span>
                                         </a>
                                     </Link>
-                                    <Link href="https://www.linkedin.com/in/dylanyoung/" target="_blank" className="">
-                                        <a>
-                                            <Icon icon="linkedin" />
+                                    <Link href="https://www.linkedin.com/in/dylanyoung/">
+                                        <a target="_blank">
+                                            <LinkedIn />
                                             <span className="screen-reader-text">Github</span>
                                         </a>
                                     </Link>
-                                    <Link href="https://twitter.com/dylanyoung_dev" target="_blank" className="">
-                                        <a>
-                                            <Icon icon="twitter" />
+                                    <Link href="https://twitter.com/dylanyoung_dev">
+                                        <a target="_blank">
+                                            <Twitter />
                                             <span className="screen-reader-text">Twitter</span>
                                         </a>
                                     </Link>
-                                    <Link href="https://www.youtube.com/c/SitecoreMasterChannel" target="_blank" className="">
-                                        <a>
-                                            <Icon icon="youtube" />
+                                    <Link href="https://www.youtube.com/c/SitecoreMasterChannel">
+                                        <a target="_blank">
+                                            <YouTube />
                                             <span className="screen-reader-text">YouTube</span>
+                                        </a>
+                                    </Link>
+                                    <Link href="https://www.instagram.com/sitecore_master/">
+                                        <a target="_blank">
+                                            <Instagram />
+                                            <span className="screen-reader-text">Instagram</span>
                                         </a>
                                     </Link>
                                 </div>

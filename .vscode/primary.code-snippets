@@ -1,0 +1,18 @@
+{
+    "outputid": {
+        "scope": "javascript",
+        "prefix": "outputid",
+        "body": "$UUID"
+    },
+    "Import external module.": {
+        "prefix": "import statement",
+        "description": "Import external module.",
+        "body": ["import { $0 } from '${1:module}';"]
+    },
+    "React Functional Component": {
+        "prefix": "reactfc",
+        "scope": "javascriptreact,typescriptreact,javascript",
+        "description": "Create a React Functional Component",
+        "body": ["const Component: React.FC<> = () => {", "    ", "}", ""]
+    }
+}
