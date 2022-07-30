@@ -92,6 +92,12 @@ export default {
             title: 'Excerpt',
             type: 'text',
             rows: 4
+        },
+        {
+            name: 'Notion-Item-Database-ID',
+            title: 'Notion Link (Ignore)',
+            type: 'text',
+            readOnly: true
         }
     ],
 
