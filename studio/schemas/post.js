@@ -96,7 +96,7 @@ export default {
         {
             name: 'notionitemdatabaseid',
             title: 'Notion Link (Ignore)',
-            type: 'text',
+            type: 'string',
             readOnly: true
         }
     ],
