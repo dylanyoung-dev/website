@@ -35,13 +35,15 @@ const ArticleTeaser = ({ post }: ArticleTeaserProps) => {
                     <time className="published">
                         <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
                     </time>
-                    <div>
-                        {post.categories.map((category, index) => {
-                            {
-                                category;
-                            }
-                        })}
-                    </div>
+                    {post?.categories !== undefined ?? (
+                        <div>
+                            {post.categories?.map((category, index) => {
+                                {
+                                    category;
+                                }
+                            })}
+                        </div>
+                    )}
                 </footer>
             </div>
         </article>
