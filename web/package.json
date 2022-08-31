@@ -3,6 +3,10 @@
     "description": "",
     "version": "0.1.0",
     "license": "MIT",
+    "engines": {
+        "npm": ">=6.14.12",
+        "node": ">=14.16.1"
+    },
     "scripts": {
         "dev": "next dev",
         "develop": "next dev",
