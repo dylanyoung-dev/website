@@ -15,7 +15,7 @@
         "@formium/react": "^0.2.0",
         "@sanity/client": "^2.23.1",
         "babel-runtime": "^6.26.0",
-        "next-sitemap": "3.1.21",
+        "next-sitemap": "3.1.10",
         "classnames": "^2.2.6",
         "groq": "^2.15.0",
         "lodash": "^4.17.21",
