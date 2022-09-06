@@ -11,6 +11,12 @@ const SectionTimeline: FC<SectionTimeLineProps> = () => {
                         <section className="year">
                             <h3>2022</h3>
                             <section>
+                                <h4>October</h4>
+                                <ul>
+                                    <li>Presented at Sitecore Symposium 2022 in Chicago IL.</li>
+                                </ul>
+                            </section>
+                            <section>
                                 <h4>April</h4>
                                 <ul>
                                     <li>Presented at Sitecore Virtual Developer Day 2022.</li>
@@ -61,6 +67,39 @@ const SectionTimeline: FC<SectionTimeLineProps> = () => {
                                 <h4>July</h4>
                                 <ul>
                                     <li>Started my new role at Director of Digital Engineering at RDA Corp.</li>
+                                </ul>
+                            </section>
+                            <section>
+                                <h4>January</h4>
+                                <ul>
+                                    <li>Awarded my fourth Sitecore Technology MVP award for 2021</li>
+                                </ul>
+                            </section>
+                        </section>
+                        <section className="year">
+                            <h3>2020</h3>
+                            <section>
+                                <h4>January</h4>
+                                <ul>
+                                    <li>Awarded my third Sitecore Technology MVP award for 2020</li>
+                                </ul>
+                            </section>
+                        </section>
+                        <section className="year">
+                            <h3>2019</h3>
+                            <section>
+                                <h4>January</h4>
+                                <ul>
+                                    <li>Awarded my second Sitecore Technology MVP award for 2019</li>
+                                </ul>
+                            </section>
+                        </section>
+                        <section className="year">
+                            <h3>2018</h3>
+                            <section>
+                                <h4>January</h4>
+                                <ul>
+                                    <li>Awarded my first Sitecore Technology MVP award for 2018</li>
                                 </ul>
                             </section>
                         </section>
