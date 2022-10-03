@@ -1,4 +1,5 @@
 interface Post {
+    _id: number;
     title: string;
     slug: Slug;
     mainImage: Image;
