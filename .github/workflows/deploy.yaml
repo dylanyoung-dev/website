@@ -1,0 +1,29 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Deploy to CDP/Personalize
+
+# Controls when the workflow will run
+on:
+  push:
+    branches:
+      - main
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment: 'Production'
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3.4.1
+        with:
+          registry-url: 'https://registry.npmjs.org'
+      - name: Install and Run tests
+        run: npm i && npm run test
+      - name: Authenticate to CDP/Personalize
+        run: npx sitecore-cdp-serializer auth login -id '${{ secrets.CLIENTID }}' -s '${{ secrets.CLIENTSECRET }}' -l 'EU'
+      - name: Deploy CDP/Personalize
+        run: npx sitecore-cdp-serializer deploy --artifactPath './cdp-artifacts'

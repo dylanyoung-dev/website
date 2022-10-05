@@ -1,0 +1,14 @@
+name: getLatestSanityArticle
+archived: false
+description: 'Get the last visited Article Identifier (Sanity.io CMS)'
+friendlyId: getlatestsanityarticle_268tys6z6q
+type: DECISION
+status: PUBLISHED
+icon: ''
+additionalFields:
+  decisionOutputReference: 'GuestLastSanityItem'
+  decisionReturnType: 'String'
+defaultTemplate: false
+tags:
+  - Source Control
+customTemplate: true
