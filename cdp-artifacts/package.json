@@ -1,0 +1,12 @@
+{
+    "name": "dylanyoung-cdp-artifacts",
+    "description": "",
+    "version": "0.1.0",
+    "license": "MIT",
+    "scripts": {
+    },
+    "devDependencies": {
+        "prettier": "^2.2.1",
+        "sitecore-cdp-serializer": "0.1.6"
+    }
+}

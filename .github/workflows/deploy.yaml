@@ -13,6 +13,9 @@ jobs:
   build-deploy:
     runs-on: ubuntu-latest
     environment: 'Production'
+    defaults:
+      run:
+        working-directory: ./cdp-artifacts
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       - name: Checkout
@@ -22,8 +25,8 @@ jobs:
         with:
           registry-url: 'https://registry.npmjs.org'
       - name: Install and Run tests
-        run: npm i && npm run test
+        run: npm i
       - name: Authenticate to CDP/Personalize
-        run: npx sitecore-cdp-serializer auth login -id '${{ secrets.CLIENTID }}' -s '${{ secrets.CLIENTSECRET }}' -l 'EU'
+        run: npx sitecore-cdp-serializer auth login -id '${{ secrets.CLIENTID }}' -s '${{ secrets.CLIENTSECRET }}' -l 'US'
       - name: Deploy CDP/Personalize
-        run: npx sitecore-cdp-serializer deploy --artifactPath './cdp-artifacts'
+        run: npx sitecore-cdp-serializer deploy --artifactPath '.'
