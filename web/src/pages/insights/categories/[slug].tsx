@@ -37,7 +37,7 @@ export async function getStaticProps(context) {
     const url = process.env.HOST_URL;
 
     const posts = await client.fetch(
-        groq`*[_type == "post" && references(*[_type=="articleCategory" && slug.current == $slug]._id)]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`,
+        groq`*[_type == "post" && references(*[_type=="articleCategory" && slug.current == $slug]._id)] | order(publishedAt desc){..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`,
         { slug }
     );
 

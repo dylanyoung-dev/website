@@ -16,13 +16,11 @@ const Categories: FC<CategoriesProps> = ({ AllCategories }) => {
                     <div className="post-feed">
                         <ul>
                             {_.map(AllCategories, (category, index) => (
-                                <>
-                                    <li key={index}>
-                                        <Link href={`/insights/categories/${category.Slug}`}>
-                                            <a>{category.Title}</a>
-                                        </Link>{' '}
-                                    </li>
-                                </>
+                                <li key={index}>
+                                    <Link href={`/insights/categories/${category.Slug}`}>
+                                        <a>{category.Title}</a>
+                                    </Link>{' '}
+                                </li>
                             ))}
                         </ul>
                     </div>

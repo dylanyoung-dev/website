@@ -2,7 +2,7 @@ import '../sass/main.scss';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import { AppProps } from 'next/app';
-import { initClientScript, sendViewEvent } from 'react-sitecore-personalize';
+import { initClientScript } from 'react-sitecore-personalize';
 import { useRouter } from 'next/router';
 
 // This default export is required in a new `pages/_app.js` file.
@@ -19,8 +19,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             process.env.SITECORE_CDP_WEBFLOW_TARGET,
             { LogEvents: true, Currency: 'USD', Language: 'EN', Channel: 'Web' }
         );
-
-        sendViewEvent(window.location.href);
     }, []);
 
     return <Component {...pageProps} />;
