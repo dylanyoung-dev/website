@@ -11,9 +11,15 @@ const SectionTimeline: FC<SectionTimeLineProps> = () => {
                         <section className="year">
                             <h3>2022</h3>
                             <section>
+                                <h4>November</h4>
+                                <ul>
+                                    <li>Presented at Sitecore User Group Pittsburgh on the New DevEx with Sitecore CDP/Personalize.</li>
+                                </ul>
+                            </section>
+                            <section>
                                 <h4>October</h4>
                                 <ul>
-                                    <li>Presented at Sitecore Symposium 2022 in Chicago IL.</li>
+                                    <li>Presented "Developing with the Engagement Cloud" at Sitecore Symposium 2022 in Chicago IL.</li>
                                 </ul>
                             </section>
                             <section>
