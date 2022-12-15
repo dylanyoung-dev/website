@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
+//import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
 import ScriptTag from 'react-script-tag';
 import Link from './link';
 import _ from 'lodash';

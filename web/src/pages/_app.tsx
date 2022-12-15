@@ -1,9 +1,9 @@
-import '../sass/main.scss';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
 import { AppProps } from 'next/app';
 import { initClientScript } from 'react-sitecore-personalize';
 import { useRouter } from 'next/router';
+import { ChakraProvider } from '@chakra-ui/react';
 
 // This default export is required in a new `pages/_app.js` file.
 export default function MyApp({ Component, pageProps }: AppProps) {
@@ -21,5 +21,9 @@ export default function MyApp({ Component, pageProps }: AppProps) {
         );
     }, []);
 
-    return <Component {...pageProps} />;
+    return (
+        <ChakraProvider>
+            <Component {...pageProps} />
+        </ChakraProvider>
+    );
 }
