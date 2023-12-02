@@ -1,8 +1,5 @@
 module.exports = {
     trailingSlash: true,
-    devIndicators: {
-        autoPrerender: false
-    },
     env: {
         SITECORE_CDP_CLIENT_KEY: process.env.SITECORE_CDP_CLIENT_KEY,
         SITECORE_CDP_DOMAIN: process.env.SITECORE_CDP_DOMAIN,
@@ -12,6 +9,11 @@ module.exports = {
         SITECORE_CDP_WEBFLOW_TARGET: process.env.SITECORE_CDP_WEBFLOW_TARGET
     },
     webpack: (config, { webpack }) => {
+        config.module.rules.push({
+            test: /\.svg$/,
+            use: ['@svgr/webpack']
+        });
+
         return config;
     }
 };

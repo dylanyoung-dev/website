@@ -13,7 +13,8 @@
     },
     "devDependencies": {
         "eslint": "^8.5.0",
-        "prettier": "^2.2.1"
-    },
-    "dependencies": {}
+        "prettier": "^2.2.1",
+        "svg-url-loader": "^8.0.0",
+        "typescript": "5.2.2"
+    }
 }

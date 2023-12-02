@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import Moment from 'react-moment';
-import { Post } from '../../../interfaces/posts';
+import { IPost } from '../../../interfaces';
 
 interface ArticleTeaserProps {
-    post: Post;
+    post: IPost;
 }
 
 const ArticleTeaser = ({ post }: ArticleTeaserProps) => {
@@ -13,16 +13,14 @@ const ArticleTeaser = ({ post }: ArticleTeaserProps) => {
         <article className="post post-card">
             <div className="post-inside">
                 {post.mainImageUrl && (
-                    <Link href={fullPath}>
-                        <a className="post-thumbnail">
-                            <img src={post.mainImageUrl} alt={post.mainImage.alt} />
-                        </a>
+                    <Link href={fullPath} className="post-thumbnail">
+                        <img src={post.mainImageUrl} alt={post.mainImage.alt} />
                     </Link>
                 )}
                 <header className="post-header">
                     <h3 className="post-title">
-                        <Link href={fullPath}>
-                            <a rel="bookmark">{post.title}</a>
+                        <Link href={fullPath} rel="bookmark">
+                            {post.title}
                         </Link>
                     </h3>
                 </header>
@@ -37,11 +35,9 @@ const ArticleTeaser = ({ post }: ArticleTeaserProps) => {
                     </time>
                     {post?.categories !== undefined ?? (
                         <div>
-                            {post.categories?.map((category, index) => {
-                                {
-                                    category;
-                                }
-                            })}
+                            {post.categories?.map((category, index) => (
+                                <>{category}</>
+                            ))}
                         </div>
                     )}
                 </footer>

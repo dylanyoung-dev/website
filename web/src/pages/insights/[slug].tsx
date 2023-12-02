@@ -1,51 +1,102 @@
-import client from '../../utils/client';
+import { Box, Container, Heading, Image, Stack, Text, useColorMode } from '@chakra-ui/react';
+import ChakraUIRenderer from 'chakra-ui-markdown-renderer';
 import groq from 'groq';
-import Layout from '../../components/ui/Layout';
-import markdownify from '../../utils/markdownify';
-import { TwitterShareButton, TwitterIcon, LinkedinShareButton, LinkedinIcon } from 'next-share';
-import Moment from 'react-moment';
-import { Post } from '../../interfaces/posts';
-import TrackEvent from '../../components/cdp/TrackEvent';
+import { LinkedinIcon, LinkedinShareButton, TwitterIcon, TwitterShareButton } from 'next-share';
 import { FC } from 'react';
+import ReactMarkdown from 'react-markdown';
+import Moment from 'react-moment';
+import { Layout } from '../../components/ui';
+import { IPost } from '../../interfaces';
+import client from '../../utils/client';
 
 interface PostProps {
-    post: Post;
+    post: IPost;
     url: string;
 }
 
 const Post: FC<PostProps> = ({ post, url }: PostProps) => {
     const shortPath = `/insights/${post.slug.current}/`;
     const fullPath = `${url}${shortPath}`;
+    const { colorMode } = useColorMode();
+
+    const newTheme = {
+        h1: (props) => {
+            return (
+                <Heading mb={1} as="h1" fontSize="xl">
+                    {props.children}
+                </Heading>
+            );
+        },
+        h2: (props) => {
+            const { children } = props;
+            return (
+                <Heading mb={2} mt={6} lineHeight="none" as="h2" fontSize="lg">
+                    {children}
+                </Heading>
+            );
+        },
+        h3: (props) => {
+            return (
+                <Heading mb={2} mt={6} as="h3" lineHeight="none" fontSize="lg">
+                    {props.children}
+                </Heading>
+            );
+        },
+        pre: (props) => {
+            return (
+                <Box
+                    as="pre"
+                    bg={colorMode == 'dark' ? 'gray.800' : 'gray.900'}
+                    color={'gray.500'}
+                    mb={6}
+                    mt={4}
+                    overflow="auto"
+                    whiteSpace="pre-wrap"
+                    wordBreak="break-word"
+                    {...props}
+                />
+            );
+        }
+    };
 
     return (
-        <TrackEvent page={shortPath} attributes={{ 'sanity_id': `${post._id}` }}>
-            <Layout metaTitle={post.title} metaDescription={post.excerpt} ogPhoto={post.landscapeImageUrl} ogUrl={fullPath}>
-                <article className="post post-full">
-                    <header className="post-header inner-sm">
-                        <h1 className="post-title underline">{post.title}</h1>
-                        <div>
-                            <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
-                        </div>
-                        <div>
+        <Layout metaTitle={post.title} metaDescription={post.excerpt} ogPhoto={post.landscapeImageUrl} ogUrl={fullPath}>
+            <Box as="section" bg="bg-surface" maxW="4xl" mb={4}>
+                <Container py={{ base: '8', md: '8' }}>
+                    <Stack spacing={{ base: '6', md: '6' }}>
+                        <Heading as="h1" fontSize="4xl" lineHeight="shorter" mt={2}>
+                            {post.title}
+                        </Heading>
+                        <Stack direction="row">
                             <TwitterShareButton url={fullPath}>
                                 <TwitterIcon size={32} />
                             </TwitterShareButton>
-                            &nbsp;
                             <LinkedinShareButton url={fullPath}>
                                 <LinkedinIcon size={32} />
                             </LinkedinShareButton>
-                        </div>
-                    </header>
+                        </Stack>
+                        <Text>
+                            <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
+                        </Text>
+                    </Stack>
+                </Container>
+            </Box>
 
-                    {post.landscapeImage && (
-                        <div className="post-image">
-                            <img src={post.landscapeImageUrl} alt={post.landscapeImage.alt} />
-                        </div>
-                    )}
-                    {post.body && <div className="post-content inner-sm">{markdownify(post.body)}</div>}
-                </article>
-            </Layout>
-        </TrackEvent>
+            {post.landscapeImage && <Image src={post.landscapeImageUrl} alt={post.landscapeImage.alt} />}
+            <Box as="section" bg="bg-surface" maxW="4xl" mt={4}>
+                <Container py={{ base: '8', md: '8' }}>
+                    <Stack spacing={{ base: '6', md: '6' }}>
+                        {post.body && (
+                            <Container size="md">
+                                <ReactMarkdown components={ChakraUIRenderer(newTheme)} skipHtml>
+                                    {post.body}
+                                </ReactMarkdown>
+                            </Container>
+                        )}
+                    </Stack>
+                </Container>
+            </Box>
+        </Layout>
     );
 };
 

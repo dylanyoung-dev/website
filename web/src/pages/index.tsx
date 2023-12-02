@@ -1,37 +1,65 @@
-import Layout from '../components/ui/Layout';
-import SectionHero from '../components/ui/SectionHero';
-import SectionContent from '../components/ui/SectionContent';
-import SectionPosts from '../components/blogs/SectionPosts';
-import client from '../utils/client';
-import TrackEvent from '../components/cdp/TrackEvent';
+import { Box, Container, Heading, SimpleGrid, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
 import groq from 'groq';
-import Categories from '../components/blogs/Categories/Categories';
+import { MdOutlineWavingHand } from 'react-icons/md';
+import { PostCard } from '../components';
+import Categories from '../components/blogs/CategoryList/CategoryList';
+import { Layout } from '../components/ui';
+import { IPost } from '../interfaces';
+import { getPosts } from '../services/post.service';
+import client from '../utils/client';
 
-const Home = ({ allPosts, allCategories }) => {
+const Home = ({ mostRecentPosts, allCategories }) => {
+    const isMobile = useBreakpointValue({ base: true, md: false });
+
     return (
-        <TrackEvent page="/" attributes="">
-            <Layout
-                metaTitle="Dylan Young Developer | Sitecore, .Net, CDP, Personalize, React, Next.Js"
-                metaDescription="Hello my name is Dylan Young and I'm a Developer Advocate working at Sitecore with a focus on Engagement Cloud. I post content usually atleast once a month or more, and continuing to talk about talks that are exciting to me or the community, as well as my cloud focus at Sitecore."
-            >
-                <SectionHero title="Hi, I'm Dylan">Welcome to my personal website, where you can read my latest blog posts and learn more about me</SectionHero>
-                <Categories AllCategories={allCategories} />
-                <SectionPosts articles={allPosts} title="Latest Posts"></SectionPosts>
-            </Layout>
-        </TrackEvent>
+        <Layout
+            metaTitle="Dylan Young: Sitecore Developer Advocate - AI, CDP, Personalization, React, Typescript"
+            metaDescription="The thoughts and learnings of Dylan Young, Developer Advocate at Sitecore."
+        >
+            <Box as="section" bg="bg-surface" position="relative">
+                <Container py={{ base: '8', md: '12' }} maxW="6xl">
+                    <Stack spacing={{ base: '8', md: '10' }}>
+                        <Stack spacing={{ base: '4', md: '5' }} align="center">
+                            <Heading size={useBreakpointValue({ base: 'sm', md: 'md' })}>
+                                <MdOutlineWavingHand /> Hello
+                            </Heading>
+                            <Text color="muted" textAlign="center" fontSize="xl">
+                                My name is Dylan Young, and I'm currently a Developer Advocate working at Sitecore. I blog about my passions or my curiousity in
+                                technology or through my role at Sitecore. For my official stance on things refer to my official Sitecore blogs, but here my
+                                thoughts are my own and should be taken as such.
+                            </Text>
+                        </Stack>
+                    </Stack>
+                </Container>
+                <Container py={{ base: '8', md: '12' }} maxW={{ base: '6xl' }}>
+                    <Stack spacing={{ base: '8', md: '10' }}>
+                        <Stack spacing={{ base: '4', md: '5' }}>
+                            <Heading size={useBreakpointValue({ base: 'sm', md: 'md' })}>Latest posts</Heading>
+                            <Text color="muted" fontSize={{ base: 'lg', md: 'xl' }}>
+                                Check out my latest content across different topics, or use the buttons below to view by category.
+                            </Text>
+                            {allCategories && <Categories AllCategories={allCategories} />}
+                        </Stack>
+                        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={{ base: '8', lg: '4' }}>
+                            {mostRecentPosts.map((post: IPost) => (
+                                <PostCard key={post._id} post={post} showCategory={true} />
+                            ))}
+                        </SimpleGrid>
+                    </Stack>
+                </Container>
+            </Box>
+        </Layout>
     );
 };
 
 export default Home;
 
 export async function getStaticProps() {
-    const allPosts = await client.fetch(
-        groq`*[_type == "post" && defined(slug.current)] | order(publishedAt desc){..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`
-    );
+    const mostRecentPosts = await getPosts(6);
 
-    const allCategories = await client.fetch(groq`*[_type == "articleCategory" && defined(slug.current)]{'Title':title, _id, 'Slug':slug.current}`);
+    const allCategories = await client.fetch(groq`*[_type == "articleCategory" && defined(slug.current)]{...}`);
 
     return {
-        props: { allPosts, allCategories }
+        props: { mostRecentPosts, allCategories }
     };
 }
