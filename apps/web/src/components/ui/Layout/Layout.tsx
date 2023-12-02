@@ -2,6 +2,7 @@ import Head from 'next/head';
 import React, { FC } from 'react';
 
 import { Box, Container } from '@chakra-ui/react';
+import { TrackPageView } from '../../../features/engagetracker/TrackPageView';
 import { Footer, Header } from './..';
 
 interface LayoutProps {
@@ -29,13 +30,15 @@ export const Layout: FC<LayoutProps> = ({ children, metaTitle, metaDescription, 
                 <meta property="og:type" content="website" />
             </Head>
 
-            <Box as="section" overflowY="auto">
-                <Header />
-                <Container centerContent pt={{ base: '4', lg: '8' }} pb={{ base: '12', lg: '24' }}>
-                    {children}
-                </Container>
-                <Footer />
-            </Box>
+            <TrackPageView slug={ogUrl}>
+                <Box as="section" overflowY="auto">
+                    <Header />
+                    <Container centerContent pt={{ base: '4', lg: '8' }} pb={{ base: '12', lg: '24' }}>
+                        {children}
+                    </Container>
+                    <Footer />
+                </Box>
+            </TrackPageView>
         </>
     );
 };

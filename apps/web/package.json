@@ -4,8 +4,8 @@
     "version": "0.1.0",
     "license": "MIT",
     "engines": {
-        "npm": ">=9.5.0",
-        "node": ">=19.7.0"
+        "npm": ">=10.2.3",
+        "node": ">=20.10.0"
     },
     "scripts": {
         "dev": "next dev",
@@ -21,7 +21,7 @@
         "@emotion/styled": "^11.10.5",
         "@netlify/plugin-nextjs": "4.26.0",
         "@sanity/client": "^2.23.1",
-        "@sitecore/engage": "^0.4.0",
+        "@sitecore/engage": "^1.4.0",
         "@svgr/webpack": "^6.5.1",
         "babel-runtime": "^6.26.0",
         "chakra-ui-markdown-renderer": "^4.1.0",

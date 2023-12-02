@@ -3,13 +3,12 @@
     "description": "",
     "version": "0.1.0",
     "license": "MIT",
+    "workspaces": ["packages/*", "apps/*"],
     "scripts": {
-        "dev": "cd web && next dev",
-        "develop": "next dev",
-        "postinstall": "(cd studio && npm install) && (cd ..\\web && npm install)",
-        "start": "npm run start:next && npm run start:sanity",
-        "start:sanity": "cd studio && sanity start",
-        "start:next": "cd web && next start"
+        "build": "turbo build",
+        "dev": "turbo dev",
+        "lint": "turbo lint",
+        "format": "prettier --write \"**/*.{js,jsx,ts,tsx,mdx}\""
     },
     "devDependencies": {
         "eslint": "^8.5.0",
