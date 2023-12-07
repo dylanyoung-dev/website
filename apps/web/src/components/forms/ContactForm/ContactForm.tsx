@@ -1,4 +1,4 @@
-import { Box, Button, Container, Divider, Flex, FormControl, FormLabel, HStack, Input, Stack, StackDivider, Text, useColorModeValue } from '@chakra-ui/react';
+import { Container, Stack, StackDivider } from '@chakra-ui/react';
 import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 
@@ -20,7 +20,7 @@ export const ContactForm: FC<ContactFormProps> = () => {
     return (
         <Container py={{ base: '4', md: '8' }}>
             <Stack spacing="5" divider={<StackDivider />}>
-                <Stack direction={{ base: 'column', lg: 'row' }} spacing={{ base: '5', lg: '8' }} justify="space-between">
+                {/* <Stack direction={{ base: 'column', lg: 'row' }} spacing={{ base: '5', lg: '8' }} justify="space-between">
                     <Box flexShrink={0}>
                         <Text fontSize="lg" fontWeight="medium">
                             Contact Details
@@ -55,7 +55,7 @@ export const ContactForm: FC<ContactFormProps> = () => {
                             </HStack>
                         </Flex>
                     </Box>
-                </Stack>
+                </Stack> */}
             </Stack>
         </Container>
     );
