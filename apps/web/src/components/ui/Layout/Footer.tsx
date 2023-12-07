@@ -23,10 +23,10 @@ export const Footer = () => (
                             <Button as="a" variant="link" href="/videos">
                                 Videos
                             </Button>
-                            <Button as="a" variant="link" href="/about">
+                            <Button as="a" variant="link" href="/about" display="none">
                                 About
                             </Button>
-                            <Button as="a" variant="link" href="/contact">
+                            <Button as="a" variant="link" href="/contact" display="none">
                                 Contact Me
                             </Button>
                         </Stack>

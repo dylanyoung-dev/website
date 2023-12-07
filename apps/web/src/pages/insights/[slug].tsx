@@ -6,7 +6,7 @@ import { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Moment from 'react-moment';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { okaidia } from 'react-syntax-highlighter/dist/cjs/styles/prism';
+import { coy, twilight } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import remarkGfm from 'remark-gfm';
 import { Layout } from '../../components/ui';
 import { IPost } from '../../interfaces';
@@ -41,10 +41,11 @@ const Post: FC<PostProps> = ({ post, url }: PostProps) => {
         ),
         code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
+            const codeStyle = colorMode === 'dark' ? coy : twilight;
             return !inline && match ? (
                 <Box my="4">
                     <SyntaxHighlighter
-                        style={okaidia}
+                        style={codeStyle}
                         showLineNumbers
                         language={match ? [1] : 'typescript'}
                         PreTag="div"

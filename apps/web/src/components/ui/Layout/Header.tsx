@@ -63,10 +63,10 @@ export const Header = () => {
                                         <Button display="none">
                                             <Link href="/snippets">Snippets</Link>
                                         </Button>
-                                        <Button>
+                                        <Button display="none">
                                             <Link href="/about">About</Link>
                                         </Button>
-                                        <Button>
+                                        <Button display="none">
                                             <Link href="/contact">Contact</Link>
                                         </Button>
                                     </ButtonGroup>
