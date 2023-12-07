@@ -7,8 +7,8 @@
     "author": "Dylan Young <dylany@gmail.com>",
     "license": "UNLICENSED",
     "engines": {
-        "npm": ">=6.14.12",
-        "node": ">=14.16.1"
+        "npm": ">=10.2.3",
+        "node": ">=20.10.0"
     },
     "scripts": {
         "start": "sanity start",
@@ -30,7 +30,7 @@
         "sanity": "^3.0.6",
         "sanity-plugin-asset-source-unsplash": "^1.0.1",
         "sanity-plugin-dashboard-widget-netlify": "^2.0.1",
-        "sanity-plugin-markdown": "^3.0.1",
+        "sanity-plugin-markdown": "4.1.0",
         "sanity-plugin-netlify": "^1.1.1",
         "styled-components": "5.3.3"
     },
