@@ -97,4 +97,4 @@ out
 .DS_Store
 .idea
 dist
-apps/studio/.sanity/runtime/app.js
+.sanity/runtime/*
