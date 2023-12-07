@@ -1,0 +1,41 @@
+{
+    "name": "dylanyoung-studio",
+    "private": true,
+    "version": "1.0.0",
+    "description": "",
+    "main": "package.json",
+    "author": "Dylan Young <dylany@gmail.com>",
+    "license": "UNLICENSED",
+    "engines": {
+        "npm": ">=10.2.3",
+        "node": ">=20.10.0"
+    },
+    "scripts": {
+        "start": "sanity start",
+        "dev": "sanity dev",
+        "build": "sanity build"
+    },
+    "keywords": [
+        "sanity"
+    ],
+    "dependencies": {
+        "@sanity/cli": "^3.0.6",
+        "@sanity/code-input": "^3.0.1",
+        "@sanity/dashboard": "^3.0.0",
+        "@sanity/vision": "^3.1.1",
+        "prop-types": "^15.7",
+        "react": "18.2.0",
+        "react-ace": "10.1.0",
+        "react-dom": "18.2.0",
+        "sanity": "^3.0.6",
+        "sanity-plugin-asset-source-unsplash": "^1.0.1",
+        "sanity-plugin-dashboard-widget-netlify": "^2.0.1",
+        "sanity-plugin-markdown": "4.1.0",
+        "sanity-plugin-netlify": "^1.1.1",
+        "styled-components": "5.3.3"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/dylanyoung-dev/website.git"
+    }
+}

@@ -1,0 +1,19 @@
+[build]
+publish = "out/"
+command = "npm run build"
+environment = { NODE_VERSION = "20.10.0" }
+
+[[plugins]]
+package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+from = "https://www.sitecoremaster.com/*"
+to = "https://dylanyoung.dev/"
+status = 301
+force = true
+
+[[redirects]]
+from = "https://sitecoremaster.com/*"
+to = "https://dylanyoung.dev/"
+status = 301
+force = true
