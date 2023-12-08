@@ -3,11 +3,13 @@ import {
     Checkbox,
     Code,
     Container,
+    Flex,
     Heading,
     Image,
     Link,
     ListItem,
     OrderedList,
+    Spacer,
     Stack,
     Table,
     Tbody,
@@ -20,7 +22,7 @@ import {
     useColorMode
 } from '@chakra-ui/react';
 import groq from 'groq';
-import { LinkedinIcon, LinkedinShareButton, TwitterIcon, TwitterShareButton } from 'next-share';
+import { EmailIcon, EmailShareButton, LinkedinIcon, LinkedinShareButton, TelegramIcon, TelegramShareButton, TwitterIcon, TwitterShareButton } from 'next-share';
 import { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
 import Moment from 'react-moment';
@@ -162,14 +164,28 @@ const Post: FC<PostProps> = ({ post, url }: PostProps) => {
                         <Heading as="h1" fontSize="4xl" lineHeight="shorter" mt={2}>
                             {post.title}
                         </Heading>
-                        <Stack direction="row">
-                            <TwitterShareButton url={fullPath}>
-                                <TwitterIcon size={32} />
-                            </TwitterShareButton>
-                            <LinkedinShareButton url={fullPath}>
-                                <LinkedinIcon size={32} />
-                            </LinkedinShareButton>
-                        </Stack>
+                        <Flex>
+                            <Stack direction="row">
+                                <TelegramShareButton url={fullPath}>
+                                    <TelegramIcon size={32} />
+                                </TelegramShareButton>
+                                <TwitterShareButton url={fullPath}>
+                                    <TwitterIcon size={32} />
+                                </TwitterShareButton>
+                                <LinkedinShareButton url={fullPath}>
+                                    <LinkedinIcon size={32} />
+                                </LinkedinShareButton>
+                                <EmailShareButton url={fullPath} subject={'Check out this blog post'}>
+                                    <EmailIcon size={32} />
+                                </EmailShareButton>
+                            </Stack>
+                            <Spacer />
+                            {post.readingTime && (
+                                <Text color="accent" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
+                                    {post.readingTime}
+                                </Text>
+                            )}
+                        </Flex>
                         <Text>
                             <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
                         </Text>
