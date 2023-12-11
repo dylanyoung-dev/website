@@ -194,7 +194,7 @@ const Post: FC<PostProps> = ({ post, url }: PostProps) => {
             </Box>
 
             {post.landscapeImage && <Image src={post.landscapeImageUrl} alt={post.landscapeImage.alt} />}
-            <Box as="section" bg="bg-surface" maxW="4xl" mt={4}>
+            <Box as="section" bg="bg-surface" maxW={{ base: 'sm', md: 'lg', lg: '4xl' }} mt={4}>
                 <Container py={{ base: '8', md: '8' }}>
                     <Stack spacing={{ base: '6', md: '6' }}>
                         {post.body && (
