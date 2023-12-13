@@ -59,7 +59,7 @@ const InsightsPage: NextPage<InsightsPageProps> = ({ posts, allCategories }) => 
 };
 
 export async function getStaticProps() {
-    const paginatedPosts = await getPosts(12);
+    const paginatedPosts = await getPosts(100);
 
     const allCategories = await client.fetch(groq`*[_type == "articleCategory" && defined(slug.current)]{...}`);
 

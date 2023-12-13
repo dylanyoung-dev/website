@@ -15,9 +15,19 @@ export const PostCard: FC<PostCardProps> = ({ post, showCategory = true }) => {
                 <Link href={`/insights/${post.slug.current}`} role="group">
                     <Stack spacing="8">
                         <Box overflow="hidden">
-                            {post.mainImageUrl && (
+                            {post.mainImageUrl ? (
                                 <Image
-                                    src="https://source.unsplash.com/random/800x600"
+                                    src={post.mainImageUrl}
+                                    alt={post.mainImage.alt ?? ''}
+                                    width="full"
+                                    height="15rem"
+                                    objectFit="cover"
+                                    transition="all 0.2s"
+                                    _groupHover={{ transform: 'scale(1.05)' }}
+                                />
+                            ) : (
+                                <Image
+                                    src="https://source.unsplash.com/random/500x260"
                                     alt="unsplash image"
                                     width="full"
                                     height="15rem"
