@@ -1,7 +1,7 @@
+import { Badge, Box, Card, CardBody, HStack, Heading, Image, Stack, Text } from '@chakra-ui/react';
+import Link from 'next/link';
 import { FC } from 'react';
 import { IPost } from '../../../interfaces';
-import { Card, CardBody, Stack, Text, Image, Box, Heading, HStack, Badge } from '@chakra-ui/react';
-import Link from 'next/link';
 
 interface PostCardProps {
     post: IPost;
@@ -15,15 +15,17 @@ export const PostCard: FC<PostCardProps> = ({ post, showCategory = true }) => {
                 <Link href={`/insights/${post.slug.current}`} role="group">
                     <Stack spacing="8">
                         <Box overflow="hidden">
-                            <Image
-                                src={post.mainImageUrl}
-                                alt={post.mainImage.alt}
-                                width="full"
-                                height="15rem"
-                                objectFit="cover"
-                                transition="all 0.2s"
-                                _groupHover={{ transform: 'scale(1.05)' }}
-                            />
+                            {post.mainImageUrl && (
+                                <Image
+                                    src="https://source.unsplash.com/random/800x600"
+                                    alt="unsplash image"
+                                    width="full"
+                                    height="15rem"
+                                    objectFit="cover"
+                                    transition="all 0.2s"
+                                    _groupHover={{ transform: 'scale(1.05)' }}
+                                />
+                            )}
                         </Box>
 
                         <Stack spacing="3">
