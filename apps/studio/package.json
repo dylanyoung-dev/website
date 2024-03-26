@@ -31,6 +31,7 @@
         "sanity-plugin-asset-source-unsplash": "^1.0.1",
         "sanity-plugin-dashboard-widget-netlify": "^2.0.1",
         "sanity-plugin-markdown": "4.1.0",
+        "sanity-plugin-media": "^2.2.5",
         "sanity-plugin-netlify": "^1.1.1",
         "styled-components": "5.3.3"
     },

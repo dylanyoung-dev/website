@@ -21,6 +21,21 @@ export const articleCategory = {
             name: 'description',
             title: 'Description',
             type: 'text'
+        },
+        {
+            name: 'coverImage',
+            title: 'Cover image',
+            type: 'image',
+            options: {
+                hotspot: true
+            },
+            fields: [
+                {
+                    title: 'Alternative Text',
+                    name: 'alt',
+                    type: 'string'
+                }
+            ]
         }
     ]
 };
