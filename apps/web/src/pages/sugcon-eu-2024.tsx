@@ -36,7 +36,9 @@ const SugConPage: FC<SugConPageProps> = ({ specificArticles }) => {
 export default SugConPage;
 
 export async function getStaticProps() {
-    const specificArticles = await client.fetch(groq`*[_id in ["aHr1C3DynGvzMkbCOrvYfj"] && defined(slug.current)]{...}`);
+    const specificArticles = await client.fetch(
+        groq`*[_id in ["aHr1C3DynGvzMkbCOrvYfj"] && defined(slug.current)]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`
+    );
 
     return {
         props: { specificArticles }
