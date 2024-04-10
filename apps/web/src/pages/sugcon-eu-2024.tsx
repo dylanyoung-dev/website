@@ -37,7 +37,7 @@ export default SugConPage;
 
 export async function getStaticProps() {
     const specificArticles = await client.fetch(
-        groq`*[_id in ["aHr1C3DynGvzMkbCOrvYfj","2Yh8nlDmUZ6Jg9z9BCyEYT", "Ar19jrAZ1MlIiaihL35aOK"] && defined(slug.current)]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`
+        groq`*[_id in ["nVChg1sqNoY7wI6dwdjtSf","aHr1C3DynGvzMkbCOrvYfj","2Yh8nlDmUZ6Jg9z9BCyEYT", "Ar19jrAZ1MlIiaihL35aOK"] && defined(slug.current)]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`
     );
 
     return {
