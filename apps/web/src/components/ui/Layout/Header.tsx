@@ -49,24 +49,19 @@ export const Header = () => {
                                             <Link href="/insights">Insights</Link>
                                         </Button>
                                         <Button>
-                                            <Link href="/insights/series">Series</Link>
+                                            <Link href="/apps">My Projects</Link>
                                         </Button>
                                         <Button>
-                                            <Link href="/apps">Apps</Link>
+                                            <Link href="/speaking">Speaking</Link>
                                         </Button>
                                         <Button>
                                             <Link href="/videos">Videos</Link>
                                         </Button>
                                         <Button display="none">
-                                            <Link href="/open-source">Open Source</Link>
-                                        </Button>
-                                        <Button display="none">
                                             <Link href="/snippets">Snippets</Link>
                                         </Button>
-                                        <Button display="none">
-                                            <Link href="/about">About</Link>
-                                        </Button>
-                                        <Button display="none">
+
+                                        <Button>
                                             <Link href="/contact">Contact</Link>
                                         </Button>
                                     </ButtonGroup>
