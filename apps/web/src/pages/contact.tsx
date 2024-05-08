@@ -26,7 +26,7 @@ const ContactPage: FC<ContactPageProps> = ({}) => {
                             id="tally-js"
                             src="https://tally.so/widgets/embed.js"
                             onLoad={() => {
-                                window.Tally.loadEmbeds();
+                                globalThis.Tally.loadEmbeds();
                             }}
                         />
                     </Stack>
