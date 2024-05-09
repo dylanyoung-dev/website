@@ -11,7 +11,7 @@ module.exports = {
     async redirects() {
         return [
             {
-                source: '/sugcon-eu-2024/',
+                source: '/sugcon-eu-2024/:slug*',
                 destination: '/speaking/sugcon-europe-2024',
                 permanent: true
             }
