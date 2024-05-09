@@ -1,6 +1,6 @@
+import { Box, Button, Card, CardBody, CardFooter, Container, Heading, Image, Link, SimpleGrid, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
 import { FC } from 'react';
 import { ICategory } from '../../../interfaces';
-import { Box, Button, Card, CardBody, Image, Text, CardFooter, Container, Heading, Link, SimpleGrid, Stack, useBreakpointValue } from '@chakra-ui/react';
 
 interface CategoryCardsProps {
     categories: ICategory[];

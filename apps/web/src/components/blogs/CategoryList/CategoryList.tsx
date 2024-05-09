@@ -1,12 +1,11 @@
+import { Button, Wrap } from '@chakra-ui/react';
+import _ from 'lodash';
 import Link from 'next/link';
 import { FC } from 'react';
-import { Category } from '../../../../models/Category';
-import _ from 'lodash';
-import { Badge, Button, Stack, Wrap } from '@chakra-ui/react';
 import { ICategory } from '../../../interfaces';
 
 interface CategoriesProps {
-    AllCategories: Category[];
+    AllCategories: ICategory[];
 }
 
 const Categories: FC<CategoriesProps> = ({ AllCategories }) => {
