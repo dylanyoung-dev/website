@@ -7,5 +7,14 @@ module.exports = {
         });
 
         return config;
+    },
+    async redirects() {
+        return [
+            {
+                source: '/sugcon-eu-2024/',
+                destination: '/speaking/sugcon-europe-2024',
+                permanent: true
+            }
+        ];
     }
 };

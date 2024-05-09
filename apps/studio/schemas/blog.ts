@@ -361,7 +361,11 @@ export const series = {
         {
             name: 'slug',
             title: 'Slug',
-            type: 'slug'
+            type: 'slug',
+            options: {
+                source: 'title',
+                maxLength: 96
+            }
         },
         {
             name: 'posts',
@@ -386,6 +390,128 @@ export const tagging = {
             name: 'description',
             title: 'Description',
             type: 'text'
+        }
+    ]
+};
+
+export const speaking = {
+    name: 'speaking',
+    title: 'Speaking Engagements',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Title',
+            type: 'string'
+        },
+        {
+            name: 'slug',
+            title: 'Slug',
+            type: 'slug',
+            options: {
+                source: 'title',
+                maxLength: 96
+            }
+        },
+        {
+            name: 'thumbnail',
+            title: 'Thumbnail',
+            description: 'Thumbnail of 1280x720 (16:9) dimension maximum.',
+            type: 'image',
+            options: {
+                hotspot: true
+            },
+            fields: [
+                {
+                    title: 'Alternative Text',
+                    name: 'alt',
+                    type: 'string'
+                }
+            ]
+        },
+        {
+            name: 'short_description',
+            title: 'Description',
+            type: 'text'
+        },
+        {
+            name: 'location',
+            title: 'Event Location',
+            type: 'string'
+        },
+        {
+            name: 'slides_link',
+            title: 'Slides (if applicable)',
+            type: 'url'
+        },
+        {
+            name: 'video_link',
+            title: 'Video (if applicable)',
+            type: 'url'
+        },
+        {
+            name: 'details',
+            title: 'Details of Speaking Engagement',
+            type: 'markdown'
+        },
+        {
+            name: 'posts',
+            title: 'Related Content',
+            type: 'array',
+            of: [{ type: 'reference', to: { type: 'post' } }]
+        }
+    ]
+};
+
+export const project = {
+    name: 'project',
+    title: 'Projects',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Project Title',
+            type: 'string'
+        },
+        {
+            name: 'slug',
+            title: 'Slug',
+            type: 'slug',
+            options: {
+                source: 'title',
+                maxLength: 96
+            }
+        },
+        {
+            name: 'thumbnail',
+            title: 'Thumbnail',
+            description: 'Thumbnail of 1280x720 (16:9) dimension maximum.',
+            type: 'image',
+            options: {
+                hotspot: true
+            },
+            fields: [
+                {
+                    title: 'Alternative Text',
+                    name: 'alt',
+                    type: 'string'
+                }
+            ]
+        },
+        {
+            name: 'short_description',
+            title: 'Short Description',
+            type: 'text'
+        },
+        {
+            name: 'details',
+            title: 'Details of Project',
+            type: 'markdown'
+        },
+        {
+            name: 'github_url',
+            title: 'Github Url (if applicable)',
+            type: 'url'
         }
     ]
 };

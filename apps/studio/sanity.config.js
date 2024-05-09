@@ -6,7 +6,7 @@ import { markdownSchema } from 'sanity-plugin-markdown';
 import { media } from 'sanity-plugin-media';
 import { netlifyTool } from 'sanity-plugin-netlify';
 import { deskTool } from 'sanity/desk';
-import { articleCategory, author, page, post, series, snippet, snippetCategory, tagging, videoChannel, videoPost } from './schemas/blog';
+import { articleCategory, author, page, post, project, series, snippet, snippetCategory, speaking, tagging, videoChannel, videoPost } from './schemas/blog';
 
 export default defineConfig({
     name: 'default',
@@ -15,6 +15,6 @@ export default defineConfig({
     dataset: 'production',
     plugins: [deskTool(), markdownSchema(), unsplashImageAsset(), visionTool(), netlifyTool(), media()],
     schema: {
-        types: [articleCategory, author, page, snippet, snippetCategory, post, series, tagging, videoPost, videoChannel]
+        types: [articleCategory, author, page, snippet, snippetCategory, post, series, tagging, videoPost, videoChannel, project, speaking]
     }
 });
