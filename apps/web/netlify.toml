@@ -17,3 +17,9 @@ from = "https://sitecoremaster.com/*"
 to = "https://dylanyoung.dev/"
 status = 301
 force = true
+
+[[redirects]]
+from = "/sugcon-eu-2024/*"
+to = "/speaking/sugcon-europe-2024/:splat"
+status = 301
+force = true
