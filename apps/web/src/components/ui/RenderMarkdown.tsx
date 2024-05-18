@@ -62,7 +62,6 @@ export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
             const codeStyle = colorMode === 'dark' ? coy : atomDark;
             return !inline && match ? (
                 <Box my="4" borderRadius="0">
-                    {className}
                     <SyntaxHighlighter
                         borderRadius={0}
                         style={codeStyle}
