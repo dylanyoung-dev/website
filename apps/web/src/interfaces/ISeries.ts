@@ -1,3 +1,4 @@
+import { IPost } from './IPost';
 import { ISlug } from './ISlug';
 
 export interface ISeries {
@@ -5,5 +6,5 @@ export interface ISeries {
     title: string;
     description: string;
     slug: ISlug;
-    posts: string[];
+    posts: IPost[];
 }
