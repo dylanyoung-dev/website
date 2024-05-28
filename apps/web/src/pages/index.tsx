@@ -13,8 +13,8 @@ const Home = ({ mostRecentPosts, allCategories }) => {
 
     return (
         <Layout
-            metaTitle="Dylan Young: Sitecore Developer Advocate - AI, CDP, Personalization, React, Typescript"
-            metaDescription="The thoughts and learnings of Dylan Young, Developer Advocate at Sitecore."
+            metaTitle="Dylan Young: Sitecore Developer - AI/ML, .Net, Python, React, Typescript"
+            metaDescription="The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer"
         >
             <Box as="section" bg="bg-surface" position="relative">
                 <Container py={{ base: '8', md: '12' }} maxW="6xl">
@@ -24,9 +24,8 @@ const Home = ({ mostRecentPosts, allCategories }) => {
                                 <MdOutlineWavingHand /> Hello
                             </Heading>
                             <Text color="muted" textAlign="center" fontSize="xl">
-                                My name is Dylan Young, and I'm currently a Developer Advocate working at Sitecore. I blog about my passions or my curiousity in
-                                technology or through my role at Sitecore. For my official stance on things refer to my official Sitecore blogs, but here my
-                                thoughts are my own and should be taken as such.
+                                My name is Dylan Young, and I'm a software engineer and technical influencer. I blog about my passions or my curiousity in
+                                technology. Here you'll find my thoughts related to Sitecore, AI/ML, .Net, Python, React, and Typescript.
                             </Text>
                         </Stack>
                     </Stack>

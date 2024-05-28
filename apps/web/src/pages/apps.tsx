@@ -7,7 +7,7 @@ interface AppsPageProps {}
 
 const AppsPage: NextPage<AppsPageProps> = () => {
     return (
-        <Layout metaTitle="Dylan Young: My personal Proof of Concept projects on AI, Sitecore and more" metaDescription="">
+        <Layout metaTitle="Dylan Young: My personal Proof of Concept projects on AI/ML and more" metaDescription="">
             <Box as="section" bg="bg-surface" position="relative">
                 <Container py={{ base: '8', md: '12' }} maxW="6xl">
                     <Breadcrumb spacing="8px" separator={<FiChevronRight color="gray.500" />}>

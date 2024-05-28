@@ -41,8 +41,8 @@ const InsightsPage: NextPage<InsightsPageProps> = ({ posts, allCategories }) => 
                                     <Heading size={useBreakpointValue({ base: 'sm', md: 'md' })}>Insights</Heading>
                                 </Stack>
                                 <Text color="muted" fontSize={{ base: 'lg', md: 'xl' }}>
-                                    Below is the latest published content. I cover anything and everything that I love, which includes work topics such as CDP &
-                                    Personalize, Connect and Send, as well as topics that are new and exciting including AI, CI/CD and Infrastructure.
+                                    Below is the latest published content. I cover anything and everything that I love, which includes topics that are new and
+                                    exciting including AI/ML, CI/CD and Infrastructure.
                                 </Text>
                             </Stack>
                         </Stack>
