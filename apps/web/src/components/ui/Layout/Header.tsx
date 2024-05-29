@@ -42,28 +42,33 @@ export const Header = () => {
                             <>
                                 <Flex justify="space-between" flex="1">
                                     <ButtonGroup variant="ghost" spacing="4">
-                                        <Button>
-                                            <Link href="/">Home</Link>
-                                        </Button>
-                                        <Button>
-                                            <Link href="/insights">Insights</Link>
-                                        </Button>
-                                        <Button>
-                                            <Link href="/apps">My Projects</Link>
-                                        </Button>
-                                        <Button>
-                                            <Link href="/speaking">Speaking</Link>
-                                        </Button>
-                                        <Button>
-                                            <Link href="/videos">Videos</Link>
-                                        </Button>
+                                        <Link href="/">
+                                            <Button as="a">Home</Button>
+                                        </Link>
+
+                                        <Link href="/insights">
+                                            <Button as="a">Insights</Button>
+                                        </Link>
+
+                                        <Link href="/apps">
+                                            <Button as="a">My Projects</Button>
+                                        </Link>
+
+                                        <Link href="/speaking">
+                                            <Button as="a">Speaking</Button>
+                                        </Link>
+
+                                        <Link href="/videos">
+                                            <Button as="a">Videos</Button>
+                                        </Link>
+
                                         <Button display="none">
                                             <Link href="/snippets">Snippets</Link>
                                         </Button>
 
-                                        <Button>
-                                            <Link href="/contact">Contact</Link>
-                                        </Button>
+                                        <Link href="/contact">
+                                            <Button as="a">Contact</Button>
+                                        </Link>
                                     </ButtonGroup>
                                     <HStack spacing="3">
                                         <IconButton
