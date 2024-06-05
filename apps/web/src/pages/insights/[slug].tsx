@@ -1,6 +1,7 @@
 import { Box, Container, Flex, Heading, Image, Spacer, Stack, Text, useColorMode } from '@chakra-ui/react';
 import groq from 'groq';
 import { EmailIcon, EmailShareButton, LinkedinIcon, LinkedinShareButton, TelegramIcon, TelegramShareButton, TwitterIcon, TwitterShareButton } from 'next-share';
+import Head from 'next/head';
 import { FC } from 'react';
 import Moment from 'react-moment';
 import { Layout } from '../../components/ui';
@@ -28,55 +29,63 @@ const Post: FC<PostProps> = ({ post, url }: PostProps) => {
     const { colorMode } = useColorMode();
 
     return (
-        <Layout metaTitle={post.title} metaDescription={post.excerpt} ogPhoto={post.landscapeImageUrl} ogUrl={fullPath}>
-            <Box as="section" bg="bg-surface" maxW="4xl" mb={4}>
-                <Container py={{ base: '8', md: '8' }}>
-                    <Stack spacing={{ base: '6', md: '6' }}>
-                        <Heading as="h1" fontSize="4xl" lineHeight="shorter" mt={2}>
-                            {post.title}
-                        </Heading>
-                        <Flex>
-                            <Stack direction="row">
-                                <TelegramShareButton url={fullPath}>
-                                    <TelegramIcon size={32} />
-                                </TelegramShareButton>
-                                <TwitterShareButton url={fullPath}>
-                                    <TwitterIcon size={32} />
-                                </TwitterShareButton>
-                                <LinkedinShareButton url={fullPath}>
-                                    <LinkedinIcon size={32} />
-                                </LinkedinShareButton>
-                                <EmailShareButton url={fullPath} subject={'Check out this blog post'}>
-                                    <EmailIcon size={32} />
-                                </EmailShareButton>
-                            </Stack>
-                            <Spacer />
-                            {post.readingTime && (
-                                <Text color="accent" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
-                                    {post.readingTime}
-                                </Text>
-                            )}
-                        </Flex>
-                        <Text>
-                            <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
-                        </Text>
-                    </Stack>
-                </Container>
-            </Box>
+        <>
+            {post.canonicalUrl && (
+                <Head>
+                    <link rel="canonical" href={post.canonicalUrl} />
+                </Head>
+            )}
 
-            {post.landscapeImage && <Image src={post.landscapeImageUrl} alt={post.landscapeImage.alt} />}
-            <Box as="section" bg="bg-surface" maxW={{ base: 'sm', md: 'lg', lg: '4xl' }} mt={4}>
-                <Container py={{ base: '8', md: '8' }}>
-                    <Stack spacing={{ base: '6', md: '6' }}>
-                        {post.body && (
-                            <Container size="md">
-                                <RenderMarkdown>{post.body}</RenderMarkdown>
-                            </Container>
-                        )}
-                    </Stack>
-                </Container>
-            </Box>
-        </Layout>
+            <Layout metaTitle={post.title} metaDescription={post.excerpt} ogPhoto={post.landscapeImageUrl} ogUrl={fullPath}>
+                <Box as="section" bg="bg-surface" maxW="4xl" mb={4}>
+                    <Container py={{ base: '8', md: '8' }}>
+                        <Stack spacing={{ base: '6', md: '6' }}>
+                            <Heading as="h1" fontSize="4xl" lineHeight="shorter" mt={2}>
+                                {post.title}
+                            </Heading>
+                            <Flex>
+                                <Stack direction="row">
+                                    <TelegramShareButton url={fullPath}>
+                                        <TelegramIcon size={32} />
+                                    </TelegramShareButton>
+                                    <TwitterShareButton url={fullPath}>
+                                        <TwitterIcon size={32} />
+                                    </TwitterShareButton>
+                                    <LinkedinShareButton url={fullPath}>
+                                        <LinkedinIcon size={32} />
+                                    </LinkedinShareButton>
+                                    <EmailShareButton url={fullPath} subject={'Check out this blog post'}>
+                                        <EmailIcon size={32} />
+                                    </EmailShareButton>
+                                </Stack>
+                                <Spacer />
+                                {post.readingTime && (
+                                    <Text color="accent" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
+                                        {post.readingTime}
+                                    </Text>
+                                )}
+                            </Flex>
+                            <Text>
+                                <strong>Published</strong>: <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
+                            </Text>
+                        </Stack>
+                    </Container>
+                </Box>
+
+                {post.landscapeImage && <Image src={post.landscapeImageUrl} alt={post.landscapeImage.alt} />}
+                <Box as="section" bg="bg-surface" maxW={{ base: 'sm', md: 'lg', lg: '4xl' }} mt={4}>
+                    <Container py={{ base: '8', md: '8' }}>
+                        <Stack spacing={{ base: '6', md: '6' }}>
+                            {post.body && (
+                                <Container size="md">
+                                    <RenderMarkdown>{post.body}</RenderMarkdown>
+                                </Container>
+                            )}
+                        </Stack>
+                    </Container>
+                </Box>
+            </Layout>
+        </>
     );
 };
 

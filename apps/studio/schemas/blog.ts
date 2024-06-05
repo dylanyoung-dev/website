@@ -108,17 +108,25 @@ export const post = {
     fields: [
         {
             name: 'title',
+            description: 'Title of the post',
             title: 'Title',
             type: 'string'
         },
         {
             name: 'slug',
+            description: 'Specify the last part of the url, ex: /insights/{slug}',
             title: 'Slug',
             type: 'slug',
             options: {
                 source: 'title',
                 maxLength: 96
             }
+        },
+        {
+            name: 'canonicalUrl',
+            title: 'Canonical URL',
+            type: 'url',
+            description: "Use this option if you've published the original content on another platform."
         },
         // {
         //     name: 'mainNote',
@@ -157,6 +165,7 @@ export const post = {
             name: 'landscapeImage',
             title: 'Landscape Post Image',
             type: 'image',
+
             options: {
                 hotspot: true
             },

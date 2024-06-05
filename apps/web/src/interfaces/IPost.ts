@@ -14,4 +14,5 @@ export interface IPost {
     readingTime: string;
     body: string;
     excerpt: string;
+    canonicalUrl: string;
 }
