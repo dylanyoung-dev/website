@@ -21,7 +21,7 @@ export const CategoryCards: FC<CategoryCardsProps> = ({ categories }) => {
                                         </Stack>
                                     </Stack>
                                 </Stack>
-                                <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={{ base: '12', lg: '4' }}>
+                                <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={{ base: '12', lg: '4' }}>
                                     {categories.map((category: ICategory) => (
                                         <Card key={category._id} direction={{ base: 'column', sm: 'row' }} overflow="hidden" variant="outline">
                                             <Image
