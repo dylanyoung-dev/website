@@ -23,11 +23,12 @@ export const Layout: FC<LayoutProps> = ({ children, metaTitle, metaDescription, 
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="google" content="notranslate" />
-                <meta property="og:title" content={metaTitle} />
-                <meta property="og:description" content={metaDescription} />
-                {ogPhoto && <meta property="og:image" content={ogPhoto} />}
+                <meta name="title" property="og:title" content={metaTitle} />
+                <meta name="description" property="og:description" content={metaDescription} />
+                {ogPhoto && <meta name="image" property="og:image" content={ogPhoto} />}
                 {ogUrl && <meta property="og:url" content={ogUrl} />}
                 <meta property="og:type" content="website" />
+                <meta name="author" content="Dylan Young" />
             </Head>
 
             <TrackPageView slug={ogUrl}>
