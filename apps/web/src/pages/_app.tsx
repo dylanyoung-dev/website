@@ -3,7 +3,6 @@ import { ChakraProvider, extendTheme } from '@chakra-ui/react';
 import { AppProps } from 'next/app';
 import { useEffect } from 'react';
 import TagManager from 'react-gtm-module';
-import { EngageProvider } from '../features/engagetracker/EngageProvider';
 
 export const theme = extendTheme(
     {
@@ -32,10 +31,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
     }, []);
 
     return (
-        <EngageProvider>
-            <ChakraProvider theme={theme}>
-                <Component {...pageProps} />
-            </ChakraProvider>
-        </EngageProvider>
+        <ChakraProvider theme={theme}>
+            <Component {...pageProps} />
+        </ChakraProvider>
     );
 }

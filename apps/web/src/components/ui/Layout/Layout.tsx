@@ -23,10 +23,10 @@ export const Layout: FC<LayoutProps> = ({ children, metaTitle, metaDescription, 
                 <meta charSet="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
                 <meta name="google" content="notranslate" />
-                <meta name="title" property="og:title" content={metaTitle} />
-                <meta name="description" property="og:description" content={metaDescription} />
-                {ogPhoto && <meta name="image" property="og:image" content={ogPhoto} />}
-                {ogUrl && <meta property="og:url" content={ogUrl} />}
+                <meta name="title" property="og:title" content={metaTitle}></meta>
+                <meta name="description" property="og:description" content={metaDescription}></meta>
+                {ogPhoto && <meta name="image" property="og:image" content={ogPhoto}></meta>}
+                {ogUrl && <meta property="og:url" content={ogUrl}></meta>}
                 <meta property="og:type" content="website" />
                 <meta name="author" content="Dylan Young" />
             </Head>
