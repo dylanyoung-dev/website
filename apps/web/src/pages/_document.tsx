@@ -1,10 +1,12 @@
-import Document, { Html, Head, Main, NextScript } from 'next/document';
+import Document, { Head, Html, Main, NextScript } from 'next/document';
 
 export default class MyDocument extends Document {
     render() {
         return (
             <Html lang="en">
-                <Head></Head>
+                <Head>
+                    <link rel="icon" href="/favicon.ico"></link>
+                </Head>
                 <body className="palette-orange style-simple">
                     <Main />
                     <script src="/js/plugins.js" />
