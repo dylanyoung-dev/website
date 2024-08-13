@@ -1,6 +1,7 @@
-import { Badge, Box, Card, CardBody, HStack, Heading, Image, Stack, Text } from '@chakra-ui/react';
+import { Badge, Box, Card, CardBody, HStack, Heading, Image, Spacer, Stack, Text } from '@chakra-ui/react';
 import Link from 'next/link';
 import { FC } from 'react';
+import Moment from 'react-moment';
 import { IPost } from '../../../interfaces';
 
 interface PostCardProps {
@@ -52,8 +53,14 @@ export const PostCard: FC<PostCardProps> = ({ post, showCategory = true }) => {
                             <Text color="muted">{post.excerpt}</Text>
                         </Stack>
                         <HStack>
+                            <Text color="accent" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
+                                <time className="published">
+                                    <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
+                                </time>
+                            </Text>
+                            <Spacer />
                             {post.readingTime && (
-                                <Text color="accent" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
+                                <Text color="grey" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
                                     {post.readingTime}
                                 </Text>
                             )}
