@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     Checkbox,
     Code,
     Heading,
@@ -18,7 +19,8 @@ import {
     useColorMode
 } from '@chakra-ui/react';
 import { Highlight, themes } from 'prism-react-renderer';
-import { FC } from 'react';
+import { FC, useState } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 
@@ -37,6 +39,8 @@ function getCoreProps(props: GetCoreProps): any {
 
 export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
     const { colorMode } = useColorMode();
+    const [copied, setCopied] = useState(false);
+    const codeTheme = colorMode === 'dark' ? themes.nightOwl : themes.nightOwlLight;
 
     const components = {
         //...ChakraUIRenderer(),
@@ -57,11 +61,16 @@ export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
         ),
         code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
+            const [copied, setCopied] = useState(false);
 
-            const codeStyle = colorMode === 'dark' ? themes.vsLight : themes.vsDark;
             return !inline && match ? (
-                <Box my="4" borderRadius="0">
-                    <Highlight code={String(children).replace(/\n$/, '')} language={match[1]} theme={codeStyle}>
+                <Box my="4" borderRadius="md" position="relative" border="1px solid" borderColor={colorMode === 'dark' ? 'gray.600' : 'gray.300'}>
+                    <CopyToClipboard text={String(children).replace(/\n$/, '')} onCopy={() => setCopied(true)}>
+                        <Button size="sm" position="absolute" top="2" right="2">
+                            {copied ? 'Copied!' : 'Copy'}
+                        </Button>
+                    </CopyToClipboard>
+                    <Highlight code={String(children).replace(/\n$/, '')} language={match[1]} theme={codeTheme}>
                         {({ className, style, tokens, getLineProps, getTokenProps }) => (
                             <pre className={className} style={{ ...style, overflowX: 'auto', paddingLeft: '10px' }}>
                                 {tokens.map((line, i) => (
