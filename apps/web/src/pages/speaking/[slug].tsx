@@ -1,35 +1,10 @@
-import {
-    Box,
-    Checkbox,
-    Code,
-    Container,
-    Flex,
-    Heading,
-    Image,
-    Link,
-    ListItem,
-    OrderedList,
-    SimpleGrid,
-    Stack,
-    Table,
-    Tbody,
-    Td,
-    Text,
-    Th,
-    Thead,
-    Tr,
-    UnorderedList,
-    useBreakpointValue,
-    useColorMode
-} from '@chakra-ui/react';
+import { Box, Container, Flex, Heading, Image, Link, SimpleGrid, Stack, Text, useBreakpointValue, useColorMode } from '@chakra-ui/react';
 import { EmailIcon, EmailShareButton, LinkedinIcon, LinkedinShareButton, TelegramIcon, TelegramShareButton, TwitterIcon, TwitterShareButton } from 'next-share';
 import { FC } from 'react';
-import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { coy, twilight } from 'react-syntax-highlighter/dist/cjs/styles/prism';
-import remarkGfm from 'remark-gfm';
+
 import { PostCard } from '../../components';
 import { Layout } from '../../components/ui';
+import { RenderMarkdown } from '../../components/ui/RenderMarkdown';
 import { IPost } from '../../interfaces';
 import { IEngagement } from '../../interfaces/IEngagement';
 import { getAllEngagementSlugs, getEngagementBySlug } from '../../services/engagements.service';
@@ -39,123 +14,10 @@ interface EngagementProps {
     url: string;
 }
 
-type GetCoreProps = {
-    children?: React.ReactNode;
-    'data-sourcepos'?: any;
-};
-
-function getCoreProps(props: GetCoreProps): any {
-    return props['data-sourcepos'] ? { 'data-sourcepos': props['data-sourcepos'] } : {};
-}
-
 const Engagement: FC<EngagementProps> = ({ engagement, url }: EngagementProps) => {
     const shortPath = `/speaking/${engagement.slug.current}/`;
     const fullPath = `${url}${shortPath}`;
     const { colorMode } = useColorMode();
-
-    const components = {
-        //...ChakraUIRenderer(),
-        h1: ({ node, ...props }) => (
-            <Heading mb={1} as="h1" fontSize="xl" {...props}>
-                {props.children}
-            </Heading>
-        ),
-        h2: ({ node, ...props }) => (
-            <Heading mb={0.5} as="h2" fontSize="lg" {...props}>
-                {props.children}
-            </Heading>
-        ),
-        h3: ({ node, ...props }) => (
-            <Heading mb={0.5} as="h3" fontSize="md" {...props}>
-                {props.children}
-            </Heading>
-        ),
-        code({ node, inline, className, children, ...props }) {
-            const match = /language-(\w+)/.exec(className || '');
-            const codeStyle = colorMode === 'dark' ? coy : twilight;
-            return !inline && match ? (
-                <Box my="4">
-                    <SyntaxHighlighter
-                        style={codeStyle}
-                        showLineNumbers
-                        language={match ? [1] : 'typescript'}
-                        PreTag="div"
-                        children={String(children).replace(/\n$/, '')}
-                        {...props}
-                    />
-                </Box>
-            ) : (
-                <Code {...props}>{children}</Code>
-            );
-        },
-        p: ({ node, ...props }) => (
-            <Text {...props} mb={2}>
-                {props.children}
-            </Text>
-        ),
-        em: ({ node, ...props }) => (
-            <Text as="em" {...props}>
-                {props.children}
-            </Text>
-        ),
-        ul: ({ node, ...props }) => {
-            const { ordered, children, depth } = props;
-            const attrs = getCoreProps(props);
-            let Element = UnorderedList;
-            let styleType = 'disc';
-            if (ordered) {
-                Element = OrderedList;
-                styleType = 'decimal';
-            }
-            if (depth === 1) styleType = 'circle';
-            return (
-                <Element spacing={2} as={ordered ? 'ol' : 'ul'} styleType={styleType} pl={4} {...attrs}>
-                    {children}
-                </Element>
-            );
-        },
-        ol: ({ node, ...props }) => {
-            const { ordered, children, depth } = props;
-            const attrs = getCoreProps(props);
-            let Element = UnorderedList;
-            let styleType = 'disc';
-            if (ordered) {
-                Element = OrderedList;
-                styleType = 'decimal';
-            }
-            if (depth === 1) styleType = 'circle';
-            return (
-                <Element spacing={2} as={ordered ? 'ol' : 'ul'} styleType={styleType} pl={4} {...attrs}>
-                    {children}
-                </Element>
-            );
-        },
-        li: ({ node, ...props }) => {
-            const { children, checked } = props;
-            let checkbox = null;
-            if (checked !== null && checked !== undefined) {
-                checkbox = (
-                    <Checkbox isChecked={checked} isReadOnly>
-                        {children}
-                    </Checkbox>
-                );
-            }
-            return (
-                <ListItem {...getCoreProps(props)} listStyleType={checked !== null ? 'none' : 'inherit'}>
-                    {checkbox || children}
-                </ListItem>
-            );
-        },
-        img: ({ node, ...props }) => <Image {...props} />,
-        a: ({ node, ...props }) => <Link {...props} isExternal />,
-        text: ({ node, ...props }) => <Text as="span" {...props} />,
-        table: ({ node, ...props }) => <Table {...props} my="2" mb="6" />,
-        thead: ({ node, ...props }) => <Thead {...props} />,
-        tbody: ({ node, ...props }) => <Tbody {...props} />,
-        tr: ({ node, ...props }) => <Tr {...props} />,
-        td: ({ node, isHeader, ...props }) => <Td {...props} />,
-        th: ({ node, isHeader, ...props }) => <Th {...props} />
-    };
 
     return (
         <Layout metaTitle={engagement.title} metaDescription={engagement.short_description} ogPhoto={engagement.thumbnailUrl} ogUrl={fullPath}>
@@ -196,9 +58,7 @@ const Engagement: FC<EngagementProps> = ({ engagement, url }: EngagementProps) =
                     <Stack spacing={{ base: '6', md: '6' }}>
                         {engagement.details && (
                             <Container size="md">
-                                <ReactMarkdown remarkPlugins={[remarkGfm]} components={components} skipHtml>
-                                    {engagement.details}
-                                </ReactMarkdown>
+                                <RenderMarkdown>{engagement.details}</RenderMarkdown>
                             </Container>
                         )}
                     </Stack>
