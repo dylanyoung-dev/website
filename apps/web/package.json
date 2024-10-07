@@ -37,6 +37,7 @@
         "next": "^13.0.6",
         "next-share": "^0.27.0",
         "next-sitemap": "3.1.10",
+        "prism-react-renderer": "^2.4.0",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-github-graph": "^1.6.1",
@@ -47,7 +48,6 @@
         "react-markdown": "9.0.0",
         "react-moment": "1.1.2",
         "react-redux": "8.0.5",
-        "react-syntax-highlighter": "^15.5.0",
         "react-youtube": "^10.1.0",
         "remark-gfm": "^4.0.0",
         "webpack": "^5.24.1"

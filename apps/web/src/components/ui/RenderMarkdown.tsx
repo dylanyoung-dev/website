@@ -17,10 +17,9 @@ import {
     UnorderedList,
     useColorMode
 } from '@chakra-ui/react';
+import { Highlight, themes } from 'prism-react-renderer';
 import { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { atomDark, coy } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import remarkGfm from 'remark-gfm';
 
 interface RenderMarkdownProps {
@@ -59,20 +58,25 @@ export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
         code({ node, inline, className, children, ...props }) {
             const match = /language-(\w+)/.exec(className || '');
 
-            const codeStyle = colorMode === 'dark' ? coy : atomDark;
+            const codeStyle = colorMode === 'dark' ? themes.vsLight : themes.vsDark;
             return !inline && match ? (
                 <Box my="4" borderRadius="0">
-                    <SyntaxHighlighter
-                        borderRadius={0}
-                        style={codeStyle}
-                        showLineNumbers
-                        wrapLines={true}
-                        wrapLongLines={true}
-                        language={match ? match[1] : 'typescript'}
-                        PreTag="div"
-                        children={String(children).replace(/\n$/, '')}
-                        {...props}
-                    />
+                    <Highlight code={String(children).replace(/\n$/, '')} language={match[1]} theme={codeStyle}>
+                        {({ className, style, tokens, getLineProps, getTokenProps }) => (
+                            <pre className={className} style={{ ...style, overflowX: 'auto', paddingLeft: '10px' }}>
+                                {tokens.map((line, i) => (
+                                    <Box ml={2} key={i} {...getLineProps({ line })}>
+                                        <Box as="span" mr={4} opacity={0.5}>
+                                            {i + 1}
+                                        </Box>
+                                        {line.map((token, key) => (
+                                            <span key={key} {...getTokenProps({ token })} />
+                                        ))}
+                                    </Box>
+                                ))}
+                            </pre>
+                        )}
+                    </Highlight>
                 </Box>
             ) : (
                 <Code borderRadius={0} {...props}>
@@ -101,7 +105,7 @@ export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
             }
             if (depth === 1) styleType = 'circle';
             return (
-                <Element spacing={2} mt="4" mb="4" as={ordered ? 'ol' : 'ul'} styleType={styleType} style={{ listStyleType: styleType }} pl={4} {...attrs}>
+                <Element spacing={2} my={4} as={ordered ? 'ol' : 'ul'} styleType={styleType} style={{ listStyleType: styleType }} pl={4} {...attrs}>
                     {children}
                 </Element>
             );
@@ -117,7 +121,7 @@ export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
             }
             if (depth === 1) styleType = 'circle';
             return (
-                <Element spacing={2} as={ordered ? 'ol' : 'ul'} styleType={styleType} pl={4} {...attrs}>
+                <Element my={4} spacing={2} as={ordered ? 'ol' : 'ul'} styleType={styleType} pl={4} {...attrs}>
                     {children}
                 </Element>
             );
