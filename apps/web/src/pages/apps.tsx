@@ -1,6 +1,21 @@
-import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Container, Heading, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
+import {
+    Badge,
+    Box,
+    Breadcrumb,
+    BreadcrumbItem,
+    BreadcrumbLink,
+    Button,
+    Container,
+    Heading,
+    Link,
+    SimpleGrid,
+    Stack,
+    Tag,
+    Text,
+    useBreakpointValue
+} from '@chakra-ui/react';
 import { NextPage } from 'next';
-import { FiChevronRight } from 'react-icons/fi';
+import { FiChevronRight, FiExternalLink } from 'react-icons/fi';
 import { Layout } from '../components';
 
 interface AppsPageProps {}
@@ -32,11 +47,61 @@ const AppsPage: NextPage<AppsPageProps> = () => {
                                 </Text>
                             </Stack>
                         </Stack>
-                        {/* <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={{ base: '12', lg: '4' }}>
-                            {posts.map((post: IPost) => (
-                                <PostCard key={post._id} post={post} showCategory={true} />
-                            ))}
-                        </SimpleGrid> */}
+                        <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={{ base: '4', lg: '4' }}>
+                            <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
+                                <Heading as="h3" size="md">
+                                    AmplifyUP
+                                </Heading>
+                                <Text mt={2} mb={4}>
+                                    An AI-powered development platform. Currently a work-in-progress
+                                </Text>
+
+                                <Stack direction="row" mb={4}>
+                                    <Heading as="h5" size="xs">
+                                        Built with:
+                                    </Heading>
+                                    <Badge colorScheme="gray">Express JS</Badge>
+                                    <Badge colorScheme="gray">Next.js / TurboRepo</Badge>
+                                    <Badge colorScheme="gray">Clerk Auth</Badge>
+                                </Stack>
+
+                                <Link href="https://amplifyup.ai" isExternal>
+                                    <Button rightIcon={<FiExternalLink />} colorScheme="blue" size="sm">
+                                        Visit Website
+                                    </Button>
+                                </Link>
+                            </Box>
+
+                            <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={4}>
+                                <Heading as="h3" size="md">
+                                    My Copilot
+                                </Heading>
+                                <Text mt={2} mb={4}>
+                                    An AI-powered LLM chat application.
+                                </Text>
+
+                                <Stack direction="row" mb={4}>
+                                    <Heading as="h4" size="xs">
+                                        Built with:
+                                    </Heading>
+                                    <Badge size="sm" variant="outline" colorScheme="facebook">
+                                        Next.js
+                                    </Badge>
+                                    <Badge size="sm" variant="outline" colorScheme="facebook">
+                                        Vercel AI SDK
+                                    </Badge>
+                                    <Tag size="sm" variant="outline" colorScheme="facebook">
+                                        TailwindCSS / ShadCN UI
+                                    </Tag>
+                                </Stack>
+
+                                <Link href="https://copilot.dylanyoung.dev/" isExternal>
+                                    <Button rightIcon={<FiExternalLink />} colorScheme="blue" size="sm">
+                                        Visit Website
+                                    </Button>
+                                </Link>
+                            </Box>
+                        </SimpleGrid>
                     </Stack>
                 </Container>
             </Box>
