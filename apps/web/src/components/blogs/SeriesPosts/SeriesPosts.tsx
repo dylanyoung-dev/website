@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { FC, useState } from "react";
+import { useState } from "react";
 import { IPost } from "@/interfaces";
 import { ISeries } from "@/interfaces/ISeries";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
@@ -16,7 +16,7 @@ interface SeriesPostsProps {
   series: ISeries;
 }
 
-export const SeriesPosts: FC<SeriesPostsProps> = ({ series }) => {
+export function SeriesPosts({ series }: SeriesPostsProps) {
   const [openIndex, setOpenIndex] = useState<string[]>(["0"]);
 
   const handleLinkClick = (index: number) => {
@@ -58,4 +58,4 @@ export const SeriesPosts: FC<SeriesPostsProps> = ({ series }) => {
       </div>
     </div>
   );
-};
+}

@@ -1,5 +1,4 @@
 import { Container, Stack, StackDivider } from '@chakra-ui/react';
-import { FC } from 'react';
 import { useForm } from 'react-hook-form';
 
 interface ContactFormProps {}
@@ -10,7 +9,7 @@ interface ContactFormData {
     email: string;
 }
 
-export const ContactForm: FC<ContactFormProps> = () => {
+export function ContactForm() {
     const { register, handleSubmit, reset } = useForm<ContactFormData>();
 
     const onSubmit = (data: ContactFormData) => {
@@ -59,4 +58,4 @@ export const ContactForm: FC<ContactFormProps> = () => {
             </Stack>
         </Container>
     );
-};
+}

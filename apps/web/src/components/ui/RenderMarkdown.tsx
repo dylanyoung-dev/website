@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useState } from "react";
+import { useState } from "react";
 import { useTheme } from "next-themes";
 import { Highlight, themes } from "prism-react-renderer";
 import { CopyToClipboard } from "react-copy-to-clipboard";
@@ -30,7 +30,7 @@ function getCoreProps(props: GetCoreProps): any {
   return props["data-sourcepos"] ? { "data-sourcepos": props["data-sourcepos"] } : {};
 }
 
-export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
+export function RenderMarkdown({ children }: RenderMarkdownProps) {
   const { theme } = useTheme();
   const [copied, setCopied] = useState(false);
   const codeTheme = theme === "dark" ? themes.nightOwl : themes.nightOwlLight;
@@ -199,4 +199,4 @@ export const RenderMarkdown: FC<RenderMarkdownProps> = ({ children }) => {
       {children}
     </ReactMarkdown>
   );
-};
+}

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { FC } from "react";
 import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +10,7 @@ interface PostCardProps {
   showCategory: boolean;
 }
 
-export const PostCard: FC<PostCardProps> = ({ post, showCategory = true }) => {
+export function PostCard({ post, showCategory = true }: PostCardProps) {
   return (
     <Card className="group">
       <CardContent className="p-0">
@@ -65,4 +64,4 @@ export const PostCard: FC<PostCardProps> = ({ post, showCategory = true }) => {
       </CardContent>
     </Card>
   );
-};
+}

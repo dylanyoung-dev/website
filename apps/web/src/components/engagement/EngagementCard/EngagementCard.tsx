@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { FC } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { IEngagement } from "@/interfaces/IEngagement";
 
@@ -8,7 +7,7 @@ interface EngagementCardProps {
   engagement: IEngagement;
 }
 
-export const EngagementCard: FC<EngagementCardProps> = ({ engagement }) => {
+export function EngagementCard({ engagement }: EngagementCardProps) {
   return (
     <Card className="group">
       <CardContent className="p-0">
@@ -43,4 +42,4 @@ export const EngagementCard: FC<EngagementCardProps> = ({ engagement }) => {
       </CardContent>
     </Card>
   );
-};
+}

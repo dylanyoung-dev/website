@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FC } from "react";
 import _ from "lodash";
 import { Button } from "@/components/ui/button";
 import { ICategory } from "@/interfaces";
@@ -8,7 +7,7 @@ interface CategoriesProps {
   AllCategories: ICategory[];
 }
 
-const Categories: FC<CategoriesProps> = ({ AllCategories }) => {
+function Categories({ AllCategories }: CategoriesProps) {
   return (
     <>
       {AllCategories && (
@@ -26,6 +25,6 @@ const Categories: FC<CategoriesProps> = ({ AllCategories }) => {
       )}
     </>
   );
-};
+}
 
 export default Categories;

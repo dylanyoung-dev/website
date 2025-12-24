@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { FC } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { ISeries } from "@/interfaces/ISeries";
 
@@ -7,7 +6,7 @@ interface SeriesCardProps {
   series: ISeries;
 }
 
-export const SeriesCard: FC<SeriesCardProps> = ({ series }) => {
+export function SeriesCard({ series }: SeriesCardProps) {
   return (
     <Card className="group">
       <CardContent className="p-0">
@@ -25,4 +24,4 @@ export const SeriesCard: FC<SeriesCardProps> = ({ series }) => {
       </CardContent>
     </Card>
   );
-};
+}

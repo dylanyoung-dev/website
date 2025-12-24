@@ -1,6 +1,5 @@
 import Link from "next/link";
 import Image from "next/image";
-import { FC } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ICategory } from "@/interfaces";
@@ -9,7 +8,7 @@ interface CategoryCardsProps {
   categories: ICategory[];
 }
 
-export const CategoryCards: FC<CategoryCardsProps> = ({ categories }) => {
+export function CategoryCards({ categories }: CategoryCardsProps) {
   return (
     <>
       {categories && categories.length > 0 ? (
@@ -65,4 +64,4 @@ export const CategoryCards: FC<CategoryCardsProps> = ({ categories }) => {
       )}
     </>
   );
-};
+}
