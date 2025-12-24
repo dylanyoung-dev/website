@@ -1,6 +1,6 @@
 [build]
   base = "apps/studio"
-  command = "npm install --prefix ../.. && npm run build --prefix ../.. --filter=dylanyoung-studio"
+  command = "npm install --prefix ../.. && npx turbo build --filter=dylanyoung-studio --cwd=../.."
   publish = "dist"
 
 [build.environment]

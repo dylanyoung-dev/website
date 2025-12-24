@@ -1,6 +1,6 @@
 [build]
   base = "apps/web"
-  command = "npm install --prefix ../.. && npm run build --prefix ../.."
+  command = "npm install --prefix ../.. && npx turbo build --filter=dylanyoung-website --cwd=../.."
   publish = "out"
 
 [build.environment]
