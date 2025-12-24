@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     trailingSlash: true,
+    output: 'export',
     eslint: {
         ignoreDuringBuilds: true,
     },
@@ -8,7 +9,7 @@ const nextConfig = {
         ignoreBuildErrors: true,
     },
     images: {
-        domains: ['cdn.sanity.io', 'avatars.githubusercontent.com'],
+        unoptimized: true,
     },
     webpack: (config) => {
         config.module.rules.push({
