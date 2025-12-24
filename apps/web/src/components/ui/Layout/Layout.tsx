@@ -1,6 +1,5 @@
 "use client";
 
-import { FC } from "react";
 import { Footer, Header } from "./";
 
 interface LayoutProps {
@@ -11,7 +10,7 @@ interface LayoutProps {
   ogUrl?: string;
 }
 
-export const Layout: FC<LayoutProps> = ({ children, metaTitle, metaDescription, ogPhoto, ogUrl }) => {
+export function Layout({ children, metaTitle, metaDescription, ogPhoto, ogUrl }: LayoutProps) {
   return (
     <section className="overflow-y-auto">
       <Header />
@@ -21,4 +20,4 @@ export const Layout: FC<LayoutProps> = ({ children, metaTitle, metaDescription, 
       <Footer />
     </section>
   );
-};
+}
