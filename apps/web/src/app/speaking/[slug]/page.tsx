@@ -1,16 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import {
-  EmailIcon,
-  EmailShareButton,
-  LinkedinIcon,
-  LinkedinShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-} from "next-share";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
 import { PostCard } from "@/components/blogs/PostCard/PostCard";
@@ -76,22 +66,6 @@ export default async function EngagementPage({ params }: Props) {
                 View Slides
               </Link>
             )}
-            <div className="flex">
-              <div className="flex gap-2">
-                <TelegramShareButton url={fullPath}>
-                  <TelegramIcon size={32} />
-                </TelegramShareButton>
-                <TwitterShareButton url={fullPath}>
-                  <TwitterIcon size={32} />
-                </TwitterShareButton>
-                <LinkedinShareButton url={fullPath}>
-                  <LinkedinIcon size={32} />
-                </LinkedinShareButton>
-                <EmailShareButton url={fullPath} subject={"Check out this Speaking Engagement"}>
-                  <EmailIcon size={32} />
-                </EmailShareButton>
-              </div>
-            </div>
           </div>
         </div>
       </section>

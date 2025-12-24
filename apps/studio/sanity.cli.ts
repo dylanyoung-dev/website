@@ -5,14 +5,5 @@ export default defineCliConfig({
     projectId: 'lanua4su',
     dataset: 'production'
   },
-  vite: {
-    resolve: {
-      dedupe: ['react', 'react-dom'],
-    },
-    optimizeDeps: {
-      include: ['react', 'react-dom'],
-      force: true,
-    },
-  },
 })
 

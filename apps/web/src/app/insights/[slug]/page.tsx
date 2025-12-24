@@ -2,16 +2,6 @@ import groq from "groq";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import {
-  EmailIcon,
-  EmailShareButton,
-  LinkedinIcon,
-  LinkedinShareButton,
-  TelegramIcon,
-  TelegramShareButton,
-  TwitterIcon,
-  TwitterShareButton,
-} from "next-share";
 import { format } from "date-fns";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
@@ -78,27 +68,13 @@ export default async function PostPage({ params }: Props) {
         <div className="container mx-auto px-4 py-8">
           <div className="space-y-6">
             <h1 className="text-4xl font-semibold leading-tight mt-2">{post.title}</h1>
-            <div className="flex items-center justify-between">
-              <div className="flex gap-2">
-                <TelegramShareButton url={fullPath}>
-                  <TelegramIcon size={32} />
-                </TelegramShareButton>
-                <TwitterShareButton url={fullPath}>
-                  <TwitterIcon size={32} />
-                </TwitterShareButton>
-                <LinkedinShareButton url={fullPath}>
-                  <LinkedinIcon size={32} />
-                </LinkedinShareButton>
-                <EmailShareButton url={fullPath} subject={"Check out this blog post"}>
-                  <EmailIcon size={32} />
-                </EmailShareButton>
-              </div>
-              {post.readingTime && (
+            {post.readingTime && (
+              <div className="flex items-center justify-end">
                 <span className="text-sm font-semibold text-accent-foreground uppercase">
                   {post.readingTime}
                 </span>
-              )}
-            </div>
+              </div>
+            )}
             <p>
               <strong>Published</strong>: {format(new Date(post.publishedAt), "MMMM dd, yyyy")}
             </p>
