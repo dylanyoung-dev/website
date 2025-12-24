@@ -1,5 +1,5 @@
 [build]
-command = "npm run build"
+command = "npm run build --filter=dylanyoung-website"
 environment = { NODE_VERSION = "20.19.0" }
 
 [[plugins]]
