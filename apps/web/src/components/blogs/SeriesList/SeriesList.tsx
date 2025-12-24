@@ -1,18 +1,17 @@
-import { SimpleGrid } from '@chakra-ui/react';
-import { FC } from 'react';
-import { ISeries } from '../../../interfaces/ISeries';
-import { SeriesCard } from '../SeriesCard/SeriesCard';
+import { FC } from "react";
+import { ISeries } from "@/interfaces/ISeries";
+import { SeriesCard } from "../SeriesCard/SeriesCard";
 
 interface SeriesListProps {
-    series: ISeries[];
+  series: ISeries[];
 }
 
 export const SeriesList: FC<SeriesListProps> = ({ series }) => {
-    return (
-        <SimpleGrid columns={{ base: 1, md: 2, lg: 3 }} gap={{ base: '12', lg: '4' }}>
-            {series.map((item: ISeries) => (
-                <SeriesCard key={item._id} series={item} />
-            ))}
-        </SimpleGrid>
-    );
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-12">
+      {series.map((item: ISeries) => (
+        <SeriesCard key={item._id} series={item} />
+      ))}
+    </div>
+  );
 };

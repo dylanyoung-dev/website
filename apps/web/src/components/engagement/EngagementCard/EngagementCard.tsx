@@ -1,49 +1,46 @@
-import { Box, Card, CardBody, Heading, Image, Stack, Text } from '@chakra-ui/react';
-import Link from 'next/link';
-import { FC } from 'react';
-import { IEngagement } from '../../../interfaces/IEngagement';
+import Link from "next/link";
+import Image from "next/image";
+import { FC } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { IEngagement } from "@/interfaces/IEngagement";
 
 interface EngagementCardProps {
-    engagement: IEngagement;
+  engagement: IEngagement;
 }
 
 export const EngagementCard: FC<EngagementCardProps> = ({ engagement }) => {
-    return (
-        <Card>
-            <CardBody>
-                <Link href={`/speaking/${engagement.slug.current}`} role="group">
-                    <Stack spacing="8">
-                        <Box overflow="hidden">
-                            {engagement.thumbnail ? (
-                                <Image
-                                    src={engagement.thumbnailUrl}
-                                    alt={engagement.thumbnail.alt ?? ''}
-                                    width="full"
-                                    height="15rem"
-                                    objectFit="cover"
-                                    transition="all 0.2s"
-                                    _groupHover={{ transform: 'scale(1.05)' }}
-                                />
-                            ) : (
-                                <Image
-                                    src="https://source.unsplash.com/random/500x260"
-                                    alt="unsplash image"
-                                    width="full"
-                                    height="15rem"
-                                    objectFit="cover"
-                                    transition="all 0.2s"
-                                    _groupHover={{ transform: 'scale(1.05)' }}
-                                />
-                            )}
-                        </Box>
+  return (
+    <Card className="group">
+      <CardContent className="p-0">
+        <Link href={`/speaking/${engagement.slug.current}`} className="block">
+          <div className="space-y-8">
+            <div className="overflow-hidden">
+              {engagement.thumbnail ? (
+                <Image
+                  src={engagement.thumbnailUrl}
+                  alt={engagement.thumbnail?.alt ?? ""}
+                  width={500}
+                  height={260}
+                  className="w-full h-60 object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+              ) : (
+                <Image
+                  src="https://source.unsplash.com/random/500x260"
+                  alt="unsplash image"
+                  width={500}
+                  height={260}
+                  className="w-full h-60 object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+              )}
+            </div>
 
-                        <Stack spacing="3">
-                            <Heading size="xs">{engagement.title}</Heading>
-                            <Text color="muted">{engagement.short_description}</Text>
-                        </Stack>
-                    </Stack>
-                </Link>
-            </CardBody>
-        </Card>
-    );
+            <div className="p-6 space-y-3">
+              <h3 className="text-sm font-semibold">{engagement.title}</h3>
+              <p className="text-sm text-muted-foreground">{engagement.short_description}</p>
+            </div>
+          </div>
+        </Link>
+      </CardContent>
+    </Card>
+  );
 };

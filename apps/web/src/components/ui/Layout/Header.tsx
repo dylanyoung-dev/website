@@ -1,165 +1,151 @@
-import Link from 'next/link';
+"use client";
 
+import Link from "next/link";
+import { useState, useRef } from "react";
+import { FiEdit, FiHome, FiLayers, FiList, FiMenu, FiSun, FiUser, FiVideo } from "react-icons/fi";
+import { MdClose, MdDarkMode } from "react-icons/md";
+import { useTheme } from "next-themes";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
-    Avatar,
-    Box,
-    Button,
-    ButtonGroup,
-    Container,
-    Drawer,
-    DrawerBody,
-    DrawerContent,
-    DrawerHeader,
-    DrawerOverlay,
-    Flex,
-    HStack,
-    Icon,
-    IconButton,
-    Text,
-    useBreakpointValue,
-    useColorMode,
-    useDisclosure
-} from '@chakra-ui/react';
-import { useRef } from 'react';
-import { FiEdit, FiHome, FiLayers, FiList, FiMenu, FiSun, FiUser, FiVideo } from 'react-icons/fi';
-import { MdClose, MdDarkMode } from 'react-icons/md';
-
-interface HeaderProps {}
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 export const Header = () => {
-    const isDesktop = useBreakpointValue({ base: false, lg: true });
-    const { colorMode, toggleColorMode } = useColorMode();
-    const { isOpen, onOpen, onClose } = useDisclosure();
-    const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const { theme, setTheme } = useTheme();
+  const [isOpen, setIsOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
-    return (
-        <Box as="section">
-            <Box as="nav" bg="bg-surface">
-                <Container py={{ base: '4', lg: '5' }}>
-                    <HStack spacing="10" justify="space-between">
-                        <Avatar size="md" name="Dylan Young" src="https://avatars.githubusercontent.com/u/5227854?v=4" />
-                        {isDesktop ? (
-                            <>
-                                <Flex justify="space-between" flex="1">
-                                    <ButtonGroup variant="ghost" spacing="4">
-                                        <Link href="/">
-                                            <Button as="a">Home</Button>
-                                        </Link>
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
 
-                                        <Link href="/insights">
-                                            <Button as="a">Insights</Button>
-                                        </Link>
-
-                                        <Link href="/apps">
-                                            <Button as="a">My Projects</Button>
-                                        </Link>
-
-                                        <Link href="/speaking">
-                                            <Button as="a">Speaking</Button>
-                                        </Link>
-
-                                        <Link href="/videos">
-                                            <Button as="a">Videos</Button>
-                                        </Link>
-
-                                        <Button display="none">
-                                            <Link href="/snippets">Snippets</Link>
-                                        </Button>
-
-                                        <Link href="/contact">
-                                            <Button as="a">Contact</Button>
-                                        </Link>
-                                    </ButtonGroup>
-                                    <HStack spacing="3">
-                                        <IconButton
-                                            variant="ghost"
-                                            icon={colorMode == 'light' ? <MdDarkMode /> : <FiSun />}
-                                            aria-label="Color Mode"
-                                            onClick={toggleColorMode}
-                                        />
-                                    </HStack>
-                                </Flex>
-                            </>
-                        ) : (
-                            <HStack spacing="3">
-                                <IconButton
-                                    variant="ghost"
-                                    icon={colorMode == 'light' ? <MdDarkMode /> : <FiSun />}
-                                    aria-label="Color Mode"
-                                    onClick={toggleColorMode}
-                                />
-                                <IconButton variant="ghost" icon={<FiMenu fontSize="1.25rem" />} aria-label="Open Menu" onClick={onOpen} />
-                            </HStack>
-                        )}
-                    </HStack>
-                </Container>
-                <Drawer placement="left" initialFocusRef={menuButtonRef} isOpen={isOpen} onClose={onClose} size="full">
-                    <DrawerOverlay />
-                    <DrawerContent>
-                        <DrawerHeader padding="0">
-                            <Container py={{ base: '4', lg: '5' }}>
-                                <HStack spacing="10" justify="space-between">
-                                    <Avatar size="md" name="Dylan Young" src="https://avatars.githubusercontent.com/u/5227854?v=4" />
-                                    <HStack spacing="3">
-                                        <IconButton
-                                            variant="ghost"
-                                            icon={colorMode == 'light' ? <MdDarkMode /> : <FiSun />}
-                                            aria-label="Color Mode"
-                                            onClick={toggleColorMode}
-                                        />
-                                        <IconButton variant="ghost" icon={<MdClose fontSize="1.25rem" />} aria-label="Open Menu" onClick={onClose} />
-                                    </HStack>
-                                </HStack>
-                            </Container>
-                        </DrawerHeader>
-                        <DrawerBody>
-                            <Link href="/">
-                                <HStack py="3" spacing="3">
-                                    <Icon color="ghost" fontSize="xl" as={FiHome} />
-                                    <Text fontWeight="medium">Home</Text>
-                                </HStack>
-                            </Link>
-                            <Link href="/insights">
-                                <HStack py="3" spacing="3">
-                                    <Icon color="ghost" fontSize="xl" as={FiLayers} />
-                                    <Text fontWeight="medium">Insights</Text>
-                                </HStack>
-                            </Link>
-                            <Link href="/insights/series">
-                                <HStack py="3" spacing="3">
-                                    <Icon color="ghost" fontSize="xl" as={FiList} />
-                                    <Text fontWeight="medium">Series</Text>
-                                </HStack>
-                            </Link>
-                            <Link href="/apps">
-                                <HStack py="3" spacing="3">
-                                    <Icon color="ghost" fontSize="xl" as={FiLayers} />
-                                    <Text fontWeight="medium">Apps</Text>
-                                </HStack>
-                            </Link>
-                            <Link href="/videos">
-                                <HStack py="3" spacing="3">
-                                    <Icon color="ghost" fontSize="xl" as={FiVideo} />
-                                    <Text fontWeight="medium">Videos</Text>
-                                </HStack>
-                            </Link>
-                            <Link href="/about">
-                                <HStack py="3" spacing="3">
-                                    <Icon color="ghost" fontSize="xl" as={FiUser} />
-                                    <Text fontWeight="medium">About</Text>
-                                </HStack>
-                            </Link>
-                            <Link href="/contact">
-                                <HStack py="3" spacing="3">
-                                    <Icon color="ghost" fontSize="xl" as={FiEdit} />
-                                    <Text fontWeight="medium">Contact Me</Text>
-                                </HStack>
-                            </Link>
-                            <HStack mt="6"></HStack>
-                        </DrawerBody>
-                    </DrawerContent>
-                </Drawer>
-            </Box>
-        </Box>
-    );
+  return (
+    <section>
+      <nav className="bg-background border-b">
+        <div className="container mx-auto px-4 py-4 lg:py-5">
+          <div className="flex items-center justify-between gap-10">
+            <Avatar className="h-10 w-10">
+              <AvatarImage src="https://avatars.githubusercontent.com/u/5227854?v=4" alt="Dylan Young" />
+              <AvatarFallback>DY</AvatarFallback>
+            </Avatar>
+            <div className="hidden lg:flex flex-1 justify-between items-center">
+              <div className="flex gap-4">
+                <Button variant="ghost" asChild>
+                  <Link href="/">Home</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link href="/insights">Insights</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link href="/apps">My Projects</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link href="/speaking">Speaking</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link href="/videos">Videos</Link>
+                </Button>
+                <Button variant="ghost" asChild className="hidden">
+                  <Link href="/snippets">Snippets</Link>
+                </Button>
+                <Button variant="ghost" asChild>
+                  <Link href="/contact">Contact</Link>
+                </Button>
+              </div>
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Toggle theme"
+                  onClick={toggleTheme}
+                >
+                  {theme === "light" ? <MdDarkMode className="h-5 w-5" /> : <FiSun className="h-5 w-5" />}
+                </Button>
+              </div>
+            </div>
+            <div className="flex lg:hidden items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Toggle theme"
+                onClick={toggleTheme}
+              >
+                {theme === "light" ? <MdDarkMode className="h-5 w-5" /> : <FiSun className="h-5 w-5" />}
+              </Button>
+              <Sheet open={isOpen} onOpenChange={setIsOpen}>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" aria-label="Open Menu" ref={menuButtonRef}>
+                    <FiMenu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="left" className="w-full sm:max-w-sm">
+                  <SheetHeader>
+                    <div className="flex items-center justify-between">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src="https://avatars.githubusercontent.com/u/5227854?v=4" alt="Dylan Young" />
+                        <AvatarFallback>DY</AvatarFallback>
+                      </Avatar>
+                      <div className="flex items-center gap-3">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Toggle theme"
+                          onClick={toggleTheme}
+                        >
+                          {theme === "light" ? <MdDarkMode className="h-5 w-5" /> : <FiSun className="h-5 w-5" />}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          aria-label="Close Menu"
+                          onClick={() => setIsOpen(false)}
+                        >
+                          <MdClose className="h-5 w-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  </SheetHeader>
+                  <div className="mt-8 space-y-3">
+                    <Link href="/" className="flex items-center gap-3 py-3" onClick={() => setIsOpen(false)}>
+                      <FiHome className="h-5 w-5" />
+                      <span className="font-medium">Home</span>
+                    </Link>
+                    <Link href="/insights" className="flex items-center gap-3 py-3" onClick={() => setIsOpen(false)}>
+                      <FiLayers className="h-5 w-5" />
+                      <span className="font-medium">Insights</span>
+                    </Link>
+                    <Link href="/insights/series" className="flex items-center gap-3 py-3" onClick={() => setIsOpen(false)}>
+                      <FiList className="h-5 w-5" />
+                      <span className="font-medium">Series</span>
+                    </Link>
+                    <Link href="/apps" className="flex items-center gap-3 py-3" onClick={() => setIsOpen(false)}>
+                      <FiLayers className="h-5 w-5" />
+                      <span className="font-medium">Apps</span>
+                    </Link>
+                    <Link href="/videos" className="flex items-center gap-3 py-3" onClick={() => setIsOpen(false)}>
+                      <FiVideo className="h-5 w-5" />
+                      <span className="font-medium">Videos</span>
+                    </Link>
+                    <Link href="/about" className="flex items-center gap-3 py-3" onClick={() => setIsOpen(false)}>
+                      <FiUser className="h-5 w-5" />
+                      <span className="font-medium">About</span>
+                    </Link>
+                    <Link href="/contact" className="flex items-center gap-3 py-3" onClick={() => setIsOpen(false)}>
+                      <FiEdit className="h-5 w-5" />
+                      <span className="font-medium">Contact Me</span>
+                    </Link>
+                  </div>
+                </SheetContent>
+              </Sheet>
+            </div>
+          </div>
+        </div>
+      </nav>
+    </section>
+  );
 };

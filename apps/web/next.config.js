@@ -1,6 +1,11 @@
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
     trailingSlash: true,
-    webpack: (config, { webpack }) => {
+    output: 'export',
+    images: {
+        unoptimized: true,
+    },
+    webpack: (config) => {
         config.module.rules.push({
             test: /\.svg$/,
             use: ['@svgr/webpack']
@@ -18,3 +23,5 @@ module.exports = {
         ];
     }
 };
+
+module.exports = nextConfig;

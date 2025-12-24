@@ -21,5 +21,9 @@
     },
     "dependencies": {
         "turbo": "^1.11.0"
+    },
+    "overrides": {
+        "react": "^19.2.3",
+        "react-dom": "^19.2.3"
     }
 }

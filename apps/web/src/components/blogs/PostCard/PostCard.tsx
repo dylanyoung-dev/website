@@ -1,73 +1,68 @@
-import { Badge, Box, Card, CardBody, HStack, Heading, Image, Spacer, Stack, Text } from '@chakra-ui/react';
-import Link from 'next/link';
-import { FC } from 'react';
-import Moment from 'react-moment';
-import { IPost } from '../../../interfaces';
+import Link from "next/link";
+import Image from "next/image";
+import { FC } from "react";
+import { format } from "date-fns";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { IPost } from "@/interfaces";
 
 interface PostCardProps {
-    post: IPost;
-    showCategory: boolean;
+  post: IPost;
+  showCategory: boolean;
 }
 
 export const PostCard: FC<PostCardProps> = ({ post, showCategory = true }) => {
-    return (
-        <Card>
-            <CardBody>
-                <Link href={`/insights/${post.slug.current}`} role="group">
-                    <Stack spacing="8">
-                        <Box overflow="hidden">
-                            {post.mainImageUrl ? (
-                                <Image
-                                    src={post.mainImageUrl}
-                                    alt={post.mainImage.alt ?? ''}
-                                    width="full"
-                                    height="15rem"
-                                    objectFit="cover"
-                                    transition="all 0.2s"
-                                    _groupHover={{ transform: 'scale(1.05)' }}
-                                />
-                            ) : (
-                                <Image
-                                    src="https://source.unsplash.com/random/500x260"
-                                    alt="unsplash image"
-                                    width="full"
-                                    height="15rem"
-                                    objectFit="cover"
-                                    transition="all 0.2s"
-                                    _groupHover={{ transform: 'scale(1.05)' }}
-                                />
-                            )}
-                        </Box>
+  return (
+    <Card className="group">
+      <CardContent className="p-0">
+        <Link href={`/insights/${post.slug.current}`} className="block">
+          <div className="space-y-4">
+            <div className="overflow-hidden">
+              {post.mainImageUrl ? (
+                <Image
+                  src={post.mainImageUrl}
+                  alt={post.mainImage?.alt ?? ""}
+                  width={500}
+                  height={260}
+                  className="w-full h-60 object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+              ) : (
+                <Image
+                  src="https://source.unsplash.com/random/500x260"
+                  alt="unsplash image"
+                  width={500}
+                  height={260}
+                  className="w-full h-60 object-cover transition-transform duration-200 group-hover:scale-105"
+                />
+              )}
+            </div>
 
-                        <Stack spacing="3">
-                            <Heading size="xs">{post.title}</Heading>
-                            {showCategory && (
-                                <>
-                                    {post.categories && post.categories.length > 0 && post.categories[0] && (
-                                        <Stack direction="row">
-                                            <Badge variant="solid">{post.categories[0].title}</Badge>
-                                        </Stack>
-                                    )}
-                                </>
-                            )}
-                            <Text color="muted">{post.excerpt}</Text>
-                        </Stack>
-                        <HStack>
-                            <Text color="accent" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
-                                <time className="published">
-                                    <Moment format="MMMM DD, YYYY">{post.publishedAt}</Moment>
-                                </time>
-                            </Text>
-                            <Spacer />
-                            {post.readingTime && (
-                                <Text color="grey" textTransform="uppercase" fontSize="sm" fontWeight="semibold">
-                                    {post.readingTime}
-                                </Text>
-                            )}
-                        </HStack>
-                    </Stack>
-                </Link>
-            </CardBody>
-        </Card>
-    );
+            <div className="p-6 space-y-3">
+              <h3 className="text-lg font-semibold">{post.title}</h3>
+              {showCategory && (
+                <>
+                  {post.categories && post.categories.length > 0 && post.categories[0] && (
+                    <div className="flex">
+                      <Badge variant="default">{post.categories[0].title}</Badge>
+                    </div>
+                  )}
+                </>
+              )}
+              <p className="text-sm text-muted-foreground">{post.excerpt}</p>
+            </div>
+            <div className="px-6 pb-6 flex items-center justify-between">
+              <time className="text-sm font-semibold text-accent-foreground uppercase">
+                {format(new Date(post.publishedAt), "MMMM dd, yyyy")}
+              </time>
+              {post.readingTime && (
+                <span className="text-sm font-semibold text-muted-foreground uppercase">
+                  {post.readingTime}
+                </span>
+              )}
+            </div>
+          </div>
+        </Link>
+      </CardContent>
+    </Card>
+  );
 };

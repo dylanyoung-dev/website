@@ -1,4 +1,0 @@
-[build]
-publish = "./apps/studio/dist/"
-command = "npm run build"
-environment = { NODE_VERSION = "20.10.0" }

@@ -1,63 +1,68 @@
-import { Box, Button, Card, CardBody, CardFooter, Container, Heading, Image, Link, SimpleGrid, Stack, Text, useBreakpointValue } from '@chakra-ui/react';
-import { FC } from 'react';
-import { ICategory } from '../../../interfaces';
+import Link from "next/link";
+import Image from "next/image";
+import { FC } from "react";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ICategory } from "@/interfaces";
 
 interface CategoryCardsProps {
-    categories: ICategory[];
+  categories: ICategory[];
 }
 
 export const CategoryCards: FC<CategoryCardsProps> = ({ categories }) => {
-    return (
+  return (
+    <>
+      {categories && categories.length > 0 ? (
         <>
-            {categories && categories.length > 0 ? (
-                <>
-                    <Box as="section" bg="bg-surface">
-                        <Container py={{ base: '8', md: '8' }}>
-                            <Stack spacing={{ base: '8', md: '8' }}>
-                                <Stack direction="row" justify="space-between">
-                                    <Stack spacing={{ base: '4', md: '5' }}>
-                                        <Stack spacing="3">
-                                            <Heading size={useBreakpointValue({ base: 'sm', md: 'md' })}>Categories</Heading>
-                                        </Stack>
-                                    </Stack>
-                                </Stack>
-                                <SimpleGrid columns={{ base: 1, md: 2, lg: 2 }} gap={{ base: '12', lg: '4' }}>
-                                    {categories.map((category: ICategory) => (
-                                        <Card key={category._id} direction={{ base: 'column', sm: 'row' }} overflow="hidden" variant="outline">
-                                            <Image
-                                                objectFit="cover"
-                                                maxW={{ base: '100%', sm: '200px' }}
-                                                src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
-                                                alt="Caffe Latte"
-                                            />
-
-                                            <Stack>
-                                                <CardBody>
-                                                    <Heading size="xs" as="h5">
-                                                        {category.title}
-                                                    </Heading>
-
-                                                    <Text py="2">{category.description}</Text>
-                                                </CardBody>
-
-                                                <CardFooter>
-                                                    <Link href={`/insights/categories/${category.slug.current}`}>
-                                                        <Button variant="outline" colorScheme="blue">
-                                                            View
-                                                        </Button>
-                                                    </Link>
-                                                </CardFooter>
-                                            </Stack>
-                                        </Card>
-                                    ))}
-                                </SimpleGrid>
-                            </Stack>
-                        </Container>
-                    </Box>
-                </>
-            ) : (
-                <>No Categories</>
-            )}
+          <section className="bg-background">
+            <div className="container mx-auto px-4 py-8">
+              <div className="space-y-8">
+                <div className="flex justify-between">
+                  <div className="space-y-5">
+                    <div className="space-y-3">
+                      <h2 className="text-2xl md:text-3xl font-semibold">Categories</h2>
+                    </div>
+                  </div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4 lg:gap-12">
+                  {categories.map((category: ICategory) => (
+                    <Card key={category._id} className="overflow-hidden">
+                      <div className="flex flex-col sm:flex-row">
+                        <Image
+                          src="https://images.unsplash.com/photo-1667489022797-ab608913feeb?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw5fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=800&q=60"
+                          alt="Category image"
+                          width={200}
+                          height={200}
+                          className="w-full sm:w-[200px] h-[200px] object-cover"
+                        />
+                        <div className="flex flex-col flex-1">
+                          <CardHeader>
+                            <CardTitle className="text-sm font-semibold">
+                              {category.title}
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <p className="text-sm py-2">{category.description}</p>
+                          </CardContent>
+                          <CardFooter>
+                            <Button variant="outline" asChild>
+                              <Link href={`/insights/categories/${category.slug.current}`}>
+                                View
+                              </Link>
+                            </Button>
+                          </CardFooter>
+                        </div>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
         </>
-    );
+      ) : (
+        <>No Categories</>
+      )}
+    </>
+  );
 };

@@ -1,77 +1,84 @@
-import { Box, Button, ButtonGroup, Container, Divider, HStack, IconButton, Input, SimpleGrid, Stack, Text } from '@chakra-ui/react';
-import { FaDev, FaGithub, FaLinkedin, FaTwitter, FaYoutube } from 'react-icons/fa';
+import Link from "next/link";
+import { FaDev, FaGithub, FaLinkedin, FaTwitter, FaYoutube } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
 
 export const Footer = () => (
-    <Box bg="bg-surface">
-        <Container as="footer" role="contentinfo">
-            <Stack spacing={{ base: '12', md: '8' }} direction={{ base: 'column-reverse', lg: 'row' }} py={{ base: '12', md: '16' }} justify="space-between">
-                <SimpleGrid columns={{ base: 2, md: 4 }} gap="8" width={{ base: 'full', lg: 'auto' }}>
-                    <Stack spacing="4" minW={{ lg: '40' }}>
-                        <Text fontSize="sm" fontWeight="semibold" color="subtle">
-                            General
-                        </Text>
-                        <Stack spacing="3" shouldWrapChildren>
-                            <Button as="a" variant="link" href="/">
-                                Home
-                            </Button>
-                            <Button as="a" variant="link" href="/insights">
-                                Insights
-                            </Button>
-                            <Button as="a" variant="link" href="/insights/series">
-                                Series
-                            </Button>
-                            <Button as="a" variant="link" href="/videos">
-                                Videos
-                            </Button>
-                            <Button as="a" variant="link" href="/about" display="none">
-                                About
-                            </Button>
-                            <Button as="a" variant="link" href="/contact" display="none">
-                                Contact Me
-                            </Button>
-                        </Stack>
-                    </Stack>
-                    <Stack spacing="4" minW={{ lg: '40' }}>
-                        <Text fontSize="sm" fontWeight="semibold" color="subtle">
-                            Insights
-                        </Text>
-                        <Stack spacing="3" shouldWrapChildren>
-                            <Button as="a" variant="link" href="/insights/categories/sitecore-cdp-personalize/">
-                                CDP/Personalize
-                            </Button>
-                            <Button as="a" variant="link" href="/insights/categories/backend-development/">
-                                Backend Development
-                            </Button>
-                        </Stack>
-                    </Stack>
-                </SimpleGrid>
-                <Stack spacing="4">
-                    <Text fontSize="sm" fontWeight="semibold" color="subtle">
-                        Stay up to date
-                    </Text>
-                    <Stack spacing="4" direction={{ base: 'column', sm: 'row' }} maxW={{ lg: '360px' }}>
-                        <Input placeholder="Enter your email" type="email" required />
-                        <Button variant="primary" type="submit" flexShrink={0}>
-                            Subscribe
-                        </Button>
-                    </Stack>
-                </Stack>
-            </Stack>
-            <Divider />
-            <Stack pb="12" pt="8" justify="space-between" direction={{ base: 'column', md: 'row' }} align={{ base: 'start', md: 'center' }}>
-                <HStack justify={{ base: 'space-between', sm: 'start' }} width={{ base: 'full', sm: 'auto' }} spacing="8">
-                    <ButtonGroup variant="ghost">
-                        <IconButton as="a" href="https://www.linkedin.com/in/dylanyoung/" aria-label="LinkedIn" icon={<FaLinkedin fontSize="1.25rem" />} />
-                        <IconButton as="a" href="https://github.com/dylanyoung-dev" aria-label="GitHub" icon={<FaGithub fontSize="1.25rem" />} />
-                        <IconButton as="a" href="https://twitter.com/dylanyoung_dev" aria-label="Twitter" icon={<FaTwitter fontSize="1.25rem" />} />
-                        <IconButton as="a" href="https://youtube.com/c/dylanyoungdev" aria-label="YouTube" icon={<FaYoutube fontSize="1.25rem" />} />
-                        <IconButton as="a" href="https://dev.to/dylanyoung_dev" aria-label="Rick Roll" icon={<FaDev fontSize="1.25rem" />} />
-                    </ButtonGroup>
-                </HStack>
-                <Text fontSize="sm" color="subtle">
-                    &copy; {new Date().getFullYear()} All rights reserved.
-                </Text>
-            </Stack>
-        </Container>
-    </Box>
+  <footer className="bg-background border-t">
+    <div className="container mx-auto px-4">
+      <div className="flex flex-col-reverse lg:flex-row justify-between gap-12 py-12 md:py-16">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full lg:w-auto">
+          <div className="space-y-4 min-w-[160px]">
+            <p className="text-sm font-semibold text-muted-foreground">General</p>
+            <div className="space-y-3 flex flex-col">
+              <Button variant="link" asChild className="p-0 h-auto justify-start w-full">
+                <Link href="/">Home</Link>
+              </Button>
+              <Button variant="link" asChild className="p-0 h-auto justify-start w-full">
+                <Link href="/insights">Insights</Link>
+              </Button>
+              <Button variant="link" asChild className="p-0 h-auto justify-start w-full">
+                <Link href="/insights/series">Series</Link>
+              </Button>
+              <Button variant="link" asChild className="p-0 h-auto justify-start w-full">
+                <Link href="/videos">Videos</Link>
+              </Button>
+              <Button variant="link" asChild className="p-0 h-auto justify-start hidden w-full">
+                <Link href="/about">About</Link>
+              </Button>
+              <Button variant="link" asChild className="p-0 h-auto justify-start hidden w-full">
+                <Link href="/contact">Contact Me</Link>
+              </Button>
+            </div>
+          </div>
+          <div className="space-y-4 min-w-[160px]">
+            <p className="text-sm font-semibold text-muted-foreground">Insights</p>
+            <div className="space-y-3 flex flex-col">
+              <Button variant="link" asChild className="p-0 h-auto justify-start w-full">
+                <Link href="/insights/categories/sitecore-cdp-personalize/">CDP/Personalize</Link>
+              </Button>
+              <Button variant="link" asChild className="p-0 h-auto justify-start w-full">
+                <Link href="/insights/categories/backend-development/">Backend Development</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="border-t py-8">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-12">
+          <div className="flex justify-between sm:justify-start w-full sm:w-auto gap-8">
+            <div className="flex gap-2">
+              <Button variant="ghost" size="icon" asChild>
+                <a href="https://www.linkedin.com/in/dylanyoung/" aria-label="LinkedIn">
+                  <FaLinkedin className="h-5 w-5" />
+                </a>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <a href="https://github.com/dylanyoung-dev" aria-label="GitHub">
+                  <FaGithub className="h-5 w-5" />
+                </a>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <a href="https://twitter.com/dylanyoung_dev" aria-label="Twitter">
+                  <FaTwitter className="h-5 w-5" />
+                </a>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <a href="https://youtube.com/c/dylanyoungdev" aria-label="YouTube">
+                  <FaYoutube className="h-5 w-5" />
+                </a>
+              </Button>
+              <Button variant="ghost" size="icon" asChild>
+                <a href="https://dev.to/dylanyoung_dev" aria-label="Dev.to">
+                  <FaDev className="h-5 w-5" />
+                </a>
+              </Button>
+            </div>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
 );

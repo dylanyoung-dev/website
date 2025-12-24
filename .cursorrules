@@ -1,0 +1,291 @@
+# Dylan Young Website - Cursor AI Rules
+
+## Repository Overview
+This is a monorepo for dylanyoung.dev, a personal blog/website built with Next.js and Sanity CMS. The repository uses Turbo for monorepo management and is deployed on Netlify.
+
+## Monorepo Structure
+- **apps/web**: Next.js application (main website)
+- **apps/studio**: Sanity CMS studio for content management
+- **cdp-artifacts**: Sitecore CDP configuration artifacts
+- Uses **Turbo** for build orchestration
+- Uses **npm workspaces** for dependency management
+
+## Technology Stack
+
+### Core Technologies
+- **Next.js**: 15.1.6 (App Router) - Static site generation
+- **React**: 19.0.0
+- **TypeScript**: 5.7.2
+- **Shadcn UI**: Latest with Radix UI primitives
+- **Tailwind CSS**: 3.4.17 for styling
+- **next-themes**: 0.4.4 for dark mode
+- **Sanity CMS**: v3.0.6 (Studio), @sanity/client v2.23.1
+- **GROQ**: 2.33.2 for Sanity queries
+- **Sitecore Engage**: @sitecore/engage v1.4.0 for analytics
+
+### Key Dependencies
+- **date-fns**: 4.1.0 for date formatting (replaced moment.js)
+- **React Hook Form**: 7.41.3 for forms
+- **React Markdown**: 9.0.0 for markdown rendering
+- **Next Share**: 0.27.0 for social sharing
+- **Next Sitemap**: 3.1.10 for sitemap generation
+- **lucide-react**: 0.469.0 for icons
+- **class-variance-authority**: 0.7.0 for component variants
+- **tailwind-merge**: 2.5.5 for merging Tailwind classes
+
+## Code Organization & Patterns
+
+### Directory Structure
+```
+apps/web/src/
+├── app/              # Next.js App Router pages and layouts
+│   ├── layout.tsx   # Root layout
+│   ├── page.tsx     # Home page
+│   ├── globals.css  # Global styles
+│   └── [routes]/     # Route pages
+├── components/       # Reusable UI components
+│   ├── blogs/        # Blog-specific components
+│   ├── engagement/   # Engagement tracking components
+│   ├── forms/        # Form components
+│   └── ui/           # Shadcn UI components and Layout
+├── features/         # Feature-specific code (e.g., engagetracker)
+├── interfaces/       # TypeScript interfaces
+├── lib/              # Utility functions (utils.ts for cn helper)
+├── services/         # Data fetching services (Sanity queries)
+└── utils/            # Utility functions (client.ts)
+```
+
+### Component Patterns
+- **Component Structure**: Each component lives in its own folder with an `index.ts` for exports
+  - Example: `components/blogs/PostCard/PostCard.tsx` with `components/blogs/index.ts`
+- **Component Naming**: PascalCase for components, exported as named exports
+- **Props Interface**: Define interfaces for component props (e.g., `PostCardProps`)
+- **TypeScript**: Use `FC<PropsType>` for functional components
+
+### Service Layer Pattern
+- Services are in `src/services/` directory
+- Services handle all Sanity data fetching using GROQ queries
+- Services return typed interfaces (e.g., `IPost`, `ISeries`)
+- Example: `post.service.ts`, `series.service.ts`, `videoPost.service.ts`
+
+### Interface Patterns
+- All interfaces are in `src/interfaces/` directory
+- Interfaces are prefixed with `I` (e.g., `IPost`, `ICategory`, `ISeries`)
+- Interfaces are exported from `interfaces/index.ts` for easy imports
+- Common interfaces: `IPost`, `ICategory`, `ISeries`, `ISlug`, `IImage`, `IEngagement`, `IVideoPost`
+
+### Data Fetching Patterns
+- Use **GROQ** for all Sanity queries
+- Use **App Router** server components for data fetching
+- Use `generateStaticParams` instead of `getStaticPaths` for dynamic routes
+- Fetch data directly in page components (async server components)
+- Sanity client is configured in `src/utils/client.ts`
+- Always fetch image URLs in queries: `"mainImageUrl": mainImage.asset->url`
+- Include related data in queries: `categories[]->{...}`
+
+### Styling Patterns
+- **Tailwind CSS** is the primary styling solution
+- **Shadcn UI** provides accessible component primitives
+- Use Tailwind utility classes: `className="p-4 md:p-8"`
+- Use Tailwind responsive prefixes: `md:`, `lg:`, etc.
+- Use Shadcn color tokens: `text-muted-foreground`, `bg-background`
+- Theme is configured in `tailwind.config.ts` with CSS variables
+- Dark mode is handled by `next-themes` in `ThemeProvider`
+- Use `cn()` utility from `@/lib/utils` for conditional classes
+
+### Environment Variables
+- **IMPORTANT**: Use `NEXT_PUBLIC_` prefix for client-side environment variables
+- Server-side only variables don't need the prefix
+- Current usage:
+  - `NEXT_PUBLIC_SITECORE_CDP_CLIENT_KEY`
+  - `NEXT_PUBLIC_SITECORE_CDP_TARGET_URL`
+  - `NEXT_PUBLIC_SITECORE_CDP_POINT_OF_SALE`
+  - `NEXT_PUBLIC_SITECORE_CDP_COOKIE_DOMAIN`
+  - `HOST_URL` (server-side)
+  - `projectId` (server-side, should be `NEXT_PUBLIC_` if used client-side)
+  - `dataset` (server-side, should be `NEXT_PUBLIC_` if used client-side)
+
+## Outdated Patterns to Avoid
+
+### ⚠️ Known Issues & Outdated Patterns
+
+1. **TypeScript Strict Mode**: Currently disabled (`"strict": false`). Should enable for better type safety
+2. **ESLint Config**: Using old `.eslintrc.json` with babel-eslint. Should migrate to modern ESLint config
+3. **Static Export Limitations**: App Router with static export has some limitations (no API routes, no middleware)
+
+### ✅ When Writing New Code
+
+1. **Use TypeScript strictly**: Enable strict mode for new files, add proper types
+2. **Use date-fns**: Always use `date-fns` for date formatting (moment.js has been removed)
+3. **Environment variables**: Always use `NEXT_PUBLIC_` prefix for client-side variables
+4. **Component exports**: Use named exports, maintain index.ts pattern
+5. **Error handling**: Add proper error handling in services and components
+6. **Accessibility**: Shadcn UI components are built with accessibility in mind
+7. **SEO**: Use Next.js App Router `metadata` export for SEO (not Head component)
+8. **Server Components**: Prefer server components for data fetching when possible
+9. **Client Components**: Mark components with `"use client"` when using hooks or browser APIs
+
+## Sanity CMS Patterns
+
+### Schema Location
+- Sanity schemas are in `apps/studio/schemas/blog.ts`
+- Schemas include: `post`, `series`, `category`, `author`, `snippet`, `videoPost`, `speaking`, etc.
+
+### Query Patterns
+- Always use GROQ syntax
+- Include image URLs in queries: `"mainImageUrl": mainImage.asset->url`
+- Include related references: `categories[]->{...}`
+- Use filters: `*[_type == "post" && defined(slug.current)]`
+- Order results: `| order(publishedAt desc)`
+- Limit results: `[0...$count]` with parameters
+
+### Client Configuration
+- Sanity client uses CDN: `useCdn: true`
+- API version: `'v2021-10-21'` (consider updating)
+- Configured in `src/utils/client.ts`
+
+## Feature-Specific Patterns
+
+### Engagement Tracker (Sitecore Engage)
+- Located in `src/features/engagetracker/`
+- Uses React Context: `EngageTrackerContext`
+- Provider wraps app in `app/layout.tsx` (via Layout component)
+- Configuration in `Configuration.ts` with environment variables
+- Page tracking via `TrackPageView` component
+
+### Blog/Post Patterns
+- Posts are fetched via `post.service.ts`
+- Routes: `/insights/[slug]` for individual posts (App Router)
+- Categories: `/insights/categories/[slug]`
+- Series: `/insights/series/[slug]`
+- Uses `PostCard` component for listings
+- Markdown rendering via `RenderMarkdown` component
+- All pages use App Router with `generateStaticParams` for static generation
+
+## Build & Deployment
+
+### Build Commands
+- Root: `npm run build` (runs turbo build)
+- Web app: `next build` (static export configured in next.config.js with `output: 'export'`)
+- Studio: `sanity build`
+
+### Deployment
+- Deployed on **Netlify**
+- Uses `@netlify/plugin-nextjs` plugin
+- Static export configuration
+- Sitemap generation via `next-sitemap` in postbuild
+
+### Turbo Configuration
+- Pipeline defined in `turbo.json`
+- Build depends on dependencies: `dependsOn: ["^build"]`
+- Dev mode is persistent and not cached
+
+## Code Style Guidelines
+
+### TypeScript
+- Use interfaces (not types) for object shapes
+- Prefix interfaces with `I` (e.g., `IPost`)
+- Use `FC<Props>` for functional components
+- Enable strict mode for new code
+
+### React
+- Use functional components with hooks
+- Use named exports for components
+- Props interfaces should be defined above component
+- Use Shadcn UI components for UI (built on Radix UI)
+- Mark client components with `"use client"` directive
+- Prefer server components when possible (default in App Router)
+
+### File Naming
+- Components: PascalCase (e.g., `PostCard.tsx`)
+- Services: camelCase with `.service.ts` suffix (e.g., `post.service.ts`)
+- Interfaces: PascalCase with `I` prefix (e.g., `IPost.ts`)
+- App Router Pages: `page.tsx` in route folders (e.g., `app/insights/[slug]/page.tsx`)
+- Layouts: `layout.tsx` in route folders
+
+### Imports
+- Group imports: external libraries, then internal
+- Use absolute imports from `src/` when possible
+- Use barrel exports (index.ts) for cleaner imports
+
+## Testing Considerations
+- No test setup currently visible
+- Consider adding Jest/Vitest for unit tests
+- Consider adding Playwright/Cypress for E2E tests
+
+## Performance Considerations
+- Using static site generation (SSG) for all pages
+- Images should be optimized (consider Next.js Image component)
+- Sanity CDN is enabled for faster queries
+- Consider implementing ISR (Incremental Static Regeneration) for dynamic content
+
+## Security Considerations
+- Sanity project ID and dataset should be environment variables
+- Sitecore CDP keys should be properly secured
+- No sensitive data in client-side code
+- Use environment variables for all configuration
+
+## Migration Path Recommendations
+
+### Completed ✅
+1. ✅ Upgraded Next.js to 15.1.6 with App Router
+2. ✅ Migrated from Chakra UI to Shadcn UI and Tailwind CSS
+3. ✅ Replaced moment.js with date-fns
+4. ✅ Migrated from Pages Router to App Router
+5. ✅ Updated static export configuration
+
+### Short Term
+1. Enable TypeScript strict mode gradually
+2. Update Sanity API version
+3. Modernize ESLint configuration
+
+### Medium Term
+1. Add proper error boundaries
+2. Add comprehensive testing
+3. Optimize image loading with Next.js Image component
+
+### Long Term
+1. Consider implementing ISR for better performance (if moving away from static export)
+2. Add proper logging/monitoring
+3. Consider adding React Server Components optimizations
+
+## Common Tasks
+
+### Adding a New Blog Post Type
+1. Add schema to `apps/studio/schemas/blog.ts`
+2. Create interface in `apps/web/src/interfaces/`
+3. Create service in `apps/web/src/services/`
+4. Create page in `apps/web/src/app/` (App Router)
+5. Create components in `apps/web/src/components/`
+
+### Adding a New Component
+1. Create folder: `components/[category]/[ComponentName]/`
+2. Create component file: `[ComponentName].tsx`
+3. Export from `index.ts` in category folder
+4. Export from main `components/index.ts`
+5. Use TypeScript interfaces for props
+6. Use Shadcn UI components and Tailwind CSS for styling
+7. Add `"use client"` if component uses hooks or browser APIs
+
+### Adding a New Service
+1. Create file: `services/[name].service.ts`
+2. Import client from `utils/client.ts`
+3. Use GROQ for queries
+4. Return typed interfaces
+5. Export functions as named exports
+
+## Notes for AI Assistants
+- Always check existing patterns before creating new code
+- Maintain consistency with existing code style
+- Use Shadcn UI components and Tailwind CSS instead of raw HTML
+- Include proper TypeScript types
+- Follow the component folder structure
+- Use GROQ for all Sanity queries
+- Remember this is a static site - use App Router SSG patterns
+- Use `generateStaticParams` for dynamic routes
+- Mark client components with `"use client"` directive
+- Use `date-fns` for all date formatting (never use moment.js)
+- Use `cn()` utility for conditional Tailwind classes
+- Consider Netlify deployment constraints
+- Keep bundle size in mind (static export)
+

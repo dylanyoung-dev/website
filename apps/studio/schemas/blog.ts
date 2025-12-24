@@ -128,15 +128,6 @@ export const post = {
             type: 'url',
             description: "Use this option if you've published the original content on another platform."
         },
-        // {
-        //     name: 'mainNote',
-        //     type: 'note',
-        //     options: {
-        //         headline: 'Hold up!',
-        //         message: 'Main Image requires an image of 500x260 dimension only.',
-        //         tone: 'caution'
-        //     }
-        // },
         {
             name: 'mainImage',
             title: 'Main image',
@@ -152,20 +143,10 @@ export const post = {
                 }
             ]
         },
-        // {
-        //     name: 'landscapeNote',
-        //     type: 'note',
-        //     options: {
-        //         headline: 'Hold up!',
-        //         message: 'Landscape Image requires an image of 1280x720 dimension only.',
-        //         tone: 'caution'
-        //     }
-        // },
         {
             name: 'landscapeImage',
             title: 'Landscape Post Image',
             type: 'image',
-
             options: {
                 hotspot: true
             },
@@ -197,7 +178,8 @@ export const post = {
         {
             name: 'body',
             title: 'Body',
-            type: 'markdown'
+            type: 'array',
+            of: [{ type: 'block' }]
         },
         {
             name: 'readingTime',
@@ -217,7 +199,6 @@ export const post = {
             readOnly: true
         }
     ],
-
     preview: {
         select: {
             title: 'title',
@@ -329,7 +310,8 @@ export const snippet = {
         {
             name: 'body',
             title: 'Body',
-            type: 'markdown'
+            type: 'array',
+            of: [{ type: 'block' }]
         }
     ]
 };
@@ -461,7 +443,8 @@ export const speaking = {
         {
             name: 'details',
             title: 'Details of Speaking Engagement',
-            type: 'markdown'
+            type: 'array',
+            of: [{ type: 'block' }]
         },
         {
             name: 'posts',
@@ -515,7 +498,8 @@ export const project = {
         {
             name: 'details',
             title: 'Details of Project',
-            type: 'markdown'
+            type: 'array',
+            of: [{ type: 'block' }]
         },
         {
             name: 'github_url',
@@ -524,3 +508,4 @@ export const project = {
         }
     ]
 };
+
