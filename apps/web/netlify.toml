@@ -1,5 +1,4 @@
 [build]
-base = "apps/web"
 command = "npm run build"
 environment = { NODE_VERSION = "20.19.0" }
 
@@ -23,3 +22,4 @@ from = "/sugcon-eu-2024/*"
 to = "/speaking/sugcon-europe-2024/:splat"
 status = 301
 force = true
+
