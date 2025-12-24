@@ -1,0 +1,28 @@
+[build]
+  command = "cd ../.. && npm install && npm run build --filter=dylanyoung-website"
+  publish = ".next"
+
+[build.environment]
+  NODE_VERSION = "20.19.0"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[[redirects]]
+  from = "https://www.sitecoremaster.com/*"
+  to = "https://dylanyoung.dev/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://sitecoremaster.com/*"
+  to = "https://dylanyoung.dev/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/sugcon-eu-2024/*"
+  to = "/speaking/sugcon-europe-2024/:splat"
+  status = 301
+  force = true
+

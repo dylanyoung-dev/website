@@ -1,5 +1,7 @@
 [build]
-publish = "apps/studio/dist"
-command = "npm run build --filter=dylanyoung-studio"
-environment = { NODE_VERSION = "20.19.0" }
+  command = "cd ../.. && npm install && npm run build --filter=dylanyoung-studio"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20.19.0"
 
