@@ -1,6 +1,5 @@
 [build]
   command = "npm install && npm run build --workspace=dylanyoung-website"
-  publish = "apps/web/out"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
