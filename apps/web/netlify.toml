@@ -3,6 +3,7 @@
 
 [build.environment]
   NODE_VERSION = "20.19.0"
+  NETLIFY_NEXT_PLUGIN_SKIP = "false"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
@@ -24,4 +25,3 @@
   to = "/speaking/sugcon-europe-2024/:splat"
   status = 301
   force = true
-
