@@ -6,6 +6,8 @@
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+  [plugins.inputs]
+    nextRuntimePath = "apps/web"
 
 [[redirects]]
   from = "https://www.sitecoremaster.com/*"
