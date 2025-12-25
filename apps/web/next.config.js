@@ -7,6 +7,18 @@ const nextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
+    images: {
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'cdn.sanity.io',
+            },
+            {
+                protocol: 'https',
+                hostname: 'source.unsplash.com',
+            },
+        ],
+    },
     webpack: (config) => {
         config.module.rules.push({
             test: /\.svg$/,
