@@ -1,13 +1,11 @@
 [build]
-  command = "npm install && npm run build --workspace=dylanyoung-website"
+  command = "npm run build --workspace=dylanyoung-website"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-  [plugins.inputs]
-    nextRuntimePath = "apps/web"
 
 [[redirects]]
   from = "https://www.sitecoremaster.com/*"
