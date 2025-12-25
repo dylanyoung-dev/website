@@ -4,6 +4,9 @@
 [build.environment]
   NODE_VERSION = "20.19.0"
 
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
 [[redirects]]
   from = "https://www.sitecoremaster.com/*"
   to = "https://dylanyoung.dev/"

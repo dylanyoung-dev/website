@@ -2,7 +2,7 @@
 const config = {
     siteUrl: process.env.SITE_URL || 'https://dylanyoung.dev',
     generateRobotsTxt: true,
-    outDir: './out',
+    outDir: './public',
     sitemapSize: 7000
 };
 
