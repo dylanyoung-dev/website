@@ -3,16 +3,16 @@ const path = require('path');
 
 // Import Sanity client (using require since this is a Node script)
 const groq = require('groq');
-const { createClient } = require('@sanity/client');
+const sanityClient = require('@sanity/client');
 
 const baseUrl = process.env.HOST_URL || process.env.SITE_URL || 'https://dylanyoung.dev';
 
 // Create Sanity client (matching the client.ts configuration)
-const client = createClient({
+const client = sanityClient({
   projectId: process.env.projectId || process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'lanua4su',
   dataset: process.env.dataset || process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
   useCdn: true,
-  apiVersion: '2021-10-21',
+  apiVersion: 'v2021-10-21',
 });
 
 async function fetchPosts() {
