@@ -1,27 +1,49 @@
-import groq from "groq";
 import Link from "next/link";
-import { BookOpen, FileText, Sparkles, ArrowRight, Layers, Video, Mic, Briefcase, Mail, User } from "lucide-react";
+import { BookOpen, FileText, Sparkles, ArrowRight, Layers, Video, Mic, Briefcase, Mail, User, Award } from "lucide-react";
 import { MdOutlineWavingHand } from "react-icons/md";
 import { PostCard } from "@/components/blogs/PostCard/PostCard";
-import Categories from "@/components/blogs/CategoryList/CategoryList";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { MvpLogo } from "@/components/ui/MvpLogo";
 import { IPost } from "@/interfaces";
 import { getPosts } from "@/services/post.service";
-import client from "@/utils/client";
+
+const baseUrl = process.env.HOST_URL || "https://dylanyoung.dev";
 
 export const metadata = {
   title: "Dylan Young: Sitecore Developer - AI/ML, .Net, Python, React, Typescript",
-  description: "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer",
+  description: "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer. Blog posts about Sitecore, AI/ML, .Net, Python, React, and TypeScript.",
+  openGraph: {
+    title: "Dylan Young: Sitecore Developer - AI/ML, .Net, Python, React, Typescript",
+    description: "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer",
+    url: baseUrl,
+    siteName: "Dylan Young",
+    images: [
+      {
+        url: `${baseUrl}/images/dylan.jpg`,
+        width: 1200,
+        height: 630,
+        alt: "Dylan Young",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dylan Young: Sitecore Developer",
+    description: "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer",
+    images: [`${baseUrl}/images/dylan.jpg`],
+  },
+  alternates: {
+    canonical: baseUrl,
+  },
 };
 
 export default async function Home() {
   const mostRecentPosts = await getPosts(6);
-  const allCategories = await client.fetch(
-    groq`*[_type == "articleCategory" && defined(slug.current)]{...}`
-  );
 
   return (
     <Layout
@@ -59,6 +81,110 @@ export default async function Home() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Awards / Certifications Section */}
+        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
+          <div className="space-y-6">
+            <div className="flex items-center gap-2">
+              <div className="p-2 rounded-lg bg-primary/5">
+                <Award className="h-5 w-5 text-primary" />
+              </div>
+              <div className="space-y-1">
+                <h2 className="text-xl md:text-2xl font-semibold">Awards / Certifications</h2>
+                <p className="text-muted-foreground text-sm">
+                  Professional recognition and certifications
+                </p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              {/* MVP Logos - Years: 2025, 2022, 2021, 2020, 2019, 2018 */}
+              {[2025, 2022, 2021, 2020, 2019, 2018].map((year) => (
+                <a
+                  key={year}
+                  href="https://mvp.sitecore.com/en/Directory/Profile?id=29e76e11e5af446b367b08dd46ae56e7"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-80 transition-opacity group"
+                >
+                  <MvpLogo
+                    src={`/images/${year}-Technology.png`}
+                    alt={`Sitecore MVP ${year}`}
+                    width={100}
+                    height={100}
+                    className="h-auto max-w-[100px] group-hover:scale-105 transition-transform"
+                  />
+                </a>
+              ))}
+              {/* Certifications */}
+              <MvpLogo
+                src="/images/Sitecore-CDP-Certificate.png"
+                alt="Sitecore CDP Certificate"
+                width={100}
+                height={100}
+                className="h-auto max-w-[100px] hover:scale-105 transition-transform"
+              />
+              <MvpLogo
+                src="/images/Sitecore-Personalize-Certificate.png"
+                alt="Sitecore Personalize Certificate"
+                width={100}
+                height={100}
+                className="h-auto max-w-[100px] hover:scale-105 transition-transform"
+              />
+              <MvpLogo
+                src="/images/Sitecore-XMC-Certificate.png"
+                alt="Sitecore XMC Certificate"
+                width={100}
+                height={100}
+                className="h-auto max-w-[100px] hover:scale-105 transition-transform"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Latest Posts Section */}
+        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h2 className="text-xl md:text-2xl font-semibold">Latest Posts</h2>
+                <p className="text-muted-foreground text-sm">
+                  Check out my most recent content across different topics
+                </p>
+              </div>
+              <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
+                <Link href="/insights" className="flex items-center gap-1.5">
+                  View All
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            </div>
+
+            {mostRecentPosts.length > 0 ? (
+              <>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {mostRecentPosts.map((post: IPost) => (
+                    <PostCard key={post._id} post={post} showCategory={true} />
+                  ))}
+                </div>
+                <div className="flex justify-center sm:justify-start pt-2">
+                  <Button variant="ghost" size="sm" asChild className="sm:hidden w-full sm:w-auto">
+                    <Link href="/insights" className="flex items-center justify-center gap-1.5">
+                      View All Posts
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <Card>
+                <CardContent className="py-12 text-center">
+                  <p className="text-muted-foreground">No posts available yet.</p>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </div>
 
@@ -170,65 +296,6 @@ export default async function Home() {
                 </CardContent>
               </Card>
             </div>
-          </div>
-        </div>
-
-        {/* Categories Section */}
-        {allCategories && allCategories.length > 0 && (
-          <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <h2 className="text-xl md:text-2xl font-semibold">Explore by Category</h2>
-                <p className="text-muted-foreground text-sm">
-                  Browse content organized by topic
-                </p>
-              </div>
-              <Categories AllCategories={allCategories} />
-            </div>
-          </div>
-        )}
-
-        {/* Latest Posts Section */}
-        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-xl md:text-2xl font-semibold">Latest Posts</h2>
-                <p className="text-muted-foreground text-sm">
-                  Check out my most recent content across different topics
-                </p>
-              </div>
-              <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
-                <Link href="/insights" className="flex items-center gap-1.5">
-                  View All
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </div>
-
-            {mostRecentPosts.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {mostRecentPosts.map((post: IPost) => (
-                    <PostCard key={post._id} post={post} showCategory={true} />
-                  ))}
-                </div>
-                <div className="flex justify-center sm:justify-start pt-2">
-                  <Button variant="ghost" size="sm" asChild className="sm:hidden w-full sm:w-auto">
-                    <Link href="/insights" className="flex items-center justify-center gap-1.5">
-                      View All Posts
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <p className="text-muted-foreground">No posts available yet.</p>
-                </CardContent>
-              </Card>
-            )}
           </div>
         </div>
       </section>

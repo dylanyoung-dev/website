@@ -1,0 +1,9 @@
+Contact: mailto:dylan@dylanyoung.dev
+Expires: 2026-12-31T23:59:59.000Z
+Preferred-Languages: en
+Canonical: https://dylanyoung.dev/.well-known/security.txt
+
+# Security Policy
+# For security issues, please contact via email above
+# This site follows responsible disclosure practices
+

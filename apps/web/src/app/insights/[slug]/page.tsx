@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PostCard, ShareButtons } from "@/components/blogs";
+import { StructuredData } from "@/components/seo";
 import { IPost } from "@/interfaces";
 import client from "@/utils/client";
 
@@ -29,25 +30,51 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const baseUrl = process.env.HOST_URL || "https://dylanyoung.dev";
   const post: IPost = await client.fetch(
     groq`*[_type == "post" && slug.current == $slug][0]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`,
     { slug }
   );
 
+  const postUrl = `${baseUrl}/insights/${slug}`;
+  const imageUrl = post.landscapeImageUrl || post.mainImageUrl || `${baseUrl}/images/dylan.jpg`;
+
   return {
     title: post.title,
     description: post.excerpt,
+    keywords: post.categories?.map((cat: any) => cat.title).join(", "),
+    authors: [{ name: "Dylan Young", url: baseUrl }],
     openGraph: {
+      type: "article",
       title: post.title,
       description: post.excerpt,
-      images: post.landscapeImageUrl ? [post.landscapeImageUrl] : [],
-      url: `${process.env.HOST_URL}/insights/${slug}`,
+      url: postUrl,
+      siteName: "Dylan Young",
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      publishedTime: post.publishedAt,
+      modifiedTime: post._updatedAt || post.publishedAt,
+      authors: ["Dylan Young"],
+      ...(post.categories && post.categories.length > 0 && {
+        section: post.categories[0].title,
+      }),
     },
-    ...(post.canonicalUrl && {
-      alternates: {
-        canonical: post.canonicalUrl,
-      },
-    }),
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description: post.excerpt,
+      images: [imageUrl],
+      creator: "@dylanyoung",
+    },
+    alternates: {
+      canonical: post.canonicalUrl || postUrl,
+    },
   };
 }
 
@@ -72,8 +99,10 @@ export default async function PostPage({ params }: Props) {
     : [];
 
   return (
-    <Layout
-      metaTitle={post.title}
+    <>
+      <StructuredData type="Article" post={post} />
+      <Layout
+        metaTitle={post.title}
       metaDescription={post.excerpt}
       ogPhoto={post.landscapeImageUrl}
       ogUrl={fullPath}
@@ -286,6 +315,7 @@ export default async function PostPage({ params }: Props) {
         )}
       </section>
     </Layout>
+    </>
   );
 }
 

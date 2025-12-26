@@ -1,0 +1,22 @@
+/* TEAM */
+Developer: Dylan Young
+Site: https://dylanyoung.dev
+Twitter: @dylanyoung
+Location: United States
+
+/* THANKS */
+Sitecore MVP Program
+Sanity CMS
+Next.js Team
+Open Source Community
+
+/* SITE */
+Last update: 2025/01/15
+Standards: HTML5, CSS3, JavaScript ES6+, TypeScript
+Components: React, Next.js, Shadcn UI
+Software: Visual Studio Code, Git
+
+/* CONTACT */
+Contact: Available via contact page at /contact
+MVP Profile: https://mvp.sitecore.com/en/Directory/Profile?id=29e76e11e5af446b367b08dd46ae56e7
+

@@ -1,11 +1,12 @@
 import groq from "groq";
 import Link from "next/link";
 import { Metadata } from "next";
-import { ChevronRight, FileText } from "lucide-react";
+import { ChevronRight, FileText, Rss } from "lucide-react";
 import { CategoryCards, PostCard } from "@/components";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/ui/pagination";
 import { ICategory, IPost } from "@/interfaces";
 import { getPaginatedPosts, getTotalPostCount } from "@/services/post.service";
@@ -39,6 +40,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
     description: "Explore blog posts and articles covering AI/ML, Sitecore, TypeScript, React, and more",
     alternates: {
       canonical: page === 1 ? insightsUrl : `${insightsUrl}?page=${page}`,
+      types: {
+        'application/rss+xml': [{ url: `${baseUrl}/feed.xml`, title: 'Dylan Young RSS Feed' }],
+      },
     },
   };
 
@@ -93,10 +97,23 @@ export default async function InsightsPage({ searchParams }: Props) {
                       {totalPosts} {totalPosts === 1 ? 'Post' : 'Posts'}
                     </Badge>
                   </div>
-                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl">
-                    Below is the latest published content. I cover anything and everything that I love, which includes topics that are new and
-                    exciting including AI/ML, CI/CD and Infrastructure.
-                  </p>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl">
+                      Below is the latest published content. I cover anything and everything that I love, which includes topics that are new and
+                      exciting including AI/ML, CI/CD and Infrastructure.
+                    </p>
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="sm"
+                      className="flex-shrink-0"
+                    >
+                      <Link href="/feed.xml" className="flex items-center gap-2">
+                        <Rss className="h-4 w-4" />
+                        RSS Feed
+                      </Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>

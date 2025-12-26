@@ -11,8 +11,9 @@
         "dev": "next dev",
         "develop": "next dev",
         "build": "next build",
-        "postbuild": "next-sitemap",
-        "start": "next start"
+        "postbuild": "next-sitemap && node scripts/generate-rss.js",
+        "start": "next start",
+        "download-mvp-badges": "node scripts/download-mvp-badges.js"
     },
     "dependencies": {
         "@netlify/plugin-nextjs": "^5.15.3",
