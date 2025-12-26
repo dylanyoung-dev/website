@@ -42,6 +42,9 @@ export const Header = () => {
                   <Link href="/insights">Insights</Link>
                 </Button>
                 <Button variant="ghost" asChild>
+                  <Link href="/insights/series">Series</Link>
+                </Button>
+                <Button variant="ghost" asChild>
                   <Link href="/apps">My Projects</Link>
                 </Button>
                 <Button variant="ghost" asChild>
