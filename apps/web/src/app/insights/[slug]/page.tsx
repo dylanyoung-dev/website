@@ -3,13 +3,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
 import { format } from "date-fns";
-import { Clock, Calendar, ArrowLeft, ChevronRight, FileText, BookOpen } from "lucide-react";
+import { Clock, Calendar, ArrowLeft, ChevronRight, FileText, BookOpen, Sparkles } from "lucide-react";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PostCard } from "@/components/blogs";
+import { PostCard, ShareButtons } from "@/components/blogs";
 import { IPost } from "@/interfaces";
 import client from "@/utils/client";
 
@@ -107,10 +107,10 @@ export default async function PostPage({ params }: Props) {
           </nav>
         </div>
 
-        {/* Hero Image Section - Full Width */}
+        {/* Hero Image Section - Wide with Inset */}
         {post.landscapeImage && (
-          <div className="w-full mb-8 px-4">
-            <Card className="overflow-hidden border-0 shadow-lg max-w-7xl mx-auto">
+          <div className="w-full mb-8 px-4 md:px-8 lg:px-12">
+            <Card className="overflow-hidden border-0 shadow-lg w-full mx-auto">
               <CardContent className="p-0">
                 <div className="relative w-full aspect-video bg-muted">
                   <Image
@@ -148,7 +148,7 @@ export default async function PostPage({ params }: Props) {
               </h1>
 
               {/* Metadata */}
-              <div className="flex flex-wrap items-center gap-6 pt-4 border-t">
+              <div className="flex flex-wrap items-center gap-4 md:gap-6 pt-4 border-t">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   <time dateTime={post.publishedAt} className="font-medium">
@@ -165,8 +165,36 @@ export default async function PostPage({ params }: Props) {
                   <FileText className="h-4 w-4" />
                   <span className="font-medium">Article</span>
                 </div>
+                <div className="w-full md:w-auto md:ml-auto pt-2 md:pt-0">
+                  <ShareButtons
+                    url={fullPath}
+                    title={post.title}
+                    description={post.excerpt}
+                  />
+                </div>
               </div>
             </header>
+
+            {/* AI Disclaimer Section */}
+            <div className="mb-8">
+              <Card className="bg-muted/50 border-0">
+                <CardContent className="p-4 md:p-6">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 rounded-lg bg-primary/10 flex-shrink-0">
+                      <Sparkles className="h-4 w-4 text-primary" />
+                    </div>
+                    <div className="flex-1 space-y-1">
+                      <p className="text-sm font-medium text-foreground">
+                        AI-Assisted Proofreading
+                      </p>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        All articles on this site are written by me. I use AI tools solely for proofreading and editing assistance to ensure clarity and accuracy.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
 
             {/* Content Section */}
             {post.body && (

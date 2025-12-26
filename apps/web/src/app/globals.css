@@ -72,6 +72,10 @@
   a:hover {
     @apply text-foreground underline;
   }
+  a.no-underline:hover,
+  a.no-underline:hover * {
+    text-decoration: none !important;
+  }
 }
 
 @layer utilities {
@@ -118,6 +122,11 @@
     position: absolute;
     top: 0;
     left: 0;
+  }
+  
+  /* Hide Next.js portal elements */
+  nextjs-portal {
+    display: none !important;
   }
 }
 
