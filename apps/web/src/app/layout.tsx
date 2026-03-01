@@ -1,3 +1,4 @@
+import { AmplifyUpProvider } from '@/components/amplifyup-provider';
 import { ThemeProvider } from '@/components/theme-provider';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
@@ -79,9 +80,11 @@ export default function RootLayout({
             <body className={`${inter.className} palette-orange style-simple`}>
                 <StructuredData type="Person" />
                 <StructuredData type="Organization" />
-                <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
-                    {children}
-                </ThemeProvider>
+                <AmplifyUpProvider>
+                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                        {children}
+                    </ThemeProvider>
+                </AmplifyUpProvider>
                 <Script src="/js/plugins.js" />
                 <Script
                     id="gtm-init"
