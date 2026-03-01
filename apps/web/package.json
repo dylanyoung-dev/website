@@ -11,12 +11,13 @@
         "dev": "next dev",
         "develop": "next dev",
         "build": "next build",
-        "postbuild": "next-sitemap",
-        "start": "next start"
+        "postbuild": "next-sitemap && node scripts/generate-rss.js",
+        "start": "next start",
+        "download-mvp-badges": "node scripts/download-mvp-badges.js"
     },
     "dependencies": {
         "@amplifyup/sdk": "^0.1.0",
-        "@netlify/plugin-nextjs": "^4.26.0",
+        "@netlify/plugin-nextjs": "^5.15.3",
         "@radix-ui/react-accordion": "^1.2.1",
         "@radix-ui/react-avatar": "^1.1.1",
         "@radix-ui/react-checkbox": "^1.1.1",

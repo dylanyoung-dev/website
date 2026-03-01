@@ -3,7 +3,16 @@ import { ISeries } from '../interfaces/ISeries';
 import client from '../utils/client';
 
 export const getSeries = async (): Promise<ISeries[]> => {
-    return await client.fetch(groq`*[_type == "series"] | order(dateReleased desc)`);
+    return await client.fetch(
+        groq`*[_type == "series"] | order(dateReleased desc){
+            ...,
+            posts[]->{
+                ...,
+                "mainImageUrl": mainImage.asset->url,
+                "landscapeImageUrl": landscapeImage.asset->url
+            }
+        }`
+    );
 };
 
 export const getSeriesBySlug = async (slug: string): Promise<ISeries> => {

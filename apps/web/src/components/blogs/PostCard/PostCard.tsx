@@ -12,10 +12,10 @@ interface PostCardProps {
 
 export function PostCard({ post, showCategory = true }: PostCardProps) {
   return (
-    <Card className="group">
-      <CardContent className="p-0">
-        <Link href={`/insights/${post.slug.current}`} className="block">
-          <div className="space-y-4">
+    <Card className="group hover:shadow-lg transition-shadow flex flex-col h-full">
+      <CardContent className="p-0 flex flex-col flex-1">
+        <Link href={`/insights/${post.slug.current}`} className="block no-underline hover:no-underline flex flex-col flex-1">
+          <div className="flex flex-col flex-1">
             <div className="overflow-hidden">
               {post.mainImageUrl ? (
                 <Image
@@ -36,26 +36,32 @@ export function PostCard({ post, showCategory = true }: PostCardProps) {
               )}
             </div>
 
-            <div className="p-6 space-y-3">
-              <h3 className="text-lg font-semibold">{post.title}</h3>
+            <div className="p-6 space-y-3 flex-1 flex flex-col">
+              <h3 className="text-lg font-semibold group-hover:text-primary transition-colors no-underline">{post.title}</h3>
               {showCategory && (
                 <>
                   {post.categories && post.categories.length > 0 && post.categories[0] && (
                     <div className="flex">
-                      <Badge variant="default">{post.categories[0].title}</Badge>
+                      <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                        {post.categories[0].title}
+                      </span>
                     </div>
                   )}
                 </>
               )}
-              <p className="text-sm text-muted-foreground">{post.excerpt}</p>
+              <p className="text-sm text-muted-foreground no-underline flex-1">{post.excerpt}</p>
             </div>
-            <div className="px-6 pb-6 flex items-center justify-between">
-              <time className="text-sm font-semibold text-accent-foreground uppercase">
+            <div className="px-6 py-4 border-t flex items-center justify-between min-h-[3.5rem]">
+              <time className="text-sm font-semibold text-accent-foreground uppercase leading-none">
                 {format(new Date(post.publishedAt), "MMMM dd, yyyy")}
               </time>
-              {post.readingTime && (
-                <span className="text-sm font-semibold text-muted-foreground uppercase">
+              {post.readingTime ? (
+                <span className="text-sm font-semibold text-muted-foreground uppercase leading-none">
                   {post.readingTime}
+                </span>
+              ) : (
+                <span className="text-sm font-semibold text-muted-foreground uppercase opacity-0 leading-none">
+                  &nbsp;
                 </span>
               )}
             </div>

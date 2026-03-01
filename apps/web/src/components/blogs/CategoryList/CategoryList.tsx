@@ -8,22 +8,26 @@ interface CategoriesProps {
 }
 
 function Categories({ AllCategories }: CategoriesProps) {
+  if (!AllCategories || AllCategories.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      {AllCategories && (
-        <>
-          <div className="flex flex-wrap gap-2">
-            {_.map(AllCategories, (category: ICategory, index) => (
-              <Button key={index} variant="outline" size="sm" asChild>
-                <Link href={`/insights/categories/${category.slug.current}`}>
-                  {category.title}
-                </Link>
-              </Button>
-            ))}
-          </div>
-        </>
-      )}
-    </>
+    <div className="flex flex-wrap gap-3">
+      {_.map(AllCategories, (category: ICategory, index) => (
+        <Button 
+          key={index} 
+          variant="outline" 
+          size="default"
+          className="h-auto py-2.5 px-4 font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+          asChild
+        >
+          <Link href={`/insights/categories/${category.slug.current}`}>
+            {category.title}
+          </Link>
+        </Button>
+      ))}
+    </div>
   );
 }
 

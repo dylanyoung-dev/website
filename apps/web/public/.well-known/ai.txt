@@ -1,0 +1,54 @@
+# ai.txt - Information for AI crawlers and LLMs
+
+# Site Information
+Site: https://dylanyoung.dev
+Owner: Dylan Young
+Purpose: Personal blog and portfolio showcasing technical content, Sitecore expertise, and developer resources
+Language: English (en_US)
+Region: United States
+
+# Content Overview
+This site contains:
+- Technical blog posts about Sitecore, AI/ML, .NET, Python, React, and TypeScript
+- Career timeline and professional achievements
+- Speaking engagements and conference presentations
+- Video content and tutorials
+- Open source projects and applications
+
+# Author Expertise
+- Sitecore MVP (Technology) - 2025, 2022, 2021, 2020, 2019, 2018
+- Software Engineering
+- Artificial Intelligence and Machine Learning
+- Web Development (React, TypeScript)
+- .NET Development
+- Python Programming
+
+# Content Structure
+- Blog posts: /insights/[slug]
+- Categories: /insights/categories/[slug]
+- Series: /insights/series/[slug]
+- Speaking: /speaking/[slug]
+- Videos: /videos
+- Projects: /apps
+- About: /about
+
+# Technical Stack
+- Framework: Next.js 15.1.6 (Static Site Generation)
+- CMS: Sanity CMS
+- Styling: Tailwind CSS
+- Language: TypeScript
+
+# Data Formats
+- Structured Data: JSON-LD (Schema.org)
+- Sitemap: XML format at /sitemap.xml
+- RSS Feed: Available at /feed.xml (if implemented)
+
+# Crawling Guidelines
+- All content is publicly accessible
+- Blog posts are static and pre-rendered
+- Images are hosted on Sanity CDN or local /images directory
+- Respect robots.txt for crawling rules
+
+# Contact
+For questions about content or permissions, use the contact form at /contact
+

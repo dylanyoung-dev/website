@@ -1,8 +1,8 @@
+import { Layout } from "@/components/ui/Layout/Layout";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { FiChevronRight, FiExternalLink } from "react-icons/fi";
-import { Layout } from "@/components/ui/Layout/Layout";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 export const metadata = {
   title: "Dylan Young: My personal Proof of Concept projects on AI/ML and more",
@@ -40,7 +40,7 @@ export default function AppsPage() {
               <div className="border rounded-lg overflow-hidden p-4">
                 <h3 className="text-lg font-semibold">AmplifyUP</h3>
                 <p className="mt-2 mb-4">
-                  An AI-powered development platform. Currently a work-in-progress
+                  An AI-powered content orchestration and marketing automation platform.
                 </p>
 
                 <div className="flex flex-row mb-4 gap-2">

@@ -1,7 +1,6 @@
 [build]
-  base = "apps/studio"
-  command = "npm install --prefix ../.. && npx turbo build --filter=dylanyoung-studio --cwd=../.."
-  publish = "dist"
+  command = "npm install && npm run build --workspace=dylanyoung-studio"
+  publish = "apps/studio/dist"
 
 [build.environment]
   NODE_VERSION = "20.19.0"
