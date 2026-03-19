@@ -26,10 +26,6 @@
         "sanity": "^5.1.0",
         "styled-components": "^6.1.15"
     },
-    "overrides": {
-        "react": "19.2.3",
-        "react-dom": "19.2.3"
-    },
     "repository": {
         "type": "git",
         "url": "https://github.com/dylanyoung-dev/website.git"
