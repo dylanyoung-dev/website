@@ -3,7 +3,7 @@
   publish = "apps/web/.next"
 
 [build.environment]
-  NODE_VERSION = "20.19.0"
+  NODE_VERSION = "20.19.1"
   NETLIFY_NEXT_PLUGIN_SKIP = "false"
 
 [[plugins]]

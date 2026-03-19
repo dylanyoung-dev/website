@@ -97,4 +97,9 @@ out
 .DS_Store
 .idea
 dist
-.sanity/runtime/*
+.sanity/
+
+# Build-generated files
+apps/web/public/sitemap*.xml
+apps/web/public/robots.txt
+apps/web/public/feed.xml

@@ -19,11 +19,11 @@
         "sanity"
     ],
     "dependencies": {
-        "@sanity/cli": "^5.1.0",
-        "@sanity/vision": "^5.1.0",
+        "@sanity/cli": "^6.1.8",
+        "@sanity/vision": "^5.17.1",
         "react": "19.2.3",
         "react-dom": "19.2.3",
-        "sanity": "^5.1.0",
+        "sanity": "^5.17.1",
         "styled-components": "^6.1.15"
     },
     "repository": {
