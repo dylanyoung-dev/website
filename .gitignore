@@ -99,6 +99,9 @@ out
 dist
 .sanity/
 
+# Claude Code / Cursor local worktrees (must not be committed)
+.claude/
+
 # Build-generated files
 apps/web/public/sitemap*.xml
 apps/web/public/robots.txt
