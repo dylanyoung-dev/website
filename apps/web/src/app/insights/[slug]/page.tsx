@@ -2,7 +2,6 @@ import groq from "groq";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import { format } from "date-fns";
 import { Clock, Calendar, ArrowLeft, ChevronRight, FileText, BookOpen, Sparkles } from "lucide-react";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
@@ -12,6 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PostCard, ShareButtons } from "@/components/blogs";
 import { StructuredData } from "@/components/seo";
 import { IPost } from "@/interfaces";
+import { formatPublishedDate } from "@/lib/utils";
 import client from "@/utils/client";
 
 type Props = {
@@ -178,12 +178,14 @@ export default async function PostPage({ params }: Props) {
 
               {/* Metadata */}
               <div className="flex flex-wrap items-center gap-4 md:gap-6 pt-4 border-t">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  <time dateTime={post.publishedAt} className="font-medium">
-                    {format(new Date(post.publishedAt), "MMMM dd, yyyy")}
-                  </time>
-                </div>
+                {formatPublishedDate(post.publishedAt) && (
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Calendar className="h-4 w-4" />
+                    <time dateTime={typeof post.publishedAt === "string" ? post.publishedAt : undefined} className="font-medium">
+                      {formatPublishedDate(post.publishedAt)}
+                    </time>
+                  </div>
+                )}
                 {post.readingTime && (
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Clock className="h-4 w-4" />

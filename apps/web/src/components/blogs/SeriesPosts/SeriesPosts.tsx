@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { format } from "date-fns";
+import { formatPublishedDate } from "@/lib/utils";
 import { ArrowLeft, BookOpen, Calendar, Clock, ChevronRight } from "lucide-react";
 import { IPost } from "@/interfaces";
 import { ISeries } from "@/interfaces/ISeries";
@@ -91,9 +91,9 @@ export function SeriesPosts({ series }: SeriesPostsProps) {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium line-clamp-2">{post.title}</p>
-                        {post.publishedAt && (
+                        {formatPublishedDate(post.publishedAt, "MMM d, yyyy") && (
                           <p className="text-xs text-muted-foreground mt-1">
-                            {format(new Date(post.publishedAt), "MMM d, yyyy")}
+                            {formatPublishedDate(post.publishedAt, "MMM d, yyyy")}
                           </p>
                         )}
                       </div>
@@ -133,11 +133,11 @@ export function SeriesPosts({ series }: SeriesPostsProps) {
                   </div>
                   
                   <div className="flex flex-wrap items-center gap-4 pt-2 border-t">
-                    {post.publishedAt && (
+                    {formatPublishedDate(post.publishedAt) && (
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Calendar className="h-4 w-4" />
-                        <time dateTime={post.publishedAt}>
-                          {format(new Date(post.publishedAt), "MMMM dd, yyyy")}
+                        <time dateTime={typeof post.publishedAt === "string" ? post.publishedAt : undefined}>
+                          {formatPublishedDate(post.publishedAt)}
                         </time>
                       </div>
                     )}

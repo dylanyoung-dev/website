@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
-import { format } from "date-fns";
 import { IPost } from "@/interfaces";
+import { formatPublishedDate } from "@/lib/utils";
 
 interface ArticleTeaserProps {
   post: IPost;
@@ -37,9 +37,11 @@ const ArticleTeaser = ({ post }: ArticleTeaserProps) => {
           </div>
         )}
         <footer className="post-meta">
-          <time className="published">
-            {format(new Date(post.publishedAt), "MMMM dd, yyyy")}
-          </time>
+          {formatPublishedDate(post.publishedAt) && (
+            <time className="published">
+              {formatPublishedDate(post.publishedAt)}
+            </time>
+          )}
           {post?.categories !== undefined && (
             <div>
               {post.categories?.map((category, index) => (
