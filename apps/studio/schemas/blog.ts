@@ -178,8 +178,7 @@ export const post = {
         {
             name: 'body',
             title: 'Body',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         },
         {
             name: 'readingTime',
@@ -310,8 +309,7 @@ export const snippet = {
         {
             name: 'body',
             title: 'Body',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         }
     ]
 };
@@ -443,8 +441,7 @@ export const speaking = {
         {
             name: 'details',
             title: 'Details of Speaking Engagement',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         },
         {
             name: 'posts',
@@ -498,8 +495,7 @@ export const project = {
         {
             name: 'details',
             title: 'Details of Project',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         },
         {
             name: 'github_url',
