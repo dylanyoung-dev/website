@@ -12,6 +12,7 @@ import { PostCard, ShareButtons } from "@/components/blogs";
 import { StructuredData } from "@/components/seo";
 import { IPost } from "@/interfaces";
 import { formatPublishedDate } from "@/lib/utils";
+import { getPostOgImageUrl, postImageUrlProjection } from "@/lib/post-images";
 import client from "@/utils/client";
 
 type Props = {
@@ -32,12 +33,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const baseUrl = process.env.HOST_URL || "https://dylanyoung.dev";
   const post: IPost = await client.fetch(
-    groq`*[_type == "post" && slug.current == $slug][0]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url}`,
+    groq`*[_type == "post" && slug.current == $slug][0]{..., ${postImageUrlProjection}}`,
     { slug }
   );
 
   const postUrl = `${baseUrl}/insights/${slug}`;
-  const imageUrl = post.landscapeImageUrl || post.mainImageUrl || `${baseUrl}/images/dylan.jpg`;
+  const imageUrl = getPostOgImageUrl(post, `${baseUrl}/images/dylan.jpg`)!;
+  const ogImageAlt = post.socialImage?.alt || post.landscapeImage?.alt || post.title;
 
   return {
     title: post.title,
@@ -55,7 +57,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           url: imageUrl,
           width: 1200,
           height: 630,
-          alt: post.title,
+          alt: ogImageAlt,
         },
       ],
       publishedTime: post.publishedAt,
@@ -85,9 +87,11 @@ export default async function PostPage({ params }: Props) {
   const fullPath = `${url}${shortPath}`;
 
   const post: IPost = await client.fetch(
-    groq`*[_type == "post" && slug.current == $slug][0]{..., "mainImageUrl": mainImage.asset->url, "landscapeImageUrl": landscapeImage.asset->url, categories[]->{...}}`,
+    groq`*[_type == "post" && slug.current == $slug][0]{..., ${postImageUrlProjection}, categories[]->{...}}`,
     { slug }
   );
+
+  const ogImageUrl = getPostOgImageUrl(post);
 
   // Fetch related posts based on shared categories
   const categoryIds = post.categories?.map((cat) => cat._id).filter(Boolean) || [];
@@ -104,7 +108,7 @@ export default async function PostPage({ params }: Props) {
       <Layout
         metaTitle={post.title}
       metaDescription={post.excerpt}
-      ogPhoto={post.landscapeImageUrl}
+      ogPhoto={ogImageUrl}
       ogUrl={fullPath}
     >
       <section className="bg-background relative">

@@ -1,4 +1,5 @@
 import { IPost } from "@/interfaces";
+import { getPostOgImageUrl } from "@/lib/post-images";
 
 interface StructuredDataProps {
   type: "Person" | "Article" | "Organization" | "BreadcrumbList";
@@ -50,7 +51,7 @@ export function StructuredData({ type, data, post }: StructuredDataProps) {
         "@type": "BlogPosting",
         headline: post.title,
         description: post.excerpt,
-        image: post.landscapeImageUrl || post.mainImageUrl,
+        image: getPostOgImageUrl(post),
         datePublished: post.publishedAt,
         dateModified: post._updatedAt || post.publishedAt,
         author: {

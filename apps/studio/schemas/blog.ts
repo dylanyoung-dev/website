@@ -159,6 +159,22 @@ export const post = {
             ]
         },
         {
+            name: 'socialImage',
+            title: 'Social Image',
+            description: 'Optional image for Open Graph and social sharing (recommended 1200×630). Falls back to landscape, then main image.',
+            type: 'image',
+            options: {
+                hotspot: true
+            },
+            fields: [
+                {
+                    title: 'Alternative Text',
+                    name: 'alt',
+                    type: 'string'
+                }
+            ]
+        },
+        {
             name: 'categories',
             title: 'Categories',
             type: 'array',
