@@ -3,6 +3,8 @@ import { ICategory, IImage, ISlug } from '.';
 export interface IPost {
     _id: string;
     title: string;
+    metaTitle?: string;
+    metaDescription?: string;
     slug: ISlug;
     mainImage: IImage;
     mainImageUrl: string;

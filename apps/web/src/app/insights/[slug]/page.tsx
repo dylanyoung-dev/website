@@ -40,16 +40,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const postUrl = `${baseUrl}/insights/${slug}`;
   const imageUrl = getPostOgImageUrl(post, `${baseUrl}/images/dylan.jpg`)!;
   const ogImageAlt = post.socialImage?.alt || post.landscapeImage?.alt || post.title;
+  const seoTitle = post.metaTitle || post.title;
+  const seoDescription = post.metaDescription || post.excerpt;
 
   return {
-    title: post.title,
-    description: post.excerpt,
+    title: seoTitle,
+    description: seoDescription,
     keywords: post.categories?.map((cat: any) => cat.title).join(", "),
     authors: [{ name: "Dylan Young", url: baseUrl }],
     openGraph: {
       type: "article",
-      title: post.title,
-      description: post.excerpt,
+      title: seoTitle,
+      description: seoDescription,
       url: postUrl,
       siteName: "Dylan Young",
       images: [
@@ -69,8 +71,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: "summary_large_image",
-      title: post.title,
-      description: post.excerpt,
+      title: seoTitle,
+      description: seoDescription,
       images: [imageUrl],
       creator: "@dylanyoung",
     },
@@ -92,6 +94,8 @@ export default async function PostPage({ params }: Props) {
   );
 
   const ogImageUrl = getPostOgImageUrl(post);
+  const seoTitle = post.metaTitle || post.title;
+  const seoDescription = post.metaDescription || post.excerpt;
 
   // Fetch related posts based on shared categories
   const categoryIds = post.categories?.map((cat) => cat._id).filter(Boolean) || [];
@@ -106,11 +110,11 @@ export default async function PostPage({ params }: Props) {
     <>
       <StructuredData type="Article" post={post} />
       <Layout
-        metaTitle={post.title}
-      metaDescription={post.excerpt}
-      ogPhoto={ogImageUrl}
-      ogUrl={fullPath}
-    >
+        metaTitle={seoTitle}
+        metaDescription={seoDescription}
+        ogPhoto={ogImageUrl}
+        ogUrl={fullPath}
+      >
       <section className="bg-background relative">
         {/* Breadcrumb Navigation */}
         <div className="container mx-auto px-4 py-6 max-w-6xl">

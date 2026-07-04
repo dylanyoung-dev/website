@@ -208,6 +208,19 @@ export const post = {
             rows: 4
         },
         {
+            name: 'metaTitle',
+            title: 'Meta Title',
+            description: 'Optional SEO title override. Defaults to the post title when left blank.',
+            type: 'string'
+        },
+        {
+            name: 'metaDescription',
+            title: 'Meta Description',
+            description: 'Optional SEO description override. Defaults to the post excerpt when left blank.',
+            type: 'text',
+            rows: 4
+        },
+        {
             name: 'notionitemdatabaseid',
             title: 'Notion Link (Ignore)',
             type: 'string',
