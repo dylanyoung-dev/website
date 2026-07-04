@@ -8,6 +8,8 @@ export interface IPost {
     mainImageUrl: string;
     landscapeImage: IImage;
     landscapeImageUrl: string;
+    socialImage?: IImage;
+    socialImageUrl?: string;
     categories: ICategory[];
     tagging: string[];
     publishedAt: Date;

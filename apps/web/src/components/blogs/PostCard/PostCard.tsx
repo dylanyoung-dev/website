@@ -1,9 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
-import { format } from "date-fns";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { IPost } from "@/interfaces";
+import { formatPublishedDate } from "@/lib/utils";
 
 interface PostCardProps {
   post: IPost;
@@ -11,6 +10,8 @@ interface PostCardProps {
 }
 
 export function PostCard({ post, showCategory = true }: PostCardProps) {
+  const publishedLabel = formatPublishedDate(post.publishedAt);
+
   return (
     <Card className="group hover:shadow-lg transition-shadow flex flex-col h-full">
       <CardContent className="p-0 flex flex-col flex-1">
@@ -52,9 +53,18 @@ export function PostCard({ post, showCategory = true }: PostCardProps) {
               <p className="text-sm text-muted-foreground no-underline flex-1">{post.excerpt}</p>
             </div>
             <div className="px-6 py-4 border-t flex items-center justify-between min-h-[3.5rem]">
-              <time className="text-sm font-semibold text-accent-foreground uppercase leading-none">
-                {format(new Date(post.publishedAt), "MMMM dd, yyyy")}
-              </time>
+              {publishedLabel ? (
+                <time
+                  className="text-sm font-semibold text-accent-foreground uppercase leading-none"
+                  dateTime={typeof post.publishedAt === "string" ? post.publishedAt : undefined}
+                >
+                  {publishedLabel}
+                </time>
+              ) : (
+                <span className="text-sm font-semibold text-accent-foreground uppercase opacity-0 leading-none">
+                  &nbsp;
+                </span>
+              )}
               {post.readingTime ? (
                 <span className="text-sm font-semibold text-muted-foreground uppercase leading-none">
                   {post.readingTime}

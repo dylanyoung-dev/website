@@ -159,6 +159,22 @@ export const post = {
             ]
         },
         {
+            name: 'socialImage',
+            title: 'Social Image',
+            description: 'Optional image for Open Graph and social sharing (recommended 1200×630). Falls back to landscape, then main image.',
+            type: 'image',
+            options: {
+                hotspot: true
+            },
+            fields: [
+                {
+                    title: 'Alternative Text',
+                    name: 'alt',
+                    type: 'string'
+                }
+            ]
+        },
+        {
             name: 'categories',
             title: 'Categories',
             type: 'array',
@@ -178,8 +194,7 @@ export const post = {
         {
             name: 'body',
             title: 'Body',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         },
         {
             name: 'readingTime',
@@ -310,8 +325,7 @@ export const snippet = {
         {
             name: 'body',
             title: 'Body',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         }
     ]
 };
@@ -443,8 +457,7 @@ export const speaking = {
         {
             name: 'details',
             title: 'Details of Speaking Engagement',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         },
         {
             name: 'posts',
@@ -498,8 +511,7 @@ export const project = {
         {
             name: 'details',
             title: 'Details of Project',
-            type: 'array',
-            of: [{ type: 'block' }]
+            type: 'markdown'
         },
         {
             name: 'github_url',
