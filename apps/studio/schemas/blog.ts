@@ -113,6 +113,19 @@ export const post = {
             type: 'string'
         },
         {
+            name: 'metaTitle',
+            title: 'Meta Title',
+            description: 'Optional SEO title override. Defaults to the post title when left blank.',
+            type: 'string'
+        },
+        {
+            name: 'metaDescription',
+            title: 'Meta Description',
+            description: 'Optional SEO description override. Defaults to the post excerpt when left blank.',
+            type: 'text',
+            rows: 4
+        },
+        {
             name: 'slug',
             description: 'Specify the last part of the url, ex: /insights/{slug}',
             title: 'Slug',
@@ -204,19 +217,6 @@ export const post = {
         {
             name: 'excerpt',
             title: 'Excerpt',
-            type: 'text',
-            rows: 4
-        },
-        {
-            name: 'metaTitle',
-            title: 'Meta Title',
-            description: 'Optional SEO title override. Defaults to the post title when left blank.',
-            type: 'string'
-        },
-        {
-            name: 'metaDescription',
-            title: 'Meta Description',
-            description: 'Optional SEO description override. Defaults to the post excerpt when left blank.',
             type: 'text',
             rows: 4
         },
