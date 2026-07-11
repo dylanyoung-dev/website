@@ -6,7 +6,7 @@
   </head>
   <body>
     <!-- Netlify form detection — must match SubscribeBanner fields -->
-    <form name="newsletter-subscribe" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+    <form name="newsletter-subscribe" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
       <input type="hidden" name="form-name" value="newsletter-subscribe" />
       <input type="email" name="email" />
       <input type="text" name="source" />
@@ -14,7 +14,7 @@
     </form>
 
     <!-- Netlify form detection — must match ContactForm fields -->
-    <form name="contact" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+    <form name="contact" method="POST" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
       <input type="hidden" name="form-name" value="contact" />
       <input type="text" name="requestType" />
       <input type="email" name="email" />

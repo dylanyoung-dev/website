@@ -4,15 +4,12 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { submitNetlifyForm } from "@/lib/netlify-forms";
 import { cn } from "@/lib/utils";
 
 const FORM_NAME = "newsletter-subscribe";
 
 type FormStatus = "idle" | "submitting" | "success" | "error";
-
-function encodeFormData(data: Record<string, string>) {
-  return new URLSearchParams(data).toString();
-}
 
 export function SubscribeBanner({ className }: { className?: string }) {
   const [email, setEmail] = useState("");
@@ -30,19 +27,11 @@ export function SubscribeBanner({ className }: { className?: string }) {
     setStatus("submitting");
 
     try {
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encodeFormData({
-          "form-name": FORM_NAME,
-          email: trimmed,
-          source: "homepage",
-        }),
+      await submitNetlifyForm({
+        "form-name": FORM_NAME,
+        email: trimmed,
+        source: "homepage",
       });
-
-      if (!response.ok) {
-        throw new Error("Subscription failed");
-      }
 
       setStatus("success");
       setEmail("");

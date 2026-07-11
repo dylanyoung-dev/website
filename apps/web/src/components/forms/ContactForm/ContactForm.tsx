@@ -12,6 +12,7 @@ import {
   CONTACT_REQUEST_TYPES,
   getContactRequestTypeFromParam,
 } from "@/lib/contact-form";
+import { submitNetlifyForm } from "@/lib/netlify-forms";
 import { cn } from "@/lib/utils";
 
 const FORM_NAME = "contact";
@@ -23,27 +24,15 @@ interface ContactFormProps {
   defaultRequestType?: string;
 }
 
-function encodeFormData(data: Record<string, string>) {
-  return new URLSearchParams(data).toString();
-}
-
 const fieldClassName =
   "flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
 
 async function subscribeToNewsletter(email: string) {
-  const response = await fetch("/", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: encodeFormData({
-      "form-name": NEWSLETTER_FORM_NAME,
-      email,
-      source: "contact-form",
-    }),
+  await submitNetlifyForm({
+    "form-name": NEWSLETTER_FORM_NAME,
+    email,
+    source: "contact-form",
   });
-
-  if (!response.ok) {
-    throw new Error("Newsletter subscription failed");
-  }
 }
 
 export function ContactForm({ defaultRequestType = "" }: ContactFormProps) {
@@ -83,21 +72,13 @@ export function ContactForm({ defaultRequestType = "" }: ContactFormProps) {
     setStatus("submitting");
 
     try {
-      const response = await fetch("/", {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: encodeFormData({
-          "form-name": FORM_NAME,
-          requestType,
-          email: trimmedEmail,
-          message: trimmedMessage,
-          subscribe: subscribeToSite ? "yes" : "no",
-        }),
+      await submitNetlifyForm({
+        "form-name": FORM_NAME,
+        requestType,
+        email: trimmedEmail,
+        message: trimmedMessage,
+        subscribe: subscribeToSite ? "yes" : "no",
       });
-
-      if (!response.ok) {
-        throw new Error("Contact form submission failed");
-      }
 
       if (subscribeToSite) {
         try {
