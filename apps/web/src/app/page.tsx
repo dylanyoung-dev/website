@@ -1,14 +1,8 @@
-import Link from "next/link";
-import { BookOpen, FileText, Sparkles, ArrowRight, Layers, Video, Mic, Briefcase, Mail, User, Award } from "lucide-react";
-import { MdOutlineWavingHand } from "react-icons/md";
-import { PostCard } from "@/components/blogs/PostCard/PostCard";
-import { Layout } from "@/components/ui/Layout/Layout";
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { MvpLogo } from "@/components/ui/MvpLogo";
-import { IPost } from "@/interfaces";
-import { getPosts } from "@/services/post.service";
+import { FeaturedPost, LatestPosts } from "@/components/blogs";
+import { AwardsSection } from "@/components/home";
+import { SubscribeBanner } from "@/components/subscribe";
+import { HomeHero, Layout } from "@/components/ui/Layout";
+import { getPostCategoriesByPostCount, getPosts } from "@/services/post.service";
 
 const baseUrl = process.env.HOST_URL || "https://dylanyoung.dev";
 
@@ -43,260 +37,43 @@ export const metadata = {
 };
 
 export default async function Home() {
-  const mostRecentPosts = await getPosts(6);
+  const [mostRecentPosts, allCategories] = await Promise.all([
+    getPosts(7),
+    getPostCategoriesByPostCount(),
+  ]);
+  const featuredPost = mostRecentPosts[0];
+  const topCategories = allCategories
+    .filter((category) => category.postCount > 0)
+    .slice(0, 3);
 
   return (
     <Layout
       metaTitle="Dylan Young: Sitecore Developer - AI/ML, .Net, Python, React, Typescript"
       metaDescription="The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer"
+      flushTop
     >
       <section className="bg-background relative">
-        {/* Hero Section */}
-        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
-          <div className="space-y-6">
-            <div className="flex flex-col md:flex-row items-start md:items-start gap-4">
-              <div className="p-3 rounded-lg bg-primary/5 flex-shrink-0 mt-1">
-                <MdOutlineWavingHand className="h-6 w-6 md:h-7 md:w-7 text-primary" />
-              </div>
-              <div className="flex-1 space-y-3">
-                <div className="space-y-2">
-                  <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight text-foreground">
-                    Hello, I'm Dylan Young
-                  </h1>
-                  <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-3xl">
-                    Software engineer and technical influencer. I blog about my passions and curiosity in technology. 
-                    Here you'll find my thoughts related to Sitecore, AI/ML, .Net, Python, React, and TypeScript.
-                  </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 pt-1">
-                  <Badge variant="secondary" className="text-xs font-normal">
-                    Tech Enthusiast
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs font-normal">
-                    Content Creator
-                  </Badge>
-                  <Badge variant="secondary" className="text-xs font-normal">
-                    Technical Influencer
-                  </Badge>
-                </div>
-              </div>
-            </div>
+        <HomeHero categories={topCategories} />
+
+        {/* Posts Section */}
+        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
+          <div className="space-y-10">
+            {featuredPost ? <FeaturedPost post={featuredPost} /> : null}
+            <LatestPosts
+              posts={mostRecentPosts}
+              excludeIds={featuredPost ? [featuredPost._id] : []}
+            />
           </div>
+        </div>
+
+        {/* Subscribe Section */}
+        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
+          <SubscribeBanner />
         </div>
 
         {/* Awards / Certifications Section */}
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
-          <div className="space-y-6">
-            <div className="flex items-center gap-2">
-              <div className="p-2 rounded-lg bg-primary/5">
-                <Award className="h-5 w-5 text-primary" />
-              </div>
-              <div className="space-y-1">
-                <h2 className="text-xl md:text-2xl font-semibold">Awards / Certifications</h2>
-                <p className="text-muted-foreground text-sm">
-                  Professional recognition and certifications
-                </p>
-              </div>
-            </div>
-
-            <div className="flex flex-wrap items-center gap-4 pt-2">
-              {/* MVP Logos - Years: 2025, 2022, 2021, 2020, 2019, 2018 */}
-              {[2025, 2022, 2021, 2020, 2019, 2018].map((year) => (
-                <a
-                  key={year}
-                  href="https://mvp.sitecore.com/en/Directory/Profile?id=29e76e11e5af446b367b08dd46ae56e7"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:opacity-80 transition-opacity group"
-                >
-                  <MvpLogo
-                    src={`/images/${year}-Technology.png`}
-                    alt={`Sitecore MVP ${year}`}
-                    width={100}
-                    height={100}
-                    className="h-auto max-w-[100px] group-hover:scale-105 transition-transform"
-                  />
-                </a>
-              ))}
-              {/* Certifications */}
-              <MvpLogo
-                src="/images/Sitecore-CDP-Certificate.png"
-                alt="Sitecore CDP Certificate"
-                width={100}
-                height={100}
-                className="h-auto max-w-[100px] hover:scale-105 transition-transform"
-              />
-              <MvpLogo
-                src="/images/Sitecore-Personalize-Certificate.png"
-                alt="Sitecore Personalize Certificate"
-                width={100}
-                height={100}
-                className="h-auto max-w-[100px] hover:scale-105 transition-transform"
-              />
-              <MvpLogo
-                src="/images/Sitecore-XMC-Certificate.png"
-                alt="Sitecore XMC Certificate"
-                width={100}
-                height={100}
-                className="h-auto max-w-[100px] hover:scale-105 transition-transform"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Latest Posts Section */}
-        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <h2 className="text-xl md:text-2xl font-semibold">Latest Posts</h2>
-                <p className="text-muted-foreground text-sm">
-                  Check out my most recent content across different topics
-                </p>
-              </div>
-              <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
-                <Link href="/insights" className="flex items-center gap-1.5">
-                  View All
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            </div>
-
-            {mostRecentPosts.length > 0 ? (
-              <>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {mostRecentPosts.map((post: IPost) => (
-                    <PostCard key={post._id} post={post} showCategory={true} />
-                  ))}
-                </div>
-                <div className="flex justify-center sm:justify-start pt-2">
-                  <Button variant="ghost" size="sm" asChild className="sm:hidden w-full sm:w-auto">
-                    <Link href="/insights" className="flex items-center justify-center gap-1.5">
-                      View All Posts
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <Card>
-                <CardContent className="py-12 text-center">
-                  <p className="text-muted-foreground">No posts available yet.</p>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-        </div>
-
-        {/* Site Navigation Section */}
-        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <h2 className="text-xl md:text-2xl font-semibold">Explore the Site</h2>
-              <p className="text-muted-foreground text-sm">
-                Discover all the content and pages available on the site
-              </p>
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              <Card className="group hover:shadow-md transition-shadow">
-                <CardContent className="p-0">
-                  <Link href="/insights" className="block p-6 text-center space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <FileText className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-sm">Insights</h3>
-                    <p className="text-xs text-muted-foreground">Blog posts & articles</p>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-md transition-shadow">
-                <CardContent className="p-0">
-                  <Link href="/insights/series" className="block p-6 text-center space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <BookOpen className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-sm">Series</h3>
-                    <p className="text-xs text-muted-foreground">Curated content series</p>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-md transition-shadow">
-                <CardContent className="p-0">
-                  <Link href="/apps" className="block p-6 text-center space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <Briefcase className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-sm">My Projects</h3>
-                    <p className="text-xs text-muted-foreground">Apps & projects</p>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-md transition-shadow">
-                <CardContent className="p-0">
-                  <Link href="/speaking" className="block p-6 text-center space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <Mic className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-sm">Speaking</h3>
-                    <p className="text-xs text-muted-foreground">Engagements & talks</p>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-md transition-shadow">
-                <CardContent className="p-0">
-                  <Link href="/videos" className="block p-6 text-center space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <Video className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-sm">Videos</h3>
-                    <p className="text-xs text-muted-foreground">Video content</p>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-md transition-shadow">
-                <CardContent className="p-0">
-                  <Link href="/about" className="block p-6 text-center space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <User className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-sm">About</h3>
-                    <p className="text-xs text-muted-foreground">Learn more about me</p>
-                  </Link>
-                </CardContent>
-              </Card>
-
-              <Card className="group hover:shadow-md transition-shadow">
-                <CardContent className="p-0">
-                  <Link href="/contact" className="block p-6 text-center space-y-3">
-                    <div className="flex justify-center">
-                      <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
-                        <Mail className="h-6 w-6 text-primary" />
-                      </div>
-                    </div>
-                    <h3 className="font-semibold text-sm">Contact</h3>
-                    <p className="text-xs text-muted-foreground">Get in touch</p>
-                  </Link>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
+          <AwardsSection />
         </div>
       </section>
     </Layout>

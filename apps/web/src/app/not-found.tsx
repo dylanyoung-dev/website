@@ -68,7 +68,7 @@ export default function NotFound() {
                                     return (
                                         <Card key={link.href} className="group hover:shadow-md transition-shadow">
                                             <CardContent className="p-0">
-                                                <Link href={link.href} className="flex flex-col items-center p-6 text-center space-y-3 hover:no-underline">
+                                                <Link href={link.href} className="flex flex-col items-center p-6 text-center space-y-3 no-underline">
                                                     <div className="p-3 rounded-lg bg-primary/5 group-hover:bg-primary/10 transition-colors">
                                                         <Icon className="h-6 w-6 text-primary" />
                                                     </div>

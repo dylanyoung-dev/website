@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Forms</title>
+  </head>
+  <body>
+    <!-- Netlify form detection — must match SubscribeBanner fields -->
+    <form name="newsletter-subscribe" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="newsletter-subscribe" />
+      <input type="email" name="email" />
+      <input type="text" name="source" />
+      <input type="text" name="bot-field" />
+    </form>
+
+    <!-- Netlify form detection — must match ContactForm fields -->
+    <form name="contact" data-netlify="true" data-netlify-honeypot="bot-field" hidden>
+      <input type="hidden" name="form-name" value="contact" />
+      <input type="text" name="requestType" />
+      <input type="email" name="email" />
+      <textarea name="message"></textarea>
+      <input type="text" name="subscribe" />
+      <input type="text" name="bot-field" />
+    </form>
+  </body>
+</html>

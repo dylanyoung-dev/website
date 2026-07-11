@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import { ArrowRight, Mic } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { IEngagement } from "@/interfaces/IEngagement";
 
@@ -8,35 +9,56 @@ interface EngagementCardProps {
 }
 
 export function EngagementCard({ engagement }: EngagementCardProps) {
-  return (
-    <Card className="group">
-      <CardContent className="p-0">
-        <Link href={`/speaking/${engagement.slug.current}`} className="block">
-          <div className="space-y-8">
-            <div className="overflow-hidden">
-              {engagement.thumbnail ? (
-                <Image
-                  src={engagement.thumbnailUrl}
-                  alt={engagement.thumbnail?.alt ?? ""}
-                  width={500}
-                  height={260}
-                  className="w-full h-60 object-cover transition-transform duration-200 group-hover:scale-105"
-                />
-              ) : (
-                <Image
-                  src="https://source.unsplash.com/random/500x260"
-                  alt="unsplash image"
-                  width={500}
-                  height={260}
-                  className="w-full h-60 object-cover transition-transform duration-200 group-hover:scale-105"
-                />
-              )}
-            </div>
+  const relatedCount = engagement.posts?.length ?? 0;
+  const metaLabel = engagement.location
+    ? engagement.location
+    : relatedCount > 0
+      ? `${relatedCount} related ${relatedCount === 1 ? "article" : "articles"}`
+      : "Speaking";
 
-            <div className="p-6 space-y-3">
-              <h3 className="text-sm font-semibold">{engagement.title}</h3>
-              <p className="text-sm text-muted-foreground">{engagement.short_description}</p>
-            </div>
+  return (
+    <Card className="group h-full overflow-hidden border-border/80 transition-shadow hover:shadow-md">
+      <CardContent className="flex h-full flex-col p-0">
+        <Link
+          href={`/speaking/${engagement.slug.current}/`}
+          className="flex h-full flex-col no-underline"
+        >
+          <div className="relative aspect-[16/10] overflow-hidden bg-muted">
+            {engagement.thumbnailUrl ? (
+              <Image
+                src={engagement.thumbnailUrl}
+                alt={engagement.thumbnail?.alt ?? engagement.title}
+                fill
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+              />
+            ) : (
+              <div
+                className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary/70 to-primary/40"
+                aria-hidden
+              >
+                <Mic className="h-10 w-10 text-white/80" />
+              </div>
+            )}
+          </div>
+
+          <div className="flex flex-1 flex-col gap-3 p-5">
+            <span className="text-[0.65rem] font-semibold uppercase tracking-wider text-primary">
+              {metaLabel}
+            </span>
+            <h3 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
+              {engagement.title}
+            </h3>
+            {engagement.short_description ? (
+              <p className="line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                {engagement.short_description}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="flex items-center justify-between border-t px-5 py-3.5 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+            <span>View session</span>
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
           </div>
         </Link>
       </CardContent>

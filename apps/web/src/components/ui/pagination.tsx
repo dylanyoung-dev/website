@@ -15,9 +15,18 @@ export function Pagination({ currentPage, totalPages, baseUrl, className }: Pagi
   if (totalPages <= 1) return null
 
   const getPageUrl = (page: number) => {
-    if (page === 1) return baseUrl
-    return `${baseUrl}?page=${page}`
-  }
+    const [path, existingQuery] = baseUrl.split("?");
+    const params = new URLSearchParams(existingQuery || "");
+
+    if (page === 1) {
+      params.delete("page");
+    } else {
+      params.set("page", String(page));
+    }
+
+    const queryString = params.toString();
+    return queryString ? `${path}?${queryString}` : path;
+  };
 
   const getPageNumbers = () => {
     const pages: (number | string)[] = []

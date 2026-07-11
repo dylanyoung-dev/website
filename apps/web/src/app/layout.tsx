@@ -54,7 +54,7 @@ export const metadata: Metadata = {
         title: 'Dylan Young: Sitecore Developer',
         description: 'The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer',
         images: [`${baseUrl}/images/dylan.jpg`],
-        creator: '@dylanyoung',
+        creator: '@dylanyoung_dev',
     },
     icons: {
         icon: '/favicon.ico',
@@ -81,7 +81,7 @@ export default function RootLayout({
                 <StructuredData type="Person" />
                 <StructuredData type="Organization" />
                 <AmplifyUpProvider>
-                    <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+                    <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false} disableTransitionOnChange>
                         {children}
                     </ThemeProvider>
                 </AmplifyUpProvider>

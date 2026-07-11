@@ -1,55 +1,108 @@
-import { FiChevronRight } from "react-icons/fi";
+import { Metadata } from "next";
+import { InsightsHero } from "@/components/insights";
 import { Layout } from "@/components/ui/Layout/Layout";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { YouTubePlayer } from "@/components/blogs";
-import { IVideoPost } from "@/interfaces";
-import { getVideoPosts } from "@/services/videoPost.service";
+import { Pagination } from "@/components/ui/pagination";
+import { VideoGrid } from "@/components/videos";
+import {
+  getSearchVideoCount,
+  getSearchVideosInRange,
+  getTotalVideoCount,
+  getVideosInRange,
+} from "@/services/videoPost.service";
 
-export const metadata = {
-  title: "Dylan Young: The journey of Sitecore Master",
-  description: "",
+const VIDEOS_PER_PAGE = 12;
+
+type Props = {
+  searchParams: Promise<{ page?: string; q?: string }>;
 };
 
-export default async function VideoPage() {
-  const videoPosts = await getVideoPosts(12);
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const params = await searchParams;
+  const query = params.q?.trim();
+
+  return {
+    title: query ? `Search Videos: ${query}` : "Dylan Young: Videos",
+    description:
+      "Talks, tutorials, and demos on AI, Sitecore, and software development from Dylan Young.",
+  };
+}
+
+export default async function VideoPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const currentPage = Math.max(1, parseInt(params.page || "1", 10));
+  const searchQuery = params.q?.trim() || "";
+  const isSearching = searchQuery.length > 0;
+
+  const siteVideoCount = await getTotalVideoCount();
+  const resultCount = isSearching
+    ? await getSearchVideoCount(searchQuery)
+    : siteVideoCount;
+
+  const totalPages = Math.max(1, Math.ceil(resultCount / VIDEOS_PER_PAGE));
+  const start = (currentPage - 1) * VIDEOS_PER_PAGE;
+  const end = currentPage * VIDEOS_PER_PAGE;
+
+  const videos = isSearching
+    ? await getSearchVideosInRange(searchQuery, start, end)
+    : await getVideosInRange(start, end);
+
+  const baseUrl = isSearching
+    ? `/videos?q=${encodeURIComponent(searchQuery)}`
+    : "/videos";
 
   return (
-    <Layout metaTitle="Dylan Young: The journey of Sitecore Master" metaDescription="">
+    <Layout
+      metaTitle="Dylan Young: Videos"
+      metaDescription="Talks, tutorials, and demos on AI, Sitecore, and software development."
+      flushTop
+    >
       <section className="bg-background relative">
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <nav className="flex items-center gap-2 text-sm">
-            <a href="/" className="hover:underline">Home</a>
-            <FiChevronRight className="text-gray-500" />
-            <span>My Videos</span>
-          </nav>
-        </div>
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
-          <div className="space-y-8">
-            <div className="flex justify-between">
-              <div className="space-y-5">
-                <div className="space-y-3">
-                  <h1 className="text-2xl md:text-3xl font-semibold">My Videos</h1>
-                </div>
-                <p className="text-muted-foreground text-lg md:text-xl">
-                  A curated list of all of my video content available across multiple YouTube/Twitch/Vimeo etc. channels.
-                </p>
+        <InsightsHero
+          eyebrow="Insights"
+          title="Videos"
+          description="Talks, tutorials, and demos from YouTube and beyond."
+          showSearch
+          showCategoryFilters={false}
+          searchQuery={searchQuery}
+          searchPath="/videos/"
+          searchPlaceholder="Search videos..."
+        />
+
+        <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+          <div className="space-y-10">
+            {isSearching ? (
+              <p className="text-sm text-muted-foreground">
+                {resultCount} {resultCount === 1 ? "result" : "results"} for{" "}
+                <span className="font-medium text-foreground">
+                  &ldquo;{searchQuery}&rdquo;
+                </span>
+              </p>
+            ) : null}
+
+            <VideoGrid
+              videos={videos}
+              title={isSearching ? "Search Results" : "All Videos"}
+              description={isSearching ? "" : "Talks, tutorials, and demos across YouTube channels"}
+              sortLabel={isSearching ? undefined : "Sorted by newest"}
+              emptyMessage={
+                isSearching
+                  ? "No videos matched your search."
+                  : "No videos available yet."
+              }
+            />
+
+            {totalPages > 1 ? (
+              <div className="border-t pt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  baseUrl={baseUrl}
+                />
               </div>
-            </div>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-12">
-              {videoPosts.map((video: IVideoPost) => (
-                <Card key={video._id}>
-                  <CardHeader>{video.title}</CardHeader>
-                  <CardContent>
-                    <YouTubePlayer videoId={video.youtubeId} />
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+            ) : null}
           </div>
         </div>
       </section>
     </Layout>
   );
 }
-
-

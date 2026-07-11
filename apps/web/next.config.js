@@ -1,5 +1,12 @@
+const path = require("path");
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Monorepo: stop Next from picking the wrong workspace root (dual lockfiles).
+    outputFileTracingRoot: path.join(__dirname, "../../"),
+    experimental: {
+        optimizePackageImports: ["lucide-react"],
+    },
     trailingSlash: true,
     eslint: {
         ignoreDuringBuilds: true,
@@ -20,6 +27,10 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'images.unsplash.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'img.youtube.com',
             },
         ],
     },
