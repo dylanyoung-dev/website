@@ -88,9 +88,10 @@ Region: United States (US)
 
 # Contact & Social
 - MVP Profile: https://mvp.sitecore.com/en/Directory/Profile?id=29e76e11e5af446b367b08dd46ae56e7
-- GitHub: https://github.com/dylanyoung
-- LinkedIn: https://www.linkedin.com/in/dylanyoung
-- Twitter: @dylanyoung
+- GitHub: https://github.com/dylanyoung-dev
+- LinkedIn: https://www.linkedin.com/in/dylanyoung/
+- Twitter: @dylanyoung_dev
+- YouTube: https://youtube.com/c/dylanyoungdev
 
 # Last Updated
 Generated: 2025-01-15

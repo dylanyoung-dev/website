@@ -2,13 +2,13 @@ import groq from "groq";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import { Clock, Calendar, ArrowLeft, ChevronRight, FileText, BookOpen, Sparkles } from "lucide-react";
+import { Clock, Calendar, ArrowLeft, ChevronRight, FileText, Sparkles } from "lucide-react";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PostCard, ShareButtons } from "@/components/blogs";
+import { LatestPosts, ShareButtons } from "@/components/blogs";
 import { StructuredData } from "@/components/seo";
 import { IPost } from "@/interfaces";
 import { formatPublishedDate } from "@/lib/utils";
@@ -18,6 +18,12 @@ import client from "@/utils/client";
 type Props = {
   params: Promise<{ slug: string }>;
 };
+
+function toIsoDateString(value: Date | string | undefined): string | undefined {
+  if (!value) return undefined;
+  if (typeof value === "string") return value;
+  return value.toISOString();
+}
 
 export async function generateStaticParams() {
   const paths = await client.fetch(
@@ -62,8 +68,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           alt: ogImageAlt,
         },
       ],
-      publishedTime: post.publishedAt,
-      modifiedTime: post._updatedAt || post.publishedAt,
+      publishedTime: toIsoDateString(post.publishedAt),
+      modifiedTime: post._updatedAt ?? toIsoDateString(post.publishedAt),
       authors: ["Dylan Young"],
       ...(post.categories && post.categories.length > 0 && {
         section: post.categories[0].title,
@@ -74,7 +80,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: seoTitle,
       description: seoDescription,
       images: [imageUrl],
-      creator: "@dylanyoung",
+      creator: "@dylanyoung_dev",
     },
     alternates: {
       canonical: post.canonicalUrl || postUrl,
@@ -97,7 +103,6 @@ export default async function PostPage({ params }: Props) {
   const seoTitle = post.metaTitle || post.title;
   const seoDescription = post.metaDescription || post.excerpt;
 
-  // Fetch related posts based on shared categories
   const categoryIds = post.categories?.map((cat) => cat._id).filter(Boolean) || [];
   const relatedPosts: IPost[] = categoryIds.length > 0
     ? await client.fetch(
@@ -105,6 +110,8 @@ export default async function PostPage({ params }: Props) {
         { slug, categoryIds }
       )
     : [];
+
+  const primaryCategorySlug = post.categories?.[0]?.slug?.current;
 
   return (
     <>
@@ -115,131 +122,131 @@ export default async function PostPage({ params }: Props) {
         ogPhoto={ogImageUrl}
         ogUrl={fullPath}
       >
-      <section className="bg-background relative">
-        {/* Breadcrumb Navigation */}
-        <div className="container mx-auto px-4 py-6 max-w-6xl">
-          <nav className="flex items-center gap-2 text-sm">
-            <Link href="/" className="hover:underline text-muted-foreground">
-              Home
-            </Link>
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            <Link href="/insights" className="hover:underline text-muted-foreground">
-              Insights
-            </Link>
-            {post.categories && 
-             post.categories.length > 0 && 
-             post.categories[0]?.slug?.current && (
-              <>
-                <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                <Link
-                  href={`/insights/categories/${post.categories[0].slug.current}`}
-                  className="hover:underline text-muted-foreground"
-                >
-                  {post.categories[0].title}
-                </Link>
-              </>
-            )}
-            <ChevronRight className="h-4 w-4 text-muted-foreground" />
-            <span className="text-foreground font-medium line-clamp-1">{post.title}</span>
-          </nav>
-        </div>
-
-        {/* Hero Image Section - Wide with Inset */}
-        {post.landscapeImage && (
-          <div className="w-full mb-8 px-4 md:px-8 lg:px-12">
-            <Card className="overflow-hidden border-0 shadow-lg w-full mx-auto">
-              <CardContent className="p-0">
-                <div className="relative w-full aspect-video bg-muted">
-                  <Image
-                    src={post.landscapeImageUrl}
-                    alt={post.landscapeImage?.alt ?? post.title}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                </div>
-              </CardContent>
-            </Card>
+        <section className="bg-background relative">
+          <div className="container mx-auto px-4 py-6 max-w-6xl">
+            <nav className="flex items-center gap-2 text-sm">
+              <Link href="/" className="hover:underline text-muted-foreground">
+                Home
+              </Link>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <Link href="/insights" className="hover:underline text-muted-foreground">
+                Insights
+              </Link>
+              {post.categories &&
+                post.categories.length > 0 &&
+                post.categories[0]?.slug?.current && (
+                  <>
+                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                    <Link
+                      href={`/insights/categories/${post.categories[0].slug.current}`}
+                      className="hover:underline text-muted-foreground"
+                    >
+                      {post.categories[0].title}
+                    </Link>
+                  </>
+                )}
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+              <span className="text-foreground font-medium line-clamp-1">{post.title}</span>
+            </nav>
           </div>
-        )}
 
-        {/* Main Content */}
-        <div className="container mx-auto px-4 pb-12 max-w-4xl">
-          <article>
-            {/* Header Section */}
-            <header className="mb-8 space-y-6">
-              {/* Categories */}
-              {post.categories && post.categories.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {post.categories.map((category, index) => (
-                    <Badge key={index} variant="secondary" className="text-sm font-medium">
-                      {category.title}
-                    </Badge>
-                  ))}
-                </div>
-              )}
-
-              {/* Title */}
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
-                {post.title}
-              </h1>
-
-              {/* Metadata */}
-              <div className="flex flex-wrap items-center gap-4 md:gap-6 pt-4 border-t">
-                {formatPublishedDate(post.publishedAt) && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="h-4 w-4" />
-                    <time dateTime={typeof post.publishedAt === "string" ? post.publishedAt : undefined} className="font-medium">
-                      {formatPublishedDate(post.publishedAt)}
-                    </time>
-                  </div>
-                )}
-                {post.readingTime && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="h-4 w-4" />
-                    <span className="font-medium">{post.readingTime}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <FileText className="h-4 w-4" />
-                  <span className="font-medium">Article</span>
-                </div>
-                <div className="w-full md:w-auto md:ml-auto pt-2 md:pt-0">
-                  <ShareButtons
-                    url={fullPath}
-                    title={post.title}
-                    description={post.excerpt}
-                  />
-                </div>
-              </div>
-            </header>
-
-            {/* AI Disclaimer Section */}
-            <div className="mb-8">
-              <Card className="bg-muted/50 border-0">
-                <CardContent className="p-4 md:p-6">
-                  <div className="flex items-start gap-3">
-                    <div className="p-2 rounded-lg bg-primary/10 flex-shrink-0">
-                      <Sparkles className="h-4 w-4 text-primary" />
-                    </div>
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-medium text-foreground">
-                        AI-Assisted Proofreading
-                      </p>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        All articles on this site are written by me. I use AI tools solely for proofreading and editing assistance to ensure clarity and accuracy.
-                      </p>
-                    </div>
+          {post.landscapeImage && (
+            <div className="w-full mb-8 px-4 md:px-8 lg:px-12">
+              <Card className="overflow-hidden border-0 shadow-lg w-full mx-auto">
+                <CardContent className="p-0">
+                  <div className="relative w-full aspect-video bg-muted">
+                    <Image
+                      src={post.landscapeImageUrl}
+                      alt={post.landscapeImage?.alt ?? post.title}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
                   </div>
                 </CardContent>
               </Card>
             </div>
+          )}
 
-            {/* Content Section */}
-            {post.body && (
-              <Card className="border-0 shadow-none">
-                <CardContent className="p-0">
-                  <div className="prose prose-lg dark:prose-invert max-w-none 
+          <div className="container mx-auto px-4 pb-12 max-w-4xl">
+            <article>
+              <header className="mb-8 space-y-6">
+                {post.categories && post.categories.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {post.categories.map((category, index) => (
+                      <Badge key={index} variant="secondary" className="text-sm font-medium">
+                        {category.title}
+                      </Badge>
+                    ))}
+                  </div>
+                )}
+
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
+                  {post.title}
+                </h1>
+
+                <div className="flex flex-wrap items-center gap-4 md:gap-6 pt-4 border-t">
+                  {formatPublishedDate(post.publishedAt) && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Calendar className="h-4 w-4" />
+                      <time
+                        dateTime={
+                          typeof post.publishedAt === "string"
+                            ? post.publishedAt
+                            : undefined
+                        }
+                        className="font-medium"
+                      >
+                        {formatPublishedDate(post.publishedAt)}
+                      </time>
+                    </div>
+                  )}
+                  {post.readingTime && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4" />
+                      <span className="font-medium">{post.readingTime}</span>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <FileText className="h-4 w-4" />
+                    <span className="font-medium">Article</span>
+                  </div>
+                  <div className="w-full md:w-auto md:ml-auto pt-2 md:pt-0">
+                    <ShareButtons
+                      url={fullPath}
+                      title={post.title}
+                      description={post.excerpt}
+                    />
+                  </div>
+                </div>
+              </header>
+
+              <div className="mb-8">
+                <Card className="bg-muted/50 border-0">
+                  <CardContent className="p-4 md:p-6">
+                    <div className="flex items-start gap-3">
+                      <div className="p-2 rounded-lg bg-primary/10 flex-shrink-0">
+                        <Sparkles className="h-4 w-4 text-primary" />
+                      </div>
+                      <div className="flex-1 space-y-1">
+                        <p className="text-sm font-medium text-foreground">
+                          AI-Assisted Proofreading
+                        </p>
+                        <p className="text-sm text-muted-foreground leading-relaxed">
+                          All articles on this site are written by me. I use AI tools solely for
+                          proofreading and editing assistance to ensure clarity and accuracy.
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {post.body && (
+                <Card className="border-0 shadow-none">
+                  <CardContent className="p-0">
+                    <div
+                      className="prose prose-lg dark:prose-invert max-w-none
                     prose-headings:font-bold prose-headings:text-foreground
                     prose-h2:!mt-20 prose-h2:!mb-8 prose-h2:first:!mt-0
                     prose-h3:!mt-16 prose-h3:!mb-6 prose-h3:first:!mt-0
@@ -255,78 +262,59 @@ export default async function PostPage({ params }: Props) {
                     prose-img:rounded-lg prose-img:shadow-md
                     prose-hr:border-border prose-hr:my-12
                     prose-ul:space-y-2 prose-ol:space-y-2
-                    prose-li:text-foreground">
-                    <RenderMarkdown>{post.body}</RenderMarkdown>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Footer Section */}
-            <footer className="mt-12 pt-8 border-t space-y-6">
-              {/* Categories */}
-              {post.categories && post.categories.length > 0 && (
-                <div className="space-y-2">
-                  <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
-                    Categories
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {post.categories
-                      .filter((category) => category?.slug?.current)
-                      .map((category, index) => (
-                        <Button
-                          key={index}
-                          variant="outline"
-                          size="sm"
-                          asChild
-                        >
-                          <Link href={`/insights/categories/${category.slug.current}`}>
-                            {category.title}
-                          </Link>
-                        </Button>
-                      ))}
-                  </div>
-                </div>
+                    prose-li:text-foreground"
+                    >
+                      <RenderMarkdown>{post.body}</RenderMarkdown>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
 
-              {/* Back Navigation */}
-              <div className="pt-4">
-                <Button variant="ghost" asChild>
-                  <Link href="/insights" className="flex items-center gap-2">
-                    <ArrowLeft className="h-4 w-4" />
-                    Back to Insights
-                  </Link>
-                </Button>
-              </div>
-            </footer>
-          </article>
-        </div>
+              <footer className="mt-12 pt-8 border-t space-y-6">
+                {post.categories && post.categories.length > 0 && (
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                      Categories
+                    </h3>
+                    <div className="flex flex-wrap gap-2">
+                      {post.categories
+                        .filter((category) => category?.slug?.current)
+                        .map((category, index) => (
+                          <Button key={index} variant="outline" size="sm" asChild>
+                            <Link href={`/insights/categories/${category.slug.current}`}>
+                              {category.title}
+                            </Link>
+                          </Button>
+                        ))}
+                    </div>
+                  </div>
+                )}
 
-        {/* Related Content Section */}
-        {relatedPosts.length > 0 && (
-          <div className="container mx-auto px-4 py-12 max-w-6xl border-t">
-            <div className="space-y-8">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="h-5 w-5 text-primary" />
-                  <h2 className="text-2xl md:text-3xl font-semibold">Related Content</h2>
+                <div className="pt-4">
+                  <Button variant="ghost" asChild>
+                    <Link href="/insights" className="flex items-center gap-2">
+                      <ArrowLeft className="h-4 w-4" />
+                      Back to Insights
+                    </Link>
+                  </Button>
                 </div>
-                <p className="text-muted-foreground text-lg">
-                  Discover more articles on similar topics
-                </p>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {relatedPosts.map((relatedPost) => (
-                  <PostCard key={relatedPost._id} post={relatedPost} showCategory={true} />
-                ))}
-              </div>
-            </div>
+              </footer>
+            </article>
           </div>
-        )}
-      </section>
-    </Layout>
+
+          {relatedPosts.length > 0 && (
+            <div className="container mx-auto px-4 py-12 max-w-6xl border-t">
+              <LatestPosts
+                posts={relatedPosts}
+                title="Related Articles"
+                description="More on similar topics"
+                showViewAll={false}
+                highlightCategorySlug={primaryCategorySlug}
+              />
+            </div>
+          )}
+        </section>
+      </Layout>
     </>
   );
 }
-
-

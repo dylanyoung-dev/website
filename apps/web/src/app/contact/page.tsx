@@ -1,27 +1,47 @@
+import { Metadata } from "next";
+import { Suspense } from "react";
+import { ContactForm } from "@/components/forms";
+import { InsightsHero } from "@/components/insights";
 import { Layout } from "@/components/ui/Layout/Layout";
-import { TallyForm } from "@/components/forms";
+import { getContactRequestTypeFromParam } from "@/lib/contact-form";
 
-export const metadata = {
-  title: "Dylan Young | Contact Me for more information",
-  description: "Leave feedback about my blogs, app projects or general feedback.",
+export const metadata: Metadata = {
+  title: "Dylan Young: Contact",
+  description:
+    "Get in touch about speaking engagements, sponsorships, project help, or just to say hello.",
 };
 
-export default function ContactPage() {
+type Props = {
+  searchParams: Promise<{ request?: string }>;
+};
+
+export default async function ContactPage({ searchParams }: Props) {
+  const params = await searchParams;
+  const defaultRequestType = getContactRequestTypeFromParam(params.request);
+
   return (
     <Layout
-      metaTitle="Dylan Young | Contact Me for more information"
-      metaDescription="Leave feedback about my blogs, app projects or general feedback."
+      metaTitle="Dylan Young: Contact"
+      metaDescription="Get in touch about speaking engagements, sponsorships, project help, or just to say hello."
+      flushTop
     >
-      <section className="relative w-full sm:w-md md:w-md lg:w-xl xl:w-6xl">
-        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
-          <div className="space-y-8">
-            <h1 className="text-2xl md:text-3xl font-semibold">Contact Me</h1>
-            <TallyForm />
+      <section className="bg-background relative">
+        <InsightsHero
+          eyebrow="Contact"
+          title="Get in touch"
+          description="Interested in speaking, sponsorship, help with a Sitecore or AI project, or just want to connect? Send a message and I'll get back to you."
+          showSearch={false}
+          showCategoryFilters={false}
+        />
+
+        <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+          <div className="mx-auto max-w-2xl">
+            <Suspense fallback={null}>
+              <ContactForm defaultRequestType={defaultRequestType} />
+            </Suspense>
           </div>
         </div>
       </section>
     </Layout>
   );
 }
-
-

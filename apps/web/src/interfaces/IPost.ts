@@ -19,4 +19,5 @@ export interface IPost {
     body: string;
     excerpt: string;
     canonicalUrl: string;
+    _updatedAt?: string;
 }

@@ -15,7 +15,7 @@ export function PostCard({ post, showCategory = true }: PostCardProps) {
   return (
     <Card className="group hover:shadow-lg transition-shadow flex flex-col h-full">
       <CardContent className="p-0 flex flex-col flex-1">
-        <Link href={`/insights/${post.slug.current}`} className="block no-underline hover:no-underline flex flex-col flex-1">
+        <Link href={`/insights/${post.slug.current}`} className="block no-underline flex flex-col flex-1">
           <div className="flex flex-col flex-1">
             <div className="overflow-hidden">
               {post.mainImageUrl ? (

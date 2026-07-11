@@ -1,7 +1,7 @@
 /* TEAM */
 Developer: Dylan Young
 Site: https://dylanyoung.dev
-Twitter: @dylanyoung
+Twitter: @dylanyoung_dev
 Location: United States
 
 /* THANKS */

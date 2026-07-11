@@ -1,2 +1,0 @@
-export { TallyForm } from "./TallyForm";
-

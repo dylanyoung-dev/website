@@ -258,6 +258,23 @@ export const videoPost = {
             type: 'string'
         },
         {
+            name: 'landscapeImage',
+            title: 'Landscape Card Image',
+            description:
+                'Thumbnail for the videos listing. Use the same 16:10 landscape ratio as blog post cards. Falls back to the YouTube thumbnail if empty.',
+            type: 'image',
+            options: {
+                hotspot: true
+            },
+            fields: [
+                {
+                    title: 'Alternative Text',
+                    name: 'alt',
+                    type: 'string'
+                }
+            ]
+        },
+        {
             name: 'summary',
             title: 'Summary',
             type: 'text'
@@ -273,7 +290,13 @@ export const videoPost = {
             type: 'array',
             of: [{ type: 'reference', to: { type: 'channel' } }]
         }
-    ]
+    ],
+    preview: {
+        select: {
+            title: 'title',
+            media: 'landscapeImage'
+        }
+    }
 };
 
 export const videoChannel = {
@@ -530,6 +553,25 @@ export const project = {
             name: 'github_url',
             title: 'Github Url (if applicable)',
             type: 'url'
+        },
+        {
+            name: 'project_url',
+            title: 'Live project URL',
+            type: 'url'
+        },
+        {
+            name: 'technologies',
+            title: 'Technologies',
+            type: 'array',
+            of: [{ type: 'string' }],
+            options: { layout: 'tags' }
+        },
+        {
+            name: 'isCurrent',
+            title: 'Current project',
+            description: 'Show on the "What Am I Up To?" page',
+            type: 'boolean',
+            initialValue: false
         }
     ]
 };

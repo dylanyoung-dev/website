@@ -4,7 +4,7 @@ import client from '../utils/client';
 
 export const getEngagements = async (count: number = 24, lastId?: string): Promise<IEngagement[]> => {
     return await client.fetch(
-        groq`*[_type == "speaking" && defined(slug.current)] | order(publishedAt desc)[0...$count]{..., "thumbnailUrl": thumbnail.asset->url, posts[]->{...}}`,
+        groq`*[_type == "speaking" && defined(slug.current)] | order(_createdAt desc)[0...$count]{..., "thumbnailUrl": thumbnail.asset->url, posts[]->{...}}`,
         { count }
     );
 };

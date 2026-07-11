@@ -8,6 +8,12 @@ const postImageFields = [
 
 type PostImageFields = Pick<IPost, (typeof postImageFields)[number]>;
 
+export function getPostCardImageUrl(
+  post: PostImageFields
+): string | undefined {
+  return post.landscapeImageUrl || post.mainImageUrl;
+}
+
 export function getPostOgImageUrl(
   post: PostImageFields,
   fallback?: string

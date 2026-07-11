@@ -1,5 +1,11 @@
 import { IPost } from "@/interfaces";
 import { getPostOgImageUrl } from "@/lib/post-images";
+import {
+  getSchemaIds,
+  PERSON_DESCRIPTION,
+  PERSON_JOB_TITLE,
+  PROFILE_SAME_AS,
+} from "@/lib/schema";
 
 interface StructuredDataProps {
   type: "Person" | "Article" | "Organization" | "BreadcrumbList";
@@ -10,31 +16,32 @@ interface StructuredDataProps {
 export function StructuredData({ type, data, post }: StructuredDataProps) {
   const baseUrl = process.env.HOST_URL || "https://dylanyoung.dev";
   const siteName = "Dylan Young";
-  
-  let jsonLd: any = {};
+  const { personId, organizationId } = getSchemaIds(baseUrl);
+
+  let jsonLd: Record<string, unknown> = {};
 
   switch (type) {
     case "Person":
       jsonLd = {
         "@context": "https://schema.org",
         "@type": "Person",
+        "@id": personId,
         name: "Dylan Young",
-        jobTitle: "Sitecore Developer & Technical Influencer",
-        description: "Software engineer and technical influencer specializing in Sitecore, AI/ML, .Net, Python, React, and TypeScript",
+        jobTitle: PERSON_JOB_TITLE,
+        description: PERSON_DESCRIPTION,
         url: baseUrl,
-        sameAs: [
-          "https://github.com/dylanyoung",
-          "https://www.linkedin.com/in/dylanyoung",
-          "https://twitter.com/dylanyoung",
-        ],
+        image: `${baseUrl}/images/dylan.jpg`,
+        sameAs: PROFILE_SAME_AS,
         knowsAbout: [
           "Sitecore",
+          "Sitecore Personalize",
+          "Composable DXP",
           "Artificial Intelligence",
           "Machine Learning",
-          ".NET",
-          "Python",
-          "React",
+          "Model Context Protocol",
+          "Node.js",
           "TypeScript",
+          ".NET",
         ],
         award: "Sitecore MVP",
         alumniOf: {
@@ -46,49 +53,45 @@ export function StructuredData({ type, data, post }: StructuredDataProps) {
 
     case "Article":
       if (!post) break;
-      jsonLd = {
-        "@context": "https://schema.org",
-        "@type": "BlogPosting",
-        headline: post.title,
-        description: post.excerpt,
-        image: getPostOgImageUrl(post),
-        datePublished: post.publishedAt,
-        dateModified: post._updatedAt || post.publishedAt,
-        author: {
-          "@type": "Person",
-          name: "Dylan Young",
-          url: baseUrl,
-        },
-        publisher: {
-          "@type": "Organization",
-          name: siteName,
-          logo: {
-            "@type": "ImageObject",
-            url: `${baseUrl}/logo.svg`,
+      {
+        const articleUrl = `${baseUrl}/insights/${post.slug.current}/`;
+        jsonLd = {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          headline: post.title,
+          description: post.excerpt,
+          image: getPostOgImageUrl(post),
+          datePublished: post.publishedAt,
+          dateModified: post._updatedAt || post.publishedAt,
+          url: articleUrl,
+          author: { "@id": personId },
+          publisher: { "@id": organizationId },
+          mainEntityOfPage: {
+            "@type": "WebPage",
+            "@id": articleUrl,
           },
-        },
-        mainEntityOfPage: {
-          "@type": "WebPage",
-          "@id": `${baseUrl}/insights/${post.slug.current}`,
-        },
-        ...(post.categories && post.categories.length > 0 && {
-          articleSection: post.categories[0].title,
-        }),
-      };
+          ...(post.categories &&
+            post.categories.length > 0 && {
+              articleSection: post.categories[0].title,
+            }),
+        };
+      }
       break;
 
     case "Organization":
       jsonLd = {
         "@context": "https://schema.org",
         "@type": "Organization",
+        "@id": organizationId,
         name: siteName,
         url: baseUrl,
-        logo: `${baseUrl}/logo.svg`,
-        description: "Personal blog and portfolio of Dylan Young, Sitecore Developer and Technical Influencer",
-        sameAs: [
-          "https://github.com/dylanyoung",
-          "https://www.linkedin.com/in/dylanyoung",
-        ],
+        logo: {
+          "@type": "ImageObject",
+          url: `${baseUrl}/logo.svg`,
+        },
+        description:
+          "Personal blog and portfolio of Dylan Young — 7x Sitecore MVP, Solutions Architect, and AI thought leader.",
+        sameAs: PROFILE_SAME_AS,
       };
       break;
 
@@ -97,7 +100,7 @@ export function StructuredData({ type, data, post }: StructuredDataProps) {
       jsonLd = {
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
-        itemListElement: data.items.map((item: any, index: number) => ({
+        itemListElement: data.items.map((item: { name: string; url: string }, index: number) => ({
           "@type": "ListItem",
           position: index + 1,
           name: item.name,
@@ -116,4 +119,3 @@ export function StructuredData({ type, data, post }: StructuredDataProps) {
     />
   );
 }
-
