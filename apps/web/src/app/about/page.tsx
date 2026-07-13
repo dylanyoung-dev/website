@@ -26,6 +26,17 @@ export default function AboutPage() {
     },
     // MVP Awards (announced in January each year)
     {
+      date: new Date("2026-01-15"),
+      title: "Sitecore MVP 2026",
+      description: "Recognized as a Sitecore Most Valuable Professional in Technology",
+      type: "award",
+      icon: <Award className="h-6 w-6" />,
+      image: "/images/2026-Technology.png",
+      imageAlt: "Sitecore MVP 2026",
+      link: "https://mvp.sitecore.com/en/Directory/Profile?id=29e76e11e5af446b367b08dd46ae56e7",
+      badge: "Technology MVP",
+    },
+    {
       date: new Date("2025-01-15"),
       title: "Sitecore MVP 2025",
       description: "Recognized as a Sitecore Most Valuable Professional in Technology",

@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 const MVP_PROFILE_URL =
   "https://mvp.sitecore.com/en/Directory/Profile?id=29e76e11e5af446b367b08dd46ae56e7";
 
-const MVP_YEARS = [2025, 2022, 2021, 2020, 2019, 2018] as const;
+const MVP_YEARS = [2026, 2025, 2022, 2021, 2020, 2019, 2018] as const;
 
 const CERTIFICATIONS = [
   {
