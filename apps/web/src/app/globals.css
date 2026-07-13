@@ -126,5 +126,79 @@
   nextjs-portal {
     display: none !important;
   }
+
+  @keyframes hero-bloom-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+      opacity: 0.9;
+    }
+    50% {
+      transform: translate3d(-2%, 3%, 0) scale(1.06);
+      opacity: 1;
+    }
+  }
+
+  @keyframes hero-bloom-pulse {
+    0%,
+    100% {
+      opacity: 0.45;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      opacity: 0.7;
+      transform: translate3d(2%, -2%, 0) scale(1.08);
+    }
+  }
+
+  @keyframes hero-ring-rotate {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  @keyframes hero-orbit-spin {
+    from {
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+      transform: translate(-50%, -50%) rotate(360deg);
+    }
+  }
+
+  .hero-orbit {
+    animation: hero-orbit-spin 28s linear infinite;
+  }
+
+  .hero-orbit-slow {
+    animation: hero-orbit-spin 42s linear infinite reverse;
+  }
+
+  .hero-orbit-slower {
+    animation: hero-orbit-spin 58s linear infinite;
+  }
+
+  .hero-orbit-slowest {
+    animation: hero-orbit-spin 78s linear infinite reverse;
+  }
+
+  .hero-planet {
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.25);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-bloom-primary,
+    .hero-bloom-secondary,
+    .hero-ring-spin,
+    .hero-orbit,
+    .hero-orbit-slow,
+    .hero-orbit-slower,
+    .hero-orbit-slowest {
+      animation: none;
+    }
+  }
 }
 
