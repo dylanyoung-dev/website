@@ -6,6 +6,7 @@ import { IVideoPost } from "@/interfaces";
 import {
   getVideoCardImageAlt,
   getVideoCardImageUrl,
+  getVideoDetailPath,
 } from "@/lib/video-images";
 import { formatPublishedDate } from "@/lib/utils";
 
@@ -18,7 +19,7 @@ interface VideoGridProps {
 }
 
 function VideoCard({ video }: { video: IVideoPost }) {
-  const youtubeUrl = `https://www.youtube.com/watch?v=${video.youtubeId}`;
+  const detailHref = getVideoDetailPath(video);
   const thumbnailUrl = getVideoCardImageUrl(video);
   const thumbnailAlt = getVideoCardImageAlt(video);
   const channel = video.channel?.[0]?.title;
@@ -27,12 +28,7 @@ function VideoCard({ video }: { video: IVideoPost }) {
   return (
     <Card className="group h-full overflow-hidden border-border/80 transition-shadow hover:shadow-md">
       <CardContent className="flex h-full flex-col p-0">
-        <Link
-          href={youtubeUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex h-full flex-col no-underline"
-        >
+        <Link href={detailHref} className="flex h-full flex-col no-underline">
           <div className="relative aspect-[16/10] overflow-hidden bg-muted">
             <Image
               src={thumbnailUrl}
@@ -74,7 +70,7 @@ function VideoCard({ video }: { video: IVideoPost }) {
             ) : (
               <span>&nbsp;</span>
             )}
-            <span>Watch on YouTube</span>
+            <span>View video</span>
           </div>
         </Link>
       </CardContent>

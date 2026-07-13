@@ -14,4 +14,9 @@ export function getVideoCardImageAlt(video: IVideoPost): string {
   return video.landscapeImage?.alt ?? video.title;
 }
 
+export function getVideoDetailPath(video: Pick<IVideoPost, "slug" | "youtubeId">): string {
+  const slug = video.slug?.current || video.youtubeId;
+  return `/videos/${slug}/`;
+}
+
 export const videoImageUrlProjection = `"landscapeImageUrl": landscapeImage.asset->url`;

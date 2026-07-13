@@ -253,6 +253,15 @@ export const videoPost = {
             type: 'string'
         },
         {
+            name: 'slug',
+            title: 'Slug',
+            type: 'slug',
+            options: {
+                source: 'title',
+                maxLength: 96
+            }
+        },
+        {
             name: 'youtubeId',
             title: 'Youtube ID',
             type: 'string'
@@ -278,6 +287,12 @@ export const videoPost = {
             name: 'summary',
             title: 'Summary',
             type: 'text'
+        },
+        {
+            name: 'body',
+            title: 'Body',
+            description: 'Optional markdown write-up shown on the video detail page.',
+            type: 'markdown'
         },
         {
             name: 'dateReleased',
