@@ -2,7 +2,7 @@ import groq from "groq";
 import Image from "next/image";
 import Link from "next/link";
 import { Metadata } from "next";
-import { Clock, Calendar, ArrowLeft, ChevronRight, FileText, Sparkles } from "lucide-react";
+import { Clock, Calendar, ArrowLeft, FileText, Sparkles } from "lucide-react";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
 import { Badge } from "@/components/ui/badge";
@@ -123,52 +123,22 @@ export default async function PostPage({ params }: Props) {
         ogUrl={fullPath}
       >
         <section className="bg-background relative">
-          <div className="container mx-auto px-4 py-6 max-w-6xl">
-            <nav className="flex items-center gap-2 text-sm">
-              <Link href="/" className="hover:underline text-muted-foreground">
-                Home
-              </Link>
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              <Link href="/insights" className="hover:underline text-muted-foreground">
-                Insights
-              </Link>
-              {post.categories &&
-                post.categories.length > 0 &&
-                post.categories[0]?.slug?.current && (
-                  <>
-                    <ChevronRight className="h-4 w-4 text-muted-foreground" />
-                    <Link
-                      href={`/insights/categories/${post.categories[0].slug.current}`}
-                      className="hover:underline text-muted-foreground"
-                    >
-                      {post.categories[0].title}
-                    </Link>
-                  </>
-                )}
-              <ChevronRight className="h-4 w-4 text-muted-foreground" />
-              <span className="text-foreground font-medium line-clamp-1">{post.title}</span>
-            </nav>
-          </div>
-
           {post.landscapeImage && (
-            <div className="w-full mb-8 px-4 md:px-8 lg:px-12">
-              <Card className="overflow-hidden border-0 shadow-lg w-full mx-auto">
-                <CardContent className="p-0">
-                  <div className="relative w-full aspect-video bg-muted">
-                    <Image
-                      src={post.landscapeImageUrl}
-                      alt={post.landscapeImage?.alt ?? post.title}
-                      fill
-                      className="object-cover"
-                      priority
-                    />
-                  </div>
-                </CardContent>
-              </Card>
+            <div className="container mx-auto px-4 pt-4 mb-8 max-w-6xl">
+              <div className="relative w-full h-44 sm:h-52 md:h-56 overflow-hidden rounded-lg bg-muted">
+                <Image
+                  src={post.landscapeImageUrl}
+                  alt={post.landscapeImage?.alt ?? post.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 1152px) 100vw, 1152px"
+                />
+              </div>
             </div>
           )}
 
-          <div className="container mx-auto px-4 pb-12 max-w-4xl">
+          <div className={`container mx-auto px-4 pb-12 max-w-4xl ${post.landscapeImage ? "" : "pt-8"}`}>
             <article>
               <header className="mb-8 space-y-6">
                 {post.categories && post.categories.length > 0 && (
