@@ -46,7 +46,8 @@ export function SubscribeBanner({ className }: { className?: string }) {
       className={cn("scroll-mt-24", className)}
       aria-labelledby="subscribe-heading"
     >
-      <div className="relative overflow-hidden rounded-2xl bg-slate-950 px-6 py-8 md:px-10 md:py-10">
+      <div className="rounded-2xl border border-transparent p-1.5 dark:border-primary/45 dark:bg-primary/15">
+        <div className="relative overflow-hidden rounded-[0.875rem] bg-slate-950 px-6 py-8 md:px-10 md:py-10">
         <div
           className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-primary/30 blur-3xl"
           aria-hidden
@@ -133,6 +134,7 @@ export function SubscribeBanner({ className }: { className?: string }) {
               ) : null}
             </div>
           )}
+        </div>
         </div>
       </div>
     </section>
