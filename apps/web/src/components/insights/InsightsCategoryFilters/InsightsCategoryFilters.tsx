@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
 const COLLAPSED_COUNT = 5;
 
 interface InsightsCategoryFiltersProps {
-  /** Override active pill — e.g. `/insights/` or `/insights/categories/generative-ai/` */
+  /** Override active pill — e.g. `/insights/` or `/insights/categories/ai/` */
   activeHref?: string;
   categories: InsightsCategoryFilter[];
 }

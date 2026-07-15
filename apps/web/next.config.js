@@ -48,6 +48,26 @@ const nextConfig = {
                 source: '/sugcon-eu-2024/:slug*',
                 destination: '/speaking/sugcon-europe-2024',
                 permanent: true
+            },
+            {
+                source: '/insights/categories/sitecore-cdp-personalize',
+                destination: '/insights/categories/experience-optimization/',
+                permanent: true
+            },
+            {
+                source: '/insights/categories/sitecore-cdp-personalize/',
+                destination: '/insights/categories/experience-optimization/',
+                permanent: true
+            },
+            {
+                source: '/insights/categories/generative-ai',
+                destination: '/insights/categories/ai/',
+                permanent: true
+            },
+            {
+                source: '/insights/categories/generative-ai/',
+                destination: '/insights/categories/ai/',
+                permanent: true
             }
         ];
     }

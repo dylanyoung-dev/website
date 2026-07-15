@@ -26,3 +26,27 @@
   to = "/speaking/sugcon-europe-2024/:splat"
   status = 301
   force = true
+
+[[redirects]]
+  from = "/insights/categories/sitecore-cdp-personalize"
+  to = "/insights/categories/experience-optimization/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/insights/categories/sitecore-cdp-personalize/"
+  to = "/insights/categories/experience-optimization/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/insights/categories/generative-ai"
+  to = "/insights/categories/ai/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/insights/categories/generative-ai/"
+  to = "/insights/categories/ai/"
+  status = 301
+  force = true
