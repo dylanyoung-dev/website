@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   Briefcase,
   Braces,
@@ -80,15 +80,27 @@ function isSubLinkActive(pathname: string, href: string) {
 
 export const Header = () => {
   const pathname = usePathname();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [insightsOpen, setInsightsOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const onInsightsSection = isInsightsRoute(pathname);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
+
+  const themeIcon =
+    !mounted || resolvedTheme === "light" ? (
+      <Moon className="h-5 w-5" />
+    ) : (
+      <Sun className="h-5 w-5" />
+    );
 
   return (
     <section>
@@ -174,11 +186,7 @@ export const Header = () => {
                 aria-label="Toggle theme"
                 onClick={toggleTheme}
               >
-                {theme === "light" ? (
-                  <Moon className="h-5 w-5" />
-                ) : (
-                  <Sun className="h-5 w-5" />
-                )}
+                {themeIcon}
               </Button>
               <Button asChild size="sm" className="rounded-full px-5">
                 <Link
@@ -200,11 +208,7 @@ export const Header = () => {
                 aria-label="Toggle theme"
                 onClick={toggleTheme}
               >
-                {theme === "light" ? (
-                  <Moon className="h-5 w-5" />
-                ) : (
-                  <Sun className="h-5 w-5" />
-                )}
+                {themeIcon}
               </Button>
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild>

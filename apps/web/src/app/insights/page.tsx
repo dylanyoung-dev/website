@@ -1,8 +1,12 @@
 import { Metadata } from "next";
-import { FeaturedPost, LatestPosts } from "@/components/blogs";
-import { InsightsHero } from "@/components/insights";
+import { isPreviewRequest } from "@amplifyup/sdk";
+import { AmplifyPageContent } from "@amplifyup/sdk/react";
+import {
+  InsightsFallback,
+  InsightsPageDataProvider,
+  renderAmplifyComponent,
+} from "@/components/amplifyup";
 import { Layout } from "@/components/ui/Layout/Layout";
-import { Pagination } from "@/components/ui/pagination";
 import { buildInsightsCategoryFilters } from "@/lib/insights-filters";
 import {
   getPostCategoriesByPostCount,
@@ -12,10 +16,16 @@ import {
   getSearchPostsInRange,
   getTotalPostCount,
 } from "@/services/post.service";
+
 const POSTS_PER_PAGE = 12;
 
 type Props = {
-  searchParams: Promise<{ page?: string; q?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    q?: string;
+    preview?: string;
+    visualEditor?: string;
+  }>;
 };
 
 function getListRange(page: number, skipFeatured: boolean) {
@@ -36,6 +46,13 @@ function getListRange(page: number, skipFeatured: boolean) {
   };
 }
 
+const layoutProps = {
+  metaTitle: "Dylan Young: Blog Content on AI, Sitecore and Typescript/React",
+  metaDescription:
+    "Explore blog posts and articles covering AI/ML, Sitecore, TypeScript, React, and more",
+  flushTop: true as const,
+};
+
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
   const page = parseInt(params.page || "1", 10);
@@ -43,11 +60,10 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const totalPosts = query
     ? await getSearchPostCount(query)
     : await getTotalPostCount();
-  const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
   const baseUrl = process.env.HOST_URL || "";
   const insightsUrl = `${baseUrl}/insights`;
 
-  const metadata: Metadata = {
+  return {
     title:
       page === 1 && !query
         ? "Dylan Young: Blog Content on AI, Sitecore and Typescript/React"
@@ -65,12 +81,19 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
       },
     },
   };
-
-  return metadata;
 }
 
 export default async function InsightsPage({ searchParams }: Props) {
   const params = await searchParams;
+
+  if (isPreviewRequest(params)) {
+    return (
+      <Layout {...layoutProps}>
+        <AmplifyPageContent renderComponent={renderAmplifyComponent} />
+      </Layout>
+    );
+  }
+
   const currentPage = Math.max(1, parseInt(params.page || "1", 10));
   const searchQuery = params.q?.trim() || "";
   const isSearching = searchQuery.length > 0;
@@ -92,7 +115,9 @@ export default async function InsightsPage({ searchParams }: Props) {
   const { start, end } = getListRange(currentPage, showFeatured);
 
   const [featuredPost, listPosts] = await Promise.all([
-    showFeatured ? getPosts(1).then((posts) => posts[0]) : Promise.resolve(undefined),
+    showFeatured
+      ? getPosts(1).then((posts) => posts[0])
+      : Promise.resolve(undefined),
     isSearching
       ? getSearchPostsInRange(searchQuery, start, end)
       : getPostsInRange(start, end),
@@ -103,53 +128,26 @@ export default async function InsightsPage({ searchParams }: Props) {
     : "/insights";
 
   return (
-    <Layout
-      metaTitle="Dylan Young: Blog Content on AI, Sitecore and Typescript/React"
-      metaDescription="Explore blog posts and articles covering AI/ML, Sitecore, TypeScript, React, and more"
-      flushTop
-    >
-      <section className="bg-background relative">
-        <InsightsHero
-          searchQuery={searchQuery}
-          title="Writing on AI, Sitecore & the craft of software."
-          description="Articles, tutorials, and deep dives."
-          activeCategoryHref={isSearching ? undefined : "/insights/"}
-          categories={categoryFilters}
+    <Layout {...layoutProps}>
+      <InsightsPageDataProvider
+        value={{
+          featuredPost,
+          listPosts,
+          searchQuery,
+          isSearching,
+          showFeatured,
+          resultCount,
+          currentPage,
+          totalPages,
+          baseUrl,
+          categoryFilters,
+        }}
+      >
+        <AmplifyPageContent
+          fallback={<InsightsFallback />}
+          renderComponent={renderAmplifyComponent}
         />
-        <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl">
-          <div className="space-y-10">
-            {showFeatured && featuredPost ? (
-              <FeaturedPost post={featuredPost} />
-            ) : null}
-
-            {isSearching ? (
-              <p className="text-sm text-muted-foreground">
-                {resultCount} {resultCount === 1 ? "result" : "results"} for{" "}
-                <span className="font-medium text-foreground">
-                  &ldquo;{searchQuery}&rdquo;
-                </span>
-              </p>
-            ) : null}
-
-            <LatestPosts
-              posts={listPosts}
-              title={isSearching ? "Search Results" : "All Posts"}
-              description=""
-              showViewAll={false}
-              sortLabel="Sorted by newest"
-            />
-
-            {totalPages > 1 ? (
-              <div className="border-t pt-8">
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  baseUrl={baseUrl}
-                />
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </section>    </Layout>
+      </InsightsPageDataProvider>
+    </Layout>
   );
 }

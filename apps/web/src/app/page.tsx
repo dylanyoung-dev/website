@@ -8,10 +8,12 @@ const baseUrl = process.env.HOST_URL || "https://dylanyoung.dev";
 
 export const metadata = {
   title: "Dylan Young: Sitecore Developer - AI/ML, .Net, Python, React, Typescript",
-  description: "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer. Blog posts about Sitecore, AI/ML, .Net, Python, React, and TypeScript.",
+  description:
+    "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer. Blog posts about Sitecore, AI/ML, .Net, Python, React, and TypeScript.",
   openGraph: {
     title: "Dylan Young: Sitecore Developer - AI/ML, .Net, Python, React, Typescript",
-    description: "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer",
+    description:
+      "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer",
     url: baseUrl,
     siteName: "Dylan Young",
     images: [
@@ -28,7 +30,8 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Dylan Young: Sitecore Developer",
-    description: "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer",
+    description:
+      "The thoughts and learnings of Dylan Young, Tech Enthusiast and Tech Influencer",
     images: [`${baseUrl}/images/dylan.jpg`],
   },
   alternates: {
@@ -55,7 +58,6 @@ export default async function Home() {
       <section className="bg-background relative">
         <HomeHero categories={topCategories} />
 
-        {/* Posts Section */}
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
           <div className="space-y-10">
             {featuredPost ? <FeaturedPost post={featuredPost} /> : null}
@@ -66,12 +68,10 @@ export default async function Home() {
           </div>
         </div>
 
-        {/* Subscribe Section */}
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
           <SubscribeBanner />
         </div>
 
-        {/* Awards / Certifications Section */}
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
           <AwardsSection />
         </div>
@@ -79,5 +79,3 @@ export default async function Home() {
     </Layout>
   );
 }
-
-
