@@ -53,6 +53,19 @@ const layoutProps = {
   flushTop: true as const,
 };
 
+/** Empty page data for Composer preview — no Sanity SSR, but placeables still mount. */
+const previewPageData = {
+  listPosts: [],
+  searchQuery: "",
+  isSearching: false,
+  showFeatured: false,
+  resultCount: 0,
+  currentPage: 1,
+  totalPages: 1,
+  baseUrl: "/insights",
+  categoryFilters: [],
+};
+
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
   const page = parseInt(params.page || "1", 10);
@@ -89,7 +102,9 @@ export default async function InsightsPage({ searchParams }: Props) {
   if (isPreviewRequest(params)) {
     return (
       <Layout {...layoutProps}>
-        <AmplifyPageContent renderComponent={renderAmplifyComponent} />
+        <InsightsPageDataProvider value={previewPageData}>
+          <AmplifyPageContent renderComponent={renderAmplifyComponent} />
+        </InsightsPageDataProvider>
       </Layout>
     );
   }
