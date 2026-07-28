@@ -591,3 +591,171 @@ export const project = {
     ]
 };
 
+export const hero = {
+    name: 'hero',
+    title: 'Hero',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Title',
+            description: 'Internal label in Studio (e.g. "Home hero", "Insights listing")',
+            type: 'string',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'variant',
+            title: 'Variant',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Default', value: 'default' },
+                    { title: 'Insights', value: 'insights' }
+                ],
+                layout: 'radio'
+            },
+            initialValue: 'default',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'eyebrow',
+            title: 'Eyebrow',
+            description: 'Small label above the heading (e.g. Insights, Speaking, Contact)',
+            type: 'string'
+        },
+        {
+            name: 'heading',
+            title: 'Heading',
+            type: 'string',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'description',
+            title: 'Description',
+            type: 'text',
+            rows: 3
+        },
+        {
+            name: 'subtitle',
+            title: 'Subtitle',
+            description: 'Optional line under the heading',
+            type: 'string'
+        },
+        {
+            name: 'badge',
+            title: 'Badge',
+            type: 'object',
+            options: { collapsible: true, collapsed: true },
+            fields: [
+                {
+                    name: 'text',
+                    title: 'Text',
+                    type: 'string'
+                },
+                {
+                    name: 'showPulse',
+                    title: 'Show pulse indicator',
+                    type: 'boolean',
+                    initialValue: true
+                }
+            ]
+        },
+        {
+            name: 'actions',
+            title: 'Actions',
+            description:
+                'CTA buttons under the description (e.g. “Read the latest”, “Browse series”, “Book a talk”)',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    name: 'action',
+                    title: 'Action',
+                    fields: [
+                        {
+                            name: 'label',
+                            title: 'Label',
+                            type: 'string',
+                            validation: (Rule: any) => Rule.required()
+                        },
+                        {
+                            name: 'href',
+                            title: 'URL or path',
+                            type: 'string',
+                            description: 'e.g. /insights/ or https://…',
+                            validation: (Rule: any) => Rule.required()
+                        },
+                        {
+                            name: 'style',
+                            title: 'Style',
+                            type: 'string',
+                            options: {
+                                list: [
+                                    { title: 'Primary', value: 'primary' },
+                                    { title: 'Outline', value: 'outline' },
+                                    { title: 'Ghost', value: 'ghost' }
+                                ],
+                                layout: 'radio'
+                            },
+                            initialValue: 'primary'
+                        },
+                        {
+                            name: 'openInNewTab',
+                            title: 'Open in new tab',
+                            type: 'boolean',
+                            initialValue: false
+                        }
+                    ],
+                    preview: {
+                        select: { title: 'label', subtitle: 'href' }
+                    }
+                }
+            ]
+        },
+        {
+            name: 'secondaryLinks',
+            title: 'Secondary links',
+            description: 'Pill / text links under the CTAs (e.g. category shortcuts)',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    name: 'secondaryLink',
+                    title: 'Link',
+                    fields: [
+                        {
+                            name: 'label',
+                            title: 'Label',
+                            type: 'string',
+                            validation: (Rule: any) => Rule.required()
+                        },
+                        {
+                            name: 'href',
+                            title: 'URL or path',
+                            type: 'string',
+                            description: 'e.g. /insights/categories/ai/',
+                            validation: (Rule: any) => Rule.required()
+                        }
+                    ],
+                    preview: {
+                        select: { title: 'label', subtitle: 'href' }
+                    }
+                }
+            ]
+        }
+    ],
+    preview: {
+        select: {
+            title: 'title',
+            subtitle: 'heading',
+            variant: 'variant'
+        },
+        prepare: ({ title, subtitle, variant }: { title?: string; subtitle?: string; variant?: string }) => ({
+            title,
+            subtitle: [variant === 'insights' ? 'Insights' : 'Default', subtitle]
+                .filter(Boolean)
+                .join(' · ')
+        })
+    }
+};
+
