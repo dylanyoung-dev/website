@@ -1,7 +1,10 @@
+# Sanity Studio Netlify site.
+# `sanity build` bundles schemas (e.g. hero) into the Studio UI — no separate schema deploy step.
+#
+# Netlify site settings: Base directory = repository root (so workspaces resolve).
 [build]
   command = "npm install && npm run build --workspace=dylanyoung-studio"
   publish = "apps/studio/dist"
 
 [build.environment]
   NODE_VERSION = "22.14.0"
-
