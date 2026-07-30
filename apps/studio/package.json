@@ -13,7 +13,7 @@
     "scripts": {
         "start": "sanity start",
         "dev": "sanity dev --port 3001",
-        "build": "npx sanity build && npx sanity schemas deploy --no-extract-manifest"
+        "build": "npx sanity build && npx sanity schema deploy --no-extract-manifest"
     },
     "keywords": [
         "sanity"
