@@ -1,12 +1,8 @@
 import { Metadata } from "next";
-import { isPreviewRequest } from "@amplifyup/sdk";
-import { AmplifyPageContent } from "@amplifyup/sdk/react";
-import {
-  InsightsFallback,
-  InsightsPageDataProvider,
-  renderAmplifyComponent,
-} from "@/components/amplifyup";
+import { FeaturedPost, LatestPosts } from "@/components/blogs";
+import { InsightsHero } from "@/components/insights";
 import { Layout } from "@/components/ui/Layout/Layout";
+import { Pagination } from "@/components/ui/pagination";
 import { buildInsightsCategoryFilters } from "@/lib/insights-filters";
 import {
   getPostCategoriesByPostCount,
@@ -23,8 +19,6 @@ type Props = {
   searchParams: Promise<{
     page?: string;
     q?: string;
-    preview?: string;
-    visualEditor?: string;
   }>;
 };
 
@@ -53,26 +47,10 @@ const layoutProps = {
   flushTop: true as const,
 };
 
-/** Empty page data for Composer preview — no Sanity SSR, but placeables still mount. */
-const previewPageData = {
-  listPosts: [],
-  searchQuery: "",
-  isSearching: false,
-  showFeatured: false,
-  resultCount: 0,
-  currentPage: 1,
-  totalPages: 1,
-  baseUrl: "/insights",
-  categoryFilters: [],
-};
-
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const params = await searchParams;
   const page = parseInt(params.page || "1", 10);
   const query = params.q?.trim();
-  const totalPosts = query
-    ? await getSearchPostCount(query)
-    : await getTotalPostCount();
   const baseUrl = process.env.HOST_URL || "";
   const insightsUrl = `${baseUrl}/insights`;
 
@@ -98,17 +76,6 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default async function InsightsPage({ searchParams }: Props) {
   const params = await searchParams;
-
-  if (isPreviewRequest(params)) {
-    return (
-      <Layout {...layoutProps}>
-        <InsightsPageDataProvider value={previewPageData}>
-          <AmplifyPageContent renderComponent={renderAmplifyComponent} />
-        </InsightsPageDataProvider>
-      </Layout>
-    );
-  }
-
   const currentPage = Math.max(1, parseInt(params.page || "1", 10));
   const searchQuery = params.q?.trim() || "";
   const isSearching = searchQuery.length > 0;
@@ -144,25 +111,50 @@ export default async function InsightsPage({ searchParams }: Props) {
 
   return (
     <Layout {...layoutProps}>
-      <InsightsPageDataProvider
-        value={{
-          featuredPost,
-          listPosts,
-          searchQuery,
-          isSearching,
-          showFeatured,
-          resultCount,
-          currentPage,
-          totalPages,
-          baseUrl,
-          categoryFilters,
-        }}
-      >
-        <AmplifyPageContent
-          fallback={<InsightsFallback />}
-          renderComponent={renderAmplifyComponent}
+      <section className="relative bg-background">
+        <InsightsHero
+          searchQuery={searchQuery}
+          title="Writing on AI, Sitecore & the craft of software."
+          description="Articles, tutorials, and deep dives."
+          activeCategoryHref={isSearching ? undefined : "/insights/"}
+          categories={categoryFilters}
         />
-      </InsightsPageDataProvider>
+
+        <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+          <div className="space-y-10">
+            {showFeatured && featuredPost ? (
+              <FeaturedPost post={featuredPost} />
+            ) : null}
+
+            {isSearching ? (
+              <p className="text-sm text-muted-foreground">
+                {resultCount} {resultCount === 1 ? "result" : "results"} for{" "}
+                <span className="font-medium text-foreground">
+                  &ldquo;{searchQuery}&rdquo;
+                </span>
+              </p>
+            ) : null}
+
+            <LatestPosts
+              posts={listPosts}
+              title={isSearching ? "Search Results" : "All Posts"}
+              description=""
+              showViewAll={false}
+              sortLabel="Sorted by newest"
+            />
+
+            {totalPages > 1 ? (
+              <div className="border-t pt-8">
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  baseUrl={baseUrl}
+                />
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </section>
     </Layout>
   );
 }
