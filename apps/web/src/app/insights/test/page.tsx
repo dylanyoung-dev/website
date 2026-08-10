@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { isPreviewRequest } from "@amplifyup/sdk";
+import { fetchPageConfigServer } from "@amplifyup/sdk/server";
 import {
   InsightsAmplifyPageContent,
   InsightsFallback,
@@ -17,6 +18,7 @@ import {
 } from "@/services/post.service";
 
 const POSTS_PER_PAGE = 12;
+const trackingId = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID?.trim() || "";
 
 type Props = {
   searchParams: Promise<{
@@ -52,7 +54,7 @@ const layoutProps = {
   flushTop: true as const,
 };
 
-/** Empty page data for Composer preview — no Sanity SSR, but placeables still mount. */
+/** Empty page data for Composer preview — placeables that need page context still mount. */
 const previewPageData = {
   listPosts: [],
   searchQuery: "",
@@ -75,22 +77,34 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 /**
- * AmplifyUP sandbox for insights placeables (Hero, ArticleGrid, InsightsHero, InsightsPosts).
- * Point Composer at `/insights/test` — production `/insights` stays native until validated here.
+ * AmplifyUP sandbox (`/insights/test`).
+ * SDK resolves via Edge (live) or orchestrator (Composer preview).
+ * Fallback = native insights UI until the route is Deployed.
  */
 export default async function InsightsAmplifyTestPage({ searchParams }: Props) {
   const params = await searchParams;
+  const preview = isPreviewRequest(params);
 
-  if (isPreviewRequest(params)) {
+  const pageConfig = trackingId
+    ? await fetchPageConfigServer("/insights/test", trackingId, preview, {
+        searchParams: params,
+      })
+    : null;
+
+  if (preview) {
     return (
       <Layout {...layoutProps}>
         <InsightsPageDataProvider value={previewPageData}>
-          <InsightsAmplifyPageContent forceComposerPreview />
+          <InsightsAmplifyPageContent
+            pageConfig={pageConfig}
+            forceComposerPreview
+          />
         </InsightsPageDataProvider>
       </Layout>
     );
   }
 
+  // Sanity SSR only for native fallback when Edge has no published layout.
   const currentPage = Math.max(1, parseInt(params.page || "1", 10));
   const searchQuery = params.q?.trim() || "";
   const isSearching = searchQuery.length > 0;
@@ -140,7 +154,10 @@ export default async function InsightsAmplifyTestPage({ searchParams }: Props) {
           categoryFilters,
         }}
       >
-        <InsightsAmplifyPageContent fallback={<InsightsFallback />} />
+        <InsightsAmplifyPageContent
+          pageConfig={pageConfig}
+          fallback={<InsightsFallback />}
+        />
       </InsightsPageDataProvider>
     </Layout>
   );

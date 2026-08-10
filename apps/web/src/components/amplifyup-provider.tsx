@@ -1,18 +1,13 @@
 "use client";
 
 import { AmplifyUpProvider as SdkAmplifyUpProvider } from "@amplifyup/sdk/react";
-import { isAmplifyUpTarget, normalizeAmplifyUpTarget } from "@amplifyup/sdk";
 
 const trackingId = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID?.trim();
-const envTarget = process.env.NEXT_PUBLIC_AMPLIFYUP_TARGET;
-const target = isAmplifyUpTarget(envTarget)
-  ? normalizeAmplifyUpTarget(envTarget)
-  : undefined;
 const isDev = process.env.NODE_ENV === "development";
 
 /**
- * Initializes AmplifyUp and provides page layout config to AmplifyRenderer.
- * When trackingId is missing, children still render (site shell works without Amplify).
+ * Production AmplifyUp setup: trackingId only.
+ * Edge + Composer preview are handled by the SDK (no URLs / siteId / target).
  */
 export function AmplifyUpProvider({ children }: { children: React.ReactNode }) {
   if (!trackingId) {
@@ -25,13 +20,7 @@ export function AmplifyUpProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <SdkAmplifyUpProvider
-      config={{
-        trackingId,
-        debug: isDev,
-        target,
-      }}
-    >
+    <SdkAmplifyUpProvider config={{ trackingId, debug: isDev }}>
       {children}
     </SdkAmplifyUpProvider>
   );
