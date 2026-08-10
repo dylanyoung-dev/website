@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import { Field } from "@amplifyup/sdk/react";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { PageShell } from "@/components/ui/Layout/PageShell";
 import { cn } from "@/lib/utils";
 import type {
-  HeroProps,
   IHeroAction,
+  IHeroBadge,
   IHeroSecondaryLink,
 } from "@/interfaces/IHero";
 
@@ -153,124 +154,162 @@ function SecondaryLinks({ links }: { links: IHeroSecondaryLink[] }) {
 }
 
 /**
- * Reusable Hero for AmplifyUP (component_id: Hero) and Sanity `hero` documents.
- * Variants: `default` (home-style) | `insights` (listing-style).
+ * AmplifyUP placeable Hero (`component_id: Hero`).
+ * Composer injects props; this component reads them only via SDK `<Field>`.
+ * Must be wrapped by `ComponentContextProvider` (see Amplify `ComponentRenderer`).
  */
-export function Hero({
-  variant = "default",
-  eyebrow,
-  heading,
-  description,
-  subtitle,
-  badge,
-  actions = [],
-  secondaryLinks = [],
-}: HeroProps) {
-  const isInsights = variant === "insights";
-
+export function Hero() {
   return (
-    <section className="relative overflow-hidden border-b bg-background">
-      <HeroDotGrid stronger={!isInsights} />
-      {!isInsights ? <HeroNebulaBackdrop /> : null}
-      {isInsights ? (
-        <div
-          className="pointer-events-none absolute -right-12 top-0 h-64 w-64 rounded-full bg-primary/10 blur-3xl dark:bg-primary/20 md:h-80 md:w-80"
-          aria-hidden
-        />
-      ) : null}
+    <Field
+      name="variant"
+      render={(variant) => {
+        const isInsights = variant === "insights";
 
-      <PageShell
-        className={cn(
-          "relative",
-          isInsights ? "py-10 md:py-14 lg:py-16" : "py-14 md:py-20 lg:py-24"
-        )}
-      >
-        <div className="relative">
-          {badge?.text ? (
-            <Badge
-              variant="outline"
-              className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
-            >
-              {badge.showPulse !== false ? (
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                </span>
-              ) : null}
-              <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
-                {badge.text}
-              </span>
-            </Badge>
-          ) : null}
+        return (
+          <section className="relative overflow-hidden border-b bg-background">
+            <HeroDotGrid stronger={!isInsights} />
+            {!isInsights ? <HeroNebulaBackdrop /> : null}
+            {isInsights ? (
+              <div
+                className="pointer-events-none absolute -right-12 top-0 h-64 w-64 rounded-full bg-primary/10 blur-3xl dark:bg-primary/20 md:h-80 md:w-80"
+                aria-hidden
+              />
+            ) : null}
 
-          {eyebrow ? (
-            <p className="mb-4 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">
-              {eyebrow}
-            </p>
-          ) : null}
-
-          <h1
-            className={cn(
-              "font-bold tracking-tight text-foreground",
-              isInsights
-                ? "max-w-3xl text-3xl leading-[1.15] md:text-4xl lg:text-5xl"
-                : "max-w-4xl text-4xl leading-[1.1] md:text-5xl lg:text-[3.25rem]"
-            )}
-          >
-            {heading}
-          </h1>
-
-          {subtitle ? (
-            <p
+            <PageShell
               className={cn(
-                "text-muted-foreground",
-                isInsights ? "mt-2 text-base md:text-lg" : "mt-3 text-xl md:text-2xl"
+                "relative",
+                isInsights ? "py-10 md:py-14 lg:py-16" : "py-14 md:py-20 lg:py-24"
               )}
             >
-              {subtitle}
-            </p>
-          ) : null}
+              <div className="relative">
+                <Field
+                  name="badge"
+                  render={(badge: IHeroBadge | undefined) => {
+                    if (!badge?.text) return null;
+                    return (
+                      <Badge
+                        variant="outline"
+                        className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
+                      >
+                        {badge.showPulse !== false ? (
+                          <span className="relative flex h-2 w-2">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
+                            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                          </span>
+                        ) : null}
+                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
+                          {badge.text}
+                        </span>
+                      </Badge>
+                    );
+                  }}
+                />
 
-          {description ? (
-            <p
-              className={cn(
-                "max-w-2xl leading-relaxed text-muted-foreground",
-                isInsights
-                  ? "mt-4 text-base md:text-lg"
-                  : "mt-6 text-lg md:text-xl"
-              )}
-            >
-              {description}
-            </p>
-          ) : null}
+                <Field
+                  name="eyebrow"
+                  render={(eyebrow) =>
+                    eyebrow ? (
+                      <p className="mb-4 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">
+                        {String(eyebrow)}
+                      </p>
+                    ) : null
+                  }
+                />
 
-          {actions.length > 0 || secondaryLinks.length > 0 ? (
-            <div
-              className={cn(
-                "flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-center",
-                isInsights ? "mt-8" : "mt-9"
-              )}
-            >
-              {actions.length > 0 ? (
-                <div className="flex flex-wrap items-center gap-3">
-                  {actions.map((action) => (
-                    <HeroActionButton
-                      key={`${action.href}-${action.label}`}
-                      action={action}
-                      size={isInsights ? "default" : "lg"}
+                <h1
+                  className={cn(
+                    "font-bold tracking-tight text-foreground",
+                    isInsights
+                      ? "max-w-3xl text-3xl leading-[1.15] md:text-4xl lg:text-5xl"
+                      : "max-w-4xl text-4xl leading-[1.1] md:text-5xl lg:text-[3.25rem]"
+                  )}
+                >
+                  <Field name="heading" fallback="Untitled" />
+                </h1>
+
+                <Field
+                  name="subtitle"
+                  render={(subtitle) =>
+                    subtitle ? (
+                      <p
+                        className={cn(
+                          "text-muted-foreground",
+                          isInsights
+                            ? "mt-2 text-base md:text-lg"
+                            : "mt-3 text-xl md:text-2xl"
+                        )}
+                      >
+                        {String(subtitle)}
+                      </p>
+                    ) : null
+                  }
+                />
+
+                <Field
+                  name="description"
+                  render={(description) =>
+                    description ? (
+                      <p
+                        className={cn(
+                          "max-w-2xl leading-relaxed text-muted-foreground",
+                          isInsights
+                            ? "mt-4 text-base md:text-lg"
+                            : "mt-6 text-lg md:text-xl"
+                        )}
+                      >
+                        {String(description)}
+                      </p>
+                    ) : null
+                  }
+                />
+
+                <Field
+                  name="actions"
+                  render={(actions: IHeroAction[] | undefined) => (
+                    <Field
+                      name="secondaryLinks"
+                      render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => {
+                        const actionList = Array.isArray(actions) ? actions : [];
+                        const linkList = Array.isArray(secondaryLinks)
+                          ? secondaryLinks
+                          : [];
+                        if (!actionList.length && !linkList.length) return null;
+
+                        return (
+                          <div
+                            className={cn(
+                              "flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-center",
+                              isInsights ? "mt-8" : "mt-9"
+                            )}
+                          >
+                            {actionList.length > 0 ? (
+                              <div className="flex flex-wrap items-center gap-3">
+                                {actionList.map((action) => (
+                                  <HeroActionButton
+                                    key={`${action.href}-${action.label}`}
+                                    action={action}
+                                    size={isInsights ? "default" : "lg"}
+                                  />
+                                ))}
+                              </div>
+                            ) : null}
+                            {linkList.length > 0 ? (
+                              <div className={cn(actionList.length > 0 && "sm:pl-1")}>
+                                <SecondaryLinks links={linkList} />
+                              </div>
+                            ) : null}
+                          </div>
+                        );
+                      }}
                     />
-                  ))}
-                </div>
-              ) : null}
-              {secondaryLinks.length > 0 ? (
-                <div className={cn(actions.length > 0 && "sm:pl-1")}>
-                  <SecondaryLinks links={secondaryLinks} />
-                </div>
-              ) : null}
-            </div>
-          ) : null}
-        </div>
-      </PageShell>
-    </section>
+                  )}
+                />
+              </div>
+            </PageShell>
+          </section>
+        );
+      }}
+    />
   );
 }

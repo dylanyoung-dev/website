@@ -20,7 +20,8 @@ export interface IHeroBadge {
 
 /**
  * Configurable Hero props for AmplifyUP / Sanity.
- * Import this interface (or the Hero component source) into AmplifyUP to generate fields.
+ * Import this interface into AmplifyUP to generate registry fields.
+ * Site Hero reads these only via SDK `<Field name="…">` (Composer injects props).
  */
 export interface IHero {
   /** Layout style: home-style (default) or insights listing style. */

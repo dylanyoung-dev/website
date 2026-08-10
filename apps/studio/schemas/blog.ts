@@ -591,6 +591,109 @@ export const project = {
     ]
 };
 
+export const articleGrid = {
+    name: 'articleGrid',
+    title: 'Article Grid',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Title',
+            description: 'Internal label in Studio (e.g. "Home latest", "AI category grid")',
+            type: 'string',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'heading',
+            title: 'Heading',
+            type: 'string'
+        },
+        {
+            name: 'description',
+            title: 'Description',
+            type: 'text',
+            rows: 2
+        },
+        {
+            name: 'sortLabel',
+            title: 'Sort label',
+            description: 'Optional meta label (e.g. "Newest first")',
+            type: 'string'
+        },
+        {
+            name: 'showViewAll',
+            title: 'Show View All',
+            type: 'boolean',
+            initialValue: true
+        },
+        {
+            name: 'viewAllHref',
+            title: 'View All URL',
+            type: 'string',
+            initialValue: '/insights/'
+        },
+        {
+            name: 'mode',
+            title: 'Mode',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Query', value: 'query' },
+                    { title: 'Curated', value: 'curated' }
+                ],
+                layout: 'radio'
+            },
+            initialValue: 'query',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'pageSize',
+            title: 'Page size',
+            type: 'number',
+            initialValue: 12,
+            validation: (Rule: any) => Rule.min(1).max(48)
+        },
+        {
+            name: 'categorySlug',
+            title: 'Category slug',
+            description: 'Optional article category slug filter (query mode)',
+            type: 'string'
+        },
+        {
+            name: 'showFeatured',
+            title: 'Show featured post',
+            description: 'First result uses featured layout (query mode)',
+            type: 'boolean',
+            initialValue: false
+        },
+        {
+            name: 'showPagination',
+            title: 'Show pagination',
+            description: 'Paginate with ?page= (query mode)',
+            type: 'boolean',
+            initialValue: false
+        },
+        {
+            name: 'postSlugs',
+            title: 'Post slugs',
+            description: 'Ordered Sanity post slugs (curated mode)',
+            type: 'array',
+            of: [{ type: 'string' }]
+        }
+    ],
+    preview: {
+        select: {
+            title: 'title',
+            subtitle: 'heading',
+            mode: 'mode'
+        },
+        prepare: ({ title, subtitle, mode }: { title?: string; subtitle?: string; mode?: string }) => ({
+            title,
+            subtitle: [mode === 'curated' ? 'Curated' : 'Query', subtitle].filter(Boolean).join(' · ')
+        })
+    }
+};
+
 export const hero = {
     name: 'hero',
     title: 'Hero',

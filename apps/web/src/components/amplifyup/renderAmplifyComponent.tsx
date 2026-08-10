@@ -7,9 +7,15 @@ import { ComponentRenderer } from "./ComponentRenderer";
 export function renderAmplifyComponent(
   componentId: string,
   props: Record<string, any>,
-  slots?: Record<string, ReactNode>
+  slots?: Record<string, ReactNode>,
+  context?: { layoutNodeId: string }
 ) {
   return (
-    <ComponentRenderer componentId={componentId} props={props} slots={slots} />
+    <ComponentRenderer
+      componentId={componentId}
+      props={props}
+      slots={slots}
+      layoutNodeId={context?.layoutNodeId}
+    />
   );
 }

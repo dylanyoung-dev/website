@@ -4,6 +4,7 @@
  */
 
 import type { ComponentType } from "react";
+import { ArticleGrid } from "@/components/article-grid";
 import { Hero } from "@/components/hero";
 import { InsightsHeroSection } from "./sections/InsightsHeroSection";
 import { InsightsPostsSection } from "./sections/InsightsPostsSection";
@@ -13,6 +14,7 @@ export const localComponentCatalog: Record<
   ComponentType<Record<string, unknown>>
 > = {
   Hero,
+  ArticleGrid,
   InsightsHero: InsightsHeroSection,
   InsightsPosts: InsightsPostsSection,
 };

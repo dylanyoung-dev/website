@@ -8,16 +8,20 @@ interface ComponentRendererProps {
   componentId: string;
   props: Record<string, any>;
   slots?: Record<string, ReactNode>;
+  /** Unique layout-tree node id from AmplifyRenderer (required for multi-instance Field editing). */
+  layoutNodeId?: string;
 }
 
 /**
  * Maps AmplifyUP layout nodes to local React components.
+ * Wraps each placeable with ComponentContextProvider so SDK `<Field>` / `<Slot>` work.
  * Header and Footer stay outside AmplifyRenderer (site chrome).
  */
 export function ComponentRenderer({
   componentId,
   props,
   slots,
+  layoutNodeId,
 }: ComponentRendererProps) {
   const Component = getLocalComponent(componentId);
 
@@ -37,8 +41,17 @@ export function ComponentRenderer({
   }
 
   return (
-    <div data-amplifyup-component={componentId} data-component-id={componentId}>
-      <ComponentContextProvider slots={slots} props={props}>
+    <div
+      data-amplifyup-component={componentId}
+      data-component-id={componentId}
+      data-layout-node-id={layoutNodeId}
+    >
+      <ComponentContextProvider
+        slots={slots}
+        props={props}
+        layoutNodeId={layoutNodeId}
+        componentId={componentId}
+      >
         <Component {...props} slots={slots} />
       </ComponentContextProvider>
     </div>
