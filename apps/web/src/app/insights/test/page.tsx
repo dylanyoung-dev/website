@@ -1,10 +1,9 @@
 import { Metadata } from "next";
 import { isPreviewRequest } from "@amplifyup/sdk";
-import { AmplifyPageContent } from "@amplifyup/sdk/react";
 import {
+  InsightsAmplifyPageContent,
   InsightsFallback,
   InsightsPageDataProvider,
-  renderAmplifyComponent,
 } from "@/components/amplifyup";
 import { Layout } from "@/components/ui/Layout/Layout";
 import { buildInsightsCategoryFilters } from "@/lib/insights-filters";
@@ -86,7 +85,7 @@ export default async function InsightsAmplifyTestPage({ searchParams }: Props) {
     return (
       <Layout {...layoutProps}>
         <InsightsPageDataProvider value={previewPageData}>
-          <AmplifyPageContent renderComponent={renderAmplifyComponent} />
+          <InsightsAmplifyPageContent forceComposerPreview />
         </InsightsPageDataProvider>
       </Layout>
     );
@@ -141,10 +140,7 @@ export default async function InsightsAmplifyTestPage({ searchParams }: Props) {
           categoryFilters,
         }}
       >
-        <AmplifyPageContent
-          fallback={<InsightsFallback />}
-          renderComponent={renderAmplifyComponent}
-        />
+        <InsightsAmplifyPageContent fallback={<InsightsFallback />} />
       </InsightsPageDataProvider>
     </Layout>
   );
