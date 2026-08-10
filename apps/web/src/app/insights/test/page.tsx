@@ -1,31 +1,21 @@
-import { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { isPreviewRequest } from "@amplifyup/sdk";
-import { fetchPageConfigServer } from "@amplifyup/sdk/server";
-import type { PageConfig } from "@amplifyup/sdk";
+"use client";
+
 import {
-  InsightsAmplifyPageContent,
+  AmplifyPageContent,
+  isComposerPreview,
+  useAmplifyUp,
+} from "@amplifyup/sdk/react";
+import type { PageConfig } from "@amplifyup/sdk";
+import { notFound } from "next/navigation";
+import {
   InsightsPageDataProvider,
+  renderAmplifyComponent,
 } from "@/components/amplifyup";
 import { Layout } from "@/components/ui/Layout/Layout";
 
 const trackingId = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID?.trim() || "";
 
-type Props = {
-  searchParams: Promise<{
-    preview?: string;
-    visualEditor?: string;
-  }>;
-};
-
-const layoutProps = {
-  metaTitle: "Insights AmplifyUP test",
-  metaDescription:
-    "AmplifyUP layout sandbox for insights — use Composer against /insights/test",
-  flushTop: true as const,
-};
-
-/** Minimal context for legacy placeables (InsightsHero / InsightsPosts) if Composer uses them. */
+/** Minimal context for legacy placeables if Composer still uses them. */
 const emptyPageData = {
   listPosts: [],
   searchQuery: "",
@@ -47,47 +37,38 @@ function hasAmplifyLayout(pageConfig: PageConfig | null): boolean {
   );
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Insights AmplifyUP test",
-    description:
-      "AmplifyUP layout sandbox for insights — use Composer against /insights/test",
-    robots: { index: false, follow: false },
-  };
+function InsightsTestBody() {
+  const { pageConfig, loading } = useAmplifyUp();
+  const preview = isComposerPreview();
+
+  if (!loading && !preview && !hasAmplifyLayout(pageConfig)) {
+    notFound();
+  }
+
+  return (
+    <InsightsPageDataProvider value={emptyPageData}>
+      <AmplifyPageContent renderComponent={renderAmplifyComponent} />
+    </InsightsPageDataProvider>
+  );
 }
 
 /**
  * AmplifyUP sandbox (`/insights/test`).
  * Live: Edge layout only — 404 if nothing is Deployed.
- * Composer preview: empty canvas allowed (orchestrator drafts).
+ * Composer preview: empty canvas allowed.
  */
-export default async function InsightsAmplifyTestPage({ searchParams }: Props) {
-  const params = await searchParams;
-  const preview = isPreviewRequest(params);
-
+export default function InsightsAmplifyTestPage() {
   if (!trackingId) {
     notFound();
   }
 
-  const pageConfig = await fetchPageConfigServer(
-    "/insights/test",
-    trackingId,
-    preview,
-    { searchParams: params }
-  );
-
-  if (!preview && !hasAmplifyLayout(pageConfig)) {
-    notFound();
-  }
-
   return (
-    <Layout {...layoutProps}>
-      <InsightsPageDataProvider value={emptyPageData}>
-        <InsightsAmplifyPageContent
-          pageConfig={pageConfig}
-          forceComposerPreview={preview}
-        />
-      </InsightsPageDataProvider>
+    <Layout
+      metaTitle="Insights AmplifyUP test"
+      metaDescription="AmplifyUP layout sandbox for insights — use Composer against /insights/test"
+      flushTop
+    >
+      <InsightsTestBody />
     </Layout>
   );
 }
