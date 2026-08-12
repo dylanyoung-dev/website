@@ -8,6 +8,7 @@ import { FeaturedPost } from "@/components/blogs/FeaturedPost";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { PageShell } from "@/components/ui/Layout/PageShell";
+import type { IArticleGrid } from "@/interfaces/IArticleGrid";
 import type { IPost } from "@/interfaces";
 import { getPostCardImageUrl } from "@/lib/post-images";
 import { formatPublishedDate } from "@/lib/utils";
@@ -66,54 +67,52 @@ function GridPostCard({ post }: { post: IPost }) {
   );
 }
 
-function ArticleGridPosts() {
+function ArticleGridPosts({ showFeatured }: { showFeatured?: boolean }) {
   return (
     <Field
-      name="showFeatured"
-      render={(showFeatured) => (
-        <Field
-          name="posts"
-          render={(posts) => {
-            const list = Array.isArray(posts) ? (posts as IPost[]) : [];
-            if (!list.length) {
-              return (
-                <Card>
-                  <CardContent className="py-12 text-center">
-                    <p className="text-muted-foreground">
-                      No posts available yet.
-                    </p>
-                  </CardContent>
-                </Card>
-              );
-            }
+      name="posts"
+      render={(posts) => {
+        const list = Array.isArray(posts) ? (posts as IPost[]) : [];
+        if (!list.length) {
+          return (
+            <Card>
+              <CardContent className="py-12 text-center">
+                <p className="text-muted-foreground">No posts available yet.</p>
+              </CardContent>
+            </Card>
+          );
+        }
 
-            const featured = showFeatured ? list[0] : null;
-            const gridPosts = featured ? list.slice(1) : list;
+        const featured = showFeatured ? list[0] : null;
+        const gridPosts = featured ? list.slice(1) : list;
 
-            return (
-              <div className="space-y-8">
-                {featured ? <FeaturedPost post={featured} /> : null}
-                {gridPosts.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {gridPosts.map((post) => (
-                      <GridPostCard key={post._id} post={post} />
-                    ))}
-                  </div>
-                ) : null}
+        return (
+          <div className="space-y-8">
+            {featured ? <FeaturedPost post={featured} /> : null}
+            {gridPosts.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                {gridPosts.map((post) => (
+                  <GridPostCard key={post._id} post={post} />
+                ))}
               </div>
-            );
-          }}
-        />
-      )}
+            ) : null}
+          </div>
+        );
+      }}
     />
   );
 }
 
 /**
  * AmplifyUP placeable ArticleGrid (`component_id: ArticleGrid`).
- * Edge resolves CMS posts into props; this component only reads via `<Field>`.
+ * `<Field>` for Composer-editable / CMS-projected content. Settings
+ * (`showFeatured`, `showViewAll`, `viewAllHref`) are plain props.
  */
-export function ArticleGrid() {
+export function ArticleGrid({
+  showFeatured,
+  showViewAll,
+  viewAllHref = "/insights/",
+}: Pick<IArticleGrid, "showFeatured" | "showViewAll" | "viewAllHref">) {
   return (
     <section className="border-b bg-background py-10 md:py-14">
       <PageShell className="space-y-6">
@@ -143,39 +142,25 @@ export function ArticleGrid() {
               ) : null
             }
           />
-          <Field
-            name="showViewAll"
-            render={(showViewAll) =>
-              showViewAll ? (
-                <Field
-                  name="viewAllHref"
-                  render={(viewAllHref) => (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="hidden shrink-0 sm:flex"
-                    >
-                      <Link
-                        href={
-                          typeof viewAllHref === "string" && viewAllHref.trim()
-                            ? viewAllHref
-                            : "/insights/"
-                        }
-                        className="flex items-center gap-1.5 no-underline"
-                      >
-                        View All
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </Button>
-                  )}
-                />
-              ) : null
-            }
-          />
+          {showViewAll ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="hidden shrink-0 sm:flex"
+            >
+              <Link
+                href={viewAllHref?.trim() || "/insights/"}
+                className="flex items-center gap-1.5 no-underline"
+              >
+                View All
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          ) : null}
         </div>
 
-        <ArticleGridPosts />
+        <ArticleGridPosts showFeatured={showFeatured} />
       </PageShell>
     </section>
   );

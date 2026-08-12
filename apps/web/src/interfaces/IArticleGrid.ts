@@ -1,6 +1,6 @@
 /**
  * AmplifyUP props for ArticleGrid (`component_id: ArticleGrid`).
- * CMS/list data is resolved on Edge and projected into props — site only reads via `<Field>`.
+ * Content / CMS-projected fields use SDK `<Field>`; settings (`showFeatured`, etc.) are plain props.
  */
 
 import type { IPost } from "./IPost";
@@ -12,11 +12,11 @@ export interface IArticleGrid {
   description?: string;
   /** Optional sort / meta label (e.g. "Newest first"). */
   sortLabel?: string;
-  /** Show "View all" link. */
+  /** Show "View all" link. Plain prop, not `<Field>`. */
   showViewAll?: boolean;
-  /** Href for "View all" (default `/insights/`). */
+  /** Href for "View all" (default `/insights/`). Plain prop, not `<Field>`. */
   viewAllHref?: string;
-  /** First post uses FeaturedPost layout. */
+  /** First post uses FeaturedPost layout. Plain prop, not `<Field>`. */
   showFeatured?: boolean;
   /** Edge-resolved posts (CMS connection). */
   posts?: IPost[];
