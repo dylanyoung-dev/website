@@ -261,47 +261,41 @@ export function Hero({ variant = "default" }: Pick<HeroProps, "variant">) {
             }
           />
 
-          <Field
-            name="actions"
-            render={(actions: IHeroAction[] | undefined) => (
-              <Field
-                name="secondaryLinks"
-                render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => {
-                  const actionList = Array.isArray(actions) ? actions : [];
-                  const linkList = Array.isArray(secondaryLinks)
-                    ? secondaryLinks
-                    : [];
-                  if (!actionList.length && !linkList.length) return null;
-
-                  return (
-                    <div
-                      className={cn(
-                        "flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-center",
-                        isInsights ? "mt-8" : "mt-9"
-                      )}
-                    >
-                      {actionList.length > 0 ? (
-                        <div className="flex flex-wrap items-center gap-3">
-                          {actionList.map((action) => (
-                            <HeroActionButton
-                              key={`${action.href}-${action.label}`}
-                              action={action}
-                              size={isInsights ? "default" : "lg"}
-                            />
-                          ))}
-                        </div>
-                      ) : null}
-                      {linkList.length > 0 ? (
-                        <div className={cn(actionList.length > 0 && "sm:pl-1")}>
-                          <SecondaryLinks links={linkList} />
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                }}
-              />
+          <div
+            className={cn(
+              "flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-center",
+              isInsights ? "mt-8" : "mt-9"
             )}
-          />
+          >
+            <Field
+              name="actions"
+              render={(actions: IHeroAction[] | undefined) => {
+                const actionList = Array.isArray(actions) ? actions : [];
+                if (!actionList.length) return null;
+                return (
+                  <div className="flex flex-wrap items-center gap-3">
+                    {actionList.map((action) => (
+                      <HeroActionButton
+                        key={`${action.href}-${action.label}`}
+                        action={action}
+                        size={isInsights ? "default" : "lg"}
+                      />
+                    ))}
+                  </div>
+                );
+              }}
+            />
+            <Field
+              name="secondaryLinks"
+              render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => {
+                const linkList = Array.isArray(secondaryLinks)
+                  ? secondaryLinks
+                  : [];
+                if (!linkList.length) return null;
+                return <SecondaryLinks links={linkList} />;
+              }}
+            />
+          </div>
         </div>
       </PageShell>
     </section>
