@@ -617,24 +617,13 @@ export const articleGrid = {
         {
             name: 'sortLabel',
             title: 'Sort label',
-            description: 'Optional meta label (e.g. "Newest first")',
+            description: 'Optional display label (e.g. "Newest first")',
             type: 'string'
-        },
-        {
-            name: 'showViewAll',
-            title: 'Show View All',
-            type: 'boolean',
-            initialValue: true
-        },
-        {
-            name: 'viewAllHref',
-            title: 'View All URL',
-            type: 'string',
-            initialValue: '/insights/'
         },
         {
             name: 'mode',
             title: 'Mode',
+            description: 'Query builds a list; curated uses postSlugs order',
             type: 'string',
             options: {
                 list: [
@@ -647,8 +636,22 @@ export const articleGrid = {
             validation: (Rule: any) => Rule.required()
         },
         {
+            name: 'sort',
+            title: 'Sort',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Newest first', value: 'publishedAt_desc' },
+                    { title: 'Oldest first', value: 'publishedAt_asc' },
+                    { title: 'Title A–Z', value: 'title_asc' }
+                ]
+            },
+            initialValue: 'publishedAt_desc'
+        },
+        {
             name: 'pageSize',
             title: 'Page size',
+            description: 'Posts per page / max items when pagination is off',
             type: 'number',
             initialValue: 12,
             validation: (Rule: any) => Rule.min(1).max(48)
@@ -660,25 +663,37 @@ export const articleGrid = {
             type: 'string'
         },
         {
+            name: 'postSlugs',
+            title: 'Post slugs',
+            description: 'Ordered Sanity post slugs (curated mode)',
+            type: 'array',
+            of: [{ type: 'string' }]
+        },
+        {
             name: 'showFeatured',
             title: 'Show featured post',
-            description: 'First result uses featured layout (query mode)',
+            description: 'First result uses featured layout',
             type: 'boolean',
             initialValue: false
         },
         {
             name: 'showPagination',
             title: 'Show pagination',
-            description: 'Paginate with ?page= (query mode)',
+            description: 'Paginate with ?page= using page size',
             type: 'boolean',
             initialValue: false
         },
         {
-            name: 'postSlugs',
-            title: 'Post slugs',
-            description: 'Ordered Sanity post slugs (curated mode)',
-            type: 'array',
-            of: [{ type: 'string' }]
+            name: 'showViewAll',
+            title: 'Show View All',
+            type: 'boolean',
+            initialValue: true
+        },
+        {
+            name: 'viewAllHref',
+            title: 'View All URL',
+            type: 'string',
+            initialValue: '/insights/'
         }
     ],
     preview: {

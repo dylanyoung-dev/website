@@ -1,24 +1,47 @@
 /**
  * AmplifyUP props for ArticleGrid (`component_id: ArticleGrid`).
- * Content / CMS-projected fields use SDK `<Field>`; settings (`showFeatured`, etc.) are plain props.
+ *
+ * Content (`heading`, `description`, `sortLabel`, `posts`) → SDK `<Field>` / Edge projection.
+ * Pull & presentation settings → plain props (Composer settings, not click-to-edit Fields).
  */
 
 import type { IPost } from "./IPost";
 
+export type ArticleGridMode = "query" | "curated";
+
+export type ArticleGridSort =
+  | "publishedAt_desc"
+  | "publishedAt_asc"
+  | "title_asc";
+
 export interface IArticleGrid {
-  /** Section heading. */
+  /** Section heading (Field). */
   heading?: string;
-  /** Supporting copy under the heading. */
+  /** Supporting copy (Field). */
   description?: string;
-  /** Optional sort / meta label (e.g. "Newest first"). */
+  /** Optional display label e.g. "Newest first" (Field). */
   sortLabel?: string;
-  /** Show "View all" link. Plain prop, not `<Field>`. */
-  showViewAll?: boolean;
-  /** Href for "View all" (default `/insights/`). Plain prop, not `<Field>`. */
-  viewAllHref?: string;
-  /** First post uses FeaturedPost layout. Plain prop, not `<Field>`. */
+
+  /** Data mode: GROQ query vs curated slug list. Plain setting. */
+  mode?: ArticleGridMode;
+  /** Sort order for query / resolved lists. Plain setting. */
+  sort?: ArticleGridSort;
+  /** Posts per page (default 12). Plain setting. */
+  pageSize?: number;
+  /** Optional article category slug filter (query mode). Plain setting. */
+  categorySlug?: string;
+  /** Ordered Sanity `post.slug.current` values (curated mode). Plain setting. */
+  postSlugs?: string[];
+  /** First post uses FeaturedPost layout. Plain setting. */
   showFeatured?: boolean;
-  /** Edge-resolved posts (CMS connection). */
+  /** Paginate with `?page=` using pageSize. Plain setting. */
+  showPagination?: boolean;
+  /** Show "View all" link. Plain setting. */
+  showViewAll?: boolean;
+  /** Href for "View all" (default `/insights/`). Plain setting. */
+  viewAllHref?: string;
+
+  /** Edge-resolved posts (Field / CMS connection). */
   posts?: IPost[];
 }
 
