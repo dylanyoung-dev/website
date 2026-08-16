@@ -621,65 +621,9 @@ export const articleGrid = {
             type: 'string'
         },
         {
-            name: 'mode',
-            title: 'Mode',
-            description: 'Query builds a list; curated uses postSlugs order',
-            type: 'string',
-            options: {
-                list: [
-                    { title: 'Query', value: 'query' },
-                    { title: 'Curated', value: 'curated' }
-                ],
-                layout: 'radio'
-            },
-            initialValue: 'query',
-            validation: (Rule: any) => Rule.required()
-        },
-        {
-            name: 'sort',
-            title: 'Sort',
-            type: 'string',
-            options: {
-                list: [
-                    { title: 'Newest first', value: 'publishedAt_desc' },
-                    { title: 'Oldest first', value: 'publishedAt_asc' },
-                    { title: 'Title A–Z', value: 'title_asc' }
-                ]
-            },
-            initialValue: 'publishedAt_desc'
-        },
-        {
-            name: 'pageSize',
-            title: 'Page size',
-            description: 'Posts per page / max items when pagination is off',
-            type: 'number',
-            initialValue: 12,
-            validation: (Rule: any) => Rule.min(1).max(48)
-        },
-        {
-            name: 'categorySlug',
-            title: 'Category slug',
-            description: 'Optional article category slug filter (query mode)',
-            type: 'string'
-        },
-        {
-            name: 'postSlugs',
-            title: 'Post slugs',
-            description: 'Ordered Sanity post slugs (curated mode)',
-            type: 'array',
-            of: [{ type: 'string' }]
-        },
-        {
             name: 'showFeatured',
             title: 'Show featured post',
             description: 'First result uses featured layout',
-            type: 'boolean',
-            initialValue: false
-        },
-        {
-            name: 'showPagination',
-            title: 'Show pagination',
-            description: 'Paginate with ?page= using page size',
             type: 'boolean',
             initialValue: false
         },
@@ -699,12 +643,11 @@ export const articleGrid = {
     preview: {
         select: {
             title: 'title',
-            subtitle: 'heading',
-            mode: 'mode'
+            subtitle: 'heading'
         },
-        prepare: ({ title, subtitle, mode }: { title?: string; subtitle?: string; mode?: string }) => ({
+        prepare: ({ title, subtitle }: { title?: string; subtitle?: string }) => ({
             title,
-            subtitle: [mode === 'curated' ? 'Curated' : 'Query', subtitle].filter(Boolean).join(' · ')
+            subtitle
         })
     }
 };
