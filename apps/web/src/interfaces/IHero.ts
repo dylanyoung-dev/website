@@ -1,15 +1,19 @@
 /** Hero action CTA — maps to Sanity `actions[]` / AmplifyUP array item. */
 export interface IHeroAction {
-  label: string;
-  href: string;
+  _key?: string;
+  _type?: string;
+  label?: string;
+  href?: string;
   style?: "primary" | "outline" | "ghost";
   openInNewTab?: boolean;
 }
 
 /** Secondary pill/text link — maps to Sanity `secondaryLinks[]`. */
 export interface IHeroSecondaryLink {
-  label: string;
-  href: string;
+  _key?: string;
+  _type?: string;
+  label?: string;
+  href?: string;
 }
 
 /** Optional status badge (home-style). */

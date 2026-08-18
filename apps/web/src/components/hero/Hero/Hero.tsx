@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Field } from "@amplifyup/sdk/react";
+import { Field, useComponentProps } from "@amplifyup/sdk/react";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,26 @@ import type {
   IHeroBadge,
   IHeroSecondaryLink,
 } from "@/interfaces/IHero";
+
+function hasHref(value?: string): value is string {
+  return Boolean(value?.trim());
+}
+
+function completeActions(actions: IHeroAction[] | undefined): IHeroAction[] {
+  if (!Array.isArray(actions)) return [];
+  return actions.filter(
+    (action) => hasHref(action?.href) && Boolean(action.label?.trim())
+  );
+}
+
+function completeSecondaryLinks(
+  links: IHeroSecondaryLink[] | undefined
+): IHeroSecondaryLink[] {
+  if (!Array.isArray(links)) return [];
+  return links.filter(
+    (link) => hasHref(link?.href) && Boolean(link.label?.trim())
+  );
+}
 
 function HeroDotGrid({ stronger }: { stronger?: boolean }) {
   return (
@@ -100,6 +120,9 @@ function HeroActionButton({
   action: IHeroAction;
   size?: "default" | "lg";
 }) {
+  const href = action.href?.trim();
+  if (!href || !action.label?.trim()) return null;
+
   const buttonVariant =
     action.style === "outline"
       ? "outline"
@@ -119,7 +142,7 @@ function HeroActionButton({
       )}
     >
       <Link
-        href={action.href}
+        href={href}
         className="no-underline"
         target={action.openInNewTab ? "_blank" : undefined}
         rel={action.openInNewTab ? "noopener noreferrer" : undefined}
@@ -136,20 +159,24 @@ function SecondaryLinks({ links }: { links: IHeroSecondaryLink[] }) {
 
   return (
     <div className="flex flex-wrap items-center gap-2">
-      {links.map((link) => (
-        <Badge
-          key={`${link.href}-${link.label}`}
-          variant="outline"
-          className="rounded-full border-border/80 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
-        >
-          <Link
-            href={link.href}
-            className="no-underline text-inherit hover:text-inherit"
+      {links.map((link, index) => {
+        const href = link.href?.trim();
+        if (!href) return null;
+        return (
+          <Badge
+            key={link._key || `${href}-${link.label}-${index}`}
+            variant="outline"
+            className="rounded-full border-border/80 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
           >
-            {link.label}
-          </Link>
-        </Badge>
-      ))}
+            <Link
+              href={href}
+              className="no-underline text-inherit hover:text-inherit"
+            >
+              {link.label}
+            </Link>
+          </Badge>
+        );
+      })}
     </div>
   );
 }
@@ -159,7 +186,9 @@ function SecondaryLinks({ links }: { links: IHeroSecondaryLink[] }) {
  * Use `<Field>` for Composer-editable content. Settings like `variant` are plain props
  * (no Field) — read them to choose layout, not for in-browser editing.
  */
-export function Hero({ variant = "default" }: Pick<HeroProps, "variant">) {
+export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
+  const live = useComponentProps<HeroProps>();
+  const variant = live.variant ?? variantProp ?? "default";
   const isInsights = variant === "insights";
 
   return (
@@ -270,13 +299,13 @@ export function Hero({ variant = "default" }: Pick<HeroProps, "variant">) {
             <Field
               name="actions"
               render={(actions: IHeroAction[] | undefined) => {
-                const actionList = Array.isArray(actions) ? actions : [];
+                const actionList = completeActions(actions);
                 if (!actionList.length) return null;
                 return (
                   <div className="flex flex-wrap items-center gap-3">
-                    {actionList.map((action) => (
+                    {actionList.map((action, index) => (
                       <HeroActionButton
-                        key={`${action.href}-${action.label}`}
+                        key={action._key || `${action.href}-${action.label}-${index}`}
                         action={action}
                         size={isInsights ? "default" : "lg"}
                       />
@@ -288,9 +317,7 @@ export function Hero({ variant = "default" }: Pick<HeroProps, "variant">) {
             <Field
               name="secondaryLinks"
               render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => {
-                const linkList = Array.isArray(secondaryLinks)
-                  ? secondaryLinks
-                  : [];
+                const linkList = completeSecondaryLinks(secondaryLinks);
                 if (!linkList.length) return null;
                 return <SecondaryLinks links={linkList} />;
               }}
