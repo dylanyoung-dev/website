@@ -1,74 +1,61 @@
-"use client";
-
 import {
-  AmplifyPageContent,
-  isComposerPreview,
-  useAmplifyUp,
-} from "@amplifyup/sdk/react";
-import type { PageConfig } from "@amplifyup/sdk";
-import { notFound } from "next/navigation";
-import {
-  InsightsPageDataProvider,
-  renderAmplifyComponent,
-} from "@/components/amplifyup";
-import { Layout } from "@/components/ui/Layout/Layout";
+  fetchContentServer,
+  resolveAmplifyUpTarget,
+  resolveAmplifyUpUrls,
+} from "@amplifyup/sdk/server";
+import { InsightsTestClient } from "./InsightsTestClient";
 
-const trackingId = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID?.trim() || "";
+const ROUTE = "/insights/test";
 
-/** Minimal context for legacy placeables if Composer still uses them. */
-const emptyPageData = {
-  listPosts: [],
-  searchQuery: "",
-  isSearching: false,
-  showFeatured: false,
-  resultCount: 0,
-  currentPage: 1,
-  totalPages: 1,
-  baseUrl: "/insights/test",
-  categoryFilters: [],
-};
+/** ISR window matches AmplifyUP Edge resolve cache. */
+export const revalidate = 60;
 
-function hasAmplifyLayout(pageConfig: PageConfig | null): boolean {
-  return !!(
-    pageConfig &&
-    pageConfig.id !== "default" &&
-    Array.isArray(pageConfig.layoutTree) &&
-    pageConfig.layoutTree.length > 0
-  );
-}
+function logAmplifyBuildEnv() {
+  const trackingId = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID;
+  const target = process.env.NEXT_PUBLIC_AMPLIFYUP_TARGET;
+  const edgeUrl = process.env.NEXT_PUBLIC_EDGE_URL;
+  const resolvedTarget = resolveAmplifyUpTarget();
+  const resolved = resolveAmplifyUpUrls(resolvedTarget);
 
-function InsightsTestBody() {
-  const { pageConfig, loading } = useAmplifyUp();
-  const preview = isComposerPreview();
-
-  if (!loading && !preview && !hasAmplifyLayout(pageConfig)) {
-    notFound();
-  }
-
-  return (
-    <InsightsPageDataProvider value={emptyPageData}>
-      <AmplifyPageContent renderComponent={renderAmplifyComponent} />
-    </InsightsPageDataProvider>
+  console.log("[AmplifyUp SSG /insights/test] NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID=", trackingId ?? "(unset)");
+  console.log("[AmplifyUp SSG /insights/test] NEXT_PUBLIC_AMPLIFYUP_TARGET=", target ?? "(unset → production)");
+  console.log("[AmplifyUp SSG /insights/test] NEXT_PUBLIC_EDGE_URL=", edgeUrl ?? "(unset)");
+  console.log(
+    "[AmplifyUp SSG /insights/test] resolved target=",
+    resolvedTarget,
+    "resolved edgeUrl=",
+    resolved.edgeUrl
   );
 }
 
 /**
- * AmplifyUP sandbox (`/insights/test`).
- * Live: Edge layout only — 404 if nothing is Deployed.
- * Composer preview: empty canvas allowed.
+ * Dedicated static route (wins over `insights/[slug]`).
+ * Pass tracking ID into fetchPageConfigServer — the SDK does not read env itself.
+ * Do not pass target/edge URL (production is the default). Do not read searchParams.
  */
-export default function InsightsAmplifyTestPage() {
+export default async function InsightsAmplifyTestPage() {
+  logAmplifyBuildEnv();
+
+  const trackingId = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID;
+
   if (!trackingId) {
-    notFound();
+    console.warn(
+      "[AmplifyUp SSG /insights/test] skipping Edge fetch — NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID is empty"
+    );
+    return <InsightsTestClient pageConfig={null} />;
   }
 
-  return (
-    <Layout
-      metaTitle="Insights AmplifyUP test"
-      metaDescription="AmplifyUP layout sandbox for insights — use Composer against /insights/test"
-      flushTop
-    >
-      <InsightsTestBody />
-    </Layout>
+  const { pageConfig, meta, error } = await fetchContentServer(
+    ROUTE,
+    trackingId
   );
+
+  console.log("[AmplifyUp SSG /insights/test] fetch result", {
+    source: meta?.source ?? null,
+    error: error ?? null,
+    pageConfigId: pageConfig?.id ?? null,
+    layoutNodes: pageConfig?.layoutTree?.length ?? 0,
+  });
+
+  return <InsightsTestClient pageConfig={pageConfig} />;
 }
