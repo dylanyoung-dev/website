@@ -49,7 +49,7 @@ function FeaturedGridPost({ post }: { post: IArticleGridPost }) {
       <div className="flex flex-col md:grid md:grid-cols-2 md:items-stretch">
         <Link
           href={postHref}
-          className="group relative block aspect-[16/10] overflow-hidden bg-muted md:order-2 md:h-full md:min-h-[220px] md:aspect-auto"
+          className="group relative block aspect-[16/10] overflow-hidden bg-muted md:order-2 md:min-h-[220px] md:h-full md:aspect-auto"
         >
           {imageUrl ? (
             <Image
@@ -73,10 +73,12 @@ function FeaturedGridPost({ post }: { post: IArticleGridPost }) {
 
         <div className="flex flex-col justify-between gap-4 p-5 md:order-1 md:p-6">
           <div className="space-y-3">
-            <Badge className="gap-1 rounded-full px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider">
-              <Sparkles className="h-3 w-3" aria-hidden />
-              Featured
-            </Badge>
+            <div className="flex flex-wrap items-center gap-2">
+              <Badge className="gap-1 rounded-full px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider">
+                <Sparkles className="h-3 w-3" aria-hidden />
+                Featured
+              </Badge>
+            </div>
 
             <h2 className="text-xl font-bold leading-tight tracking-tight md:text-2xl lg:text-3xl">
               <Link
@@ -214,65 +216,63 @@ export function ArticleGrid({
   viewAllHref = "/insights/",
 }: ArticleGridSettings) {
   return (
-    <section className="relative bg-background">
-      <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
-        <div className="space-y-10">
-          {showFeatured ? <ArticleGridFeatured /> : null}
+    <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+      <div className="space-y-10">
+        {showFeatured ? <ArticleGridFeatured /> : null}
 
-          <section className="space-y-6">
-            <div className="flex items-center justify-between gap-4">
-              <div className="space-y-1">
-                <h2 className="text-xl font-semibold md:text-2xl">
-                  <Field
-                    name="heading"
-                    render={(heading) => (
-                      <>{heading ? String(heading) : "All Posts"}</>
-                    )}
-                  />
-                </h2>
+        <section className="space-y-6">
+          <div className="flex items-center justify-between gap-4">
+            <div className="space-y-1">
+              <h2 className="text-xl font-semibold md:text-2xl">
                 <Field
-                  name="description"
-                  render={(description) =>
-                    description ? (
-                      <p className="text-sm text-muted-foreground">
-                        {String(description)}
-                      </p>
-                    ) : null
+                  name="heading"
+                  render={(heading) =>
+                    heading ? String(heading) : "All Posts"
                   }
                 />
-              </div>
+              </h2>
               <Field
-                name="sortLabel"
-                render={(sortLabel) =>
-                  sortLabel ? (
-                    <span className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
-                      {String(sortLabel)}
-                    </span>
+                name="description"
+                render={(description) =>
+                  description ? (
+                    <p className="text-sm text-muted-foreground">
+                      {String(description)}
+                    </p>
                   ) : null
                 }
               />
-              {showViewAll ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  asChild
-                  className="hidden shrink-0 sm:flex"
-                >
-                  <Link
-                    href={viewAllHref?.trim() || "/insights/"}
-                    className="flex items-center gap-1.5 no-underline"
-                  >
-                    View All
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              ) : null}
             </div>
+            <Field
+              name="sortLabel"
+              render={(sortLabel) =>
+                sortLabel ? (
+                  <span className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
+                    {String(sortLabel)}
+                  </span>
+                ) : null
+              }
+            />
+            {showViewAll ? (
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                className="hidden shrink-0 sm:flex"
+              >
+                <Link
+                  href={viewAllHref?.trim() || "/insights/"}
+                  className="flex items-center gap-1.5 no-underline"
+                >
+                  View All
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </Button>
+            ) : null}
+          </div>
 
-            <ArticleGridCards skipFirst={showFeatured} />
-          </section>
-        </div>
+          <ArticleGridCards skipFirst={showFeatured} />
+        </section>
       </div>
-    </section>
+    </div>
   );
 }

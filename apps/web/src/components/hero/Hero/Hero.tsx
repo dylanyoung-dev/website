@@ -208,88 +208,89 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
           isInsights ? "py-10 md:py-14 lg:py-16" : "py-14 md:py-20 lg:py-24"
         )}
       >
-        <div className="relative">
-          <Field
-            name="badge"
-            render={(badge: IHeroBadge | undefined) => {
-              if (!badge?.text) return null;
-              return (
-                <Badge
-                  variant="outline"
-                  className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
-                >
-                  {badge.showPulse !== false ? (
-                    <span className="relative flex h-2 w-2">
-                      <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
-                      <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                    </span>
-                  ) : null}
-                  <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
-                    {badge.text}
+        <Field
+          name="badge"
+          render={(badge: IHeroBadge | undefined) => {
+            if (!badge?.text) return null;
+            return (
+              <Badge
+                variant="outline"
+                className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
+              >
+                {badge.showPulse !== false ? (
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
                   </span>
-                </Badge>
-              );
-            }}
-          />
+                ) : null}
+                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
+                  {badge.text}
+                </span>
+              </Badge>
+            );
+          }}
+        />
 
-          <Field
-            name="eyebrow"
-            render={(eyebrow) =>
-              eyebrow ? (
-                <p className="mb-4 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">
-                  {String(eyebrow)}
-                </p>
-              ) : null
-            }
-          />
+        <Field
+          name="eyebrow"
+          render={(eyebrow) =>
+            eyebrow ? (
+              <p className="mb-4 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">
+                {String(eyebrow)}
+              </p>
+            ) : null
+          }
+        />
 
-          <h1
-            className={cn(
-              "font-bold tracking-tight text-foreground",
-              isInsights
-                ? "max-w-3xl text-3xl leading-[1.15] md:text-4xl lg:text-5xl"
-                : "max-w-4xl text-4xl leading-[1.1] md:text-5xl lg:text-[3.25rem]"
-            )}
-          >
-            <Field name="heading" fallback="Untitled" />
-          </h1>
+        <h1
+          className={cn(
+            "font-bold tracking-tight text-foreground",
+            isInsights
+              ? "max-w-3xl text-3xl leading-[1.15] md:text-4xl lg:text-5xl"
+              : "max-w-4xl text-4xl leading-[1.1] md:text-5xl lg:text-[3.25rem]"
+          )}
+        >
+          <Field name="heading" fallback="Untitled" />
+        </h1>
 
-          <Field
-            name="subtitle"
-            render={(subtitle) =>
-              subtitle ? (
-                <p
-                  className={cn(
-                    "text-muted-foreground",
-                    isInsights
-                      ? "mt-2 text-base md:text-lg"
-                      : "mt-3 text-xl md:text-2xl"
-                  )}
-                >
-                  {String(subtitle)}
-                </p>
-              ) : null
-            }
-          />
+        <Field
+          name="subtitle"
+          render={(subtitle) =>
+            subtitle ? (
+              <p
+                className={cn(
+                  "text-muted-foreground",
+                  isInsights
+                    ? "mt-2 text-base md:text-lg"
+                    : "mt-3 text-xl md:text-2xl"
+                )}
+              >
+                {String(subtitle)}
+              </p>
+            ) : null
+          }
+        />
 
-          <Field
-            name="description"
-            render={(description) =>
-              description ? (
-                <p
-                  className={cn(
-                    "max-w-2xl leading-relaxed text-muted-foreground",
-                    isInsights
-                      ? "mt-4 text-base md:text-lg"
-                      : "mt-6 text-lg md:text-xl"
-                  )}
-                >
-                  {String(description)}
-                </p>
-              ) : null
-            }
-          />
+        <Field
+          name="description"
+          render={(description) =>
+            description ? (
+              <p
+                className={cn(
+                  "max-w-2xl leading-relaxed text-muted-foreground",
+                  isInsights
+                    ? "mt-4 text-base md:text-lg"
+                    : "mt-6 text-lg md:text-xl"
+                )}
+              >
+                {String(description)}
+              </p>
+            ) : null
+          }
+        />
 
+        {completeActions(live.actions).length > 0 ||
+        completeSecondaryLinks(live.secondaryLinks).length > 0 ? (
           <div
             className={cn(
               "flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-center",
@@ -305,7 +306,10 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
                   <div className="flex flex-wrap items-center gap-3">
                     {actionList.map((action, index) => (
                       <HeroActionButton
-                        key={action._key || `${action.href}-${action.label}-${index}`}
+                        key={
+                          action._key ||
+                          `${action.href}-${action.label}-${index}`
+                        }
                         action={action}
                         size={isInsights ? "default" : "lg"}
                       />
@@ -317,13 +321,13 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
             <Field
               name="secondaryLinks"
               render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => {
-                const linkList = completeSecondaryLinks(secondaryLinks);
-                if (!linkList.length) return null;
-                return <SecondaryLinks links={linkList} />;
+                const links = completeSecondaryLinks(secondaryLinks);
+                if (!links.length) return null;
+                return <SecondaryLinks links={links} />;
               }}
             />
           </div>
-        </div>
+        ) : null}
       </PageShell>
     </section>
   );
