@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 
+const baseUrl = process.env.HOST_URL || "https://dylanyoung.dev";
+
 export const metadata: Metadata = {
-  title: "Insights AmplifyUP test",
+  title: "Dylan Young: Blog Content on AI, Sitecore and Typescript/React",
   description:
-    "AmplifyUP layout sandbox for insights — use Composer against /insights/test",
-  robots: { index: false, follow: false },
+    "Explore blog posts and articles covering AI/ML, Sitecore, TypeScript, React, and more",
+  alternates: {
+    canonical: `${baseUrl}/insights/test`,
+  },
 };
 
 export default function InsightsTestLayout({

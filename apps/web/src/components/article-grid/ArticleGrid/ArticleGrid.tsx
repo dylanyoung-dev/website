@@ -7,7 +7,6 @@ import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { PageShell } from "@/components/ui/Layout/PageShell";
 import type {
   IArticleGrid,
   IArticleGridPost,
@@ -36,6 +35,10 @@ function getPostImageAlt(post: IArticleGridPost): string {
   return post.landscapeImage?.alt || post.mainImage?.alt || post.title;
 }
 
+function asPostList(posts: unknown): IArticleGridPost[] {
+  return Array.isArray(posts) ? (posts as IArticleGridPost[]) : [];
+}
+
 function FeaturedGridPost({ post }: { post: IArticleGridPost }) {
   const imageUrl = getPostImageUrl(post);
   const postHref = getPostHref(post);
@@ -46,7 +49,7 @@ function FeaturedGridPost({ post }: { post: IArticleGridPost }) {
       <div className="flex flex-col md:grid md:grid-cols-2 md:items-stretch">
         <Link
           href={postHref}
-          className="group relative block aspect-[16/10] overflow-hidden bg-muted md:order-2 md:min-h-[220px] md:h-full md:aspect-auto"
+          className="group relative block aspect-[16/10] overflow-hidden bg-muted md:order-2 md:h-full md:min-h-[220px] md:aspect-auto"
         >
           {imageUrl ? (
             <Image
@@ -159,13 +162,27 @@ function GridPostCard({ post }: { post: IArticleGridPost }) {
   );
 }
 
-function ArticleGridPosts({ showFeatured }: { showFeatured?: boolean }) {
+function ArticleGridFeatured() {
   return (
     <Field
       name="posts"
       render={(posts) => {
-        const list = Array.isArray(posts) ? (posts as IArticleGridPost[]) : [];
-        if (!list.length) {
+        const featured = asPostList(posts)[0];
+        return featured ? <FeaturedGridPost post={featured} /> : null;
+      }}
+    />
+  );
+}
+
+function ArticleGridCards({ skipFirst }: { skipFirst?: boolean }) {
+  return (
+    <Field
+      name="posts"
+      render={(posts) => {
+        const list = asPostList(posts);
+        const gridPosts = skipFirst ? list.slice(1) : list;
+
+        if (!gridPosts.length) {
           return (
             <Card>
               <CardContent className="py-12 text-center">
@@ -175,19 +192,11 @@ function ArticleGridPosts({ showFeatured }: { showFeatured?: boolean }) {
           );
         }
 
-        const featured = showFeatured ? list[0] : null;
-        const gridPosts = featured ? list.slice(1) : list;
-
         return (
-          <div className="space-y-8">
-            {featured ? <FeaturedGridPost post={featured} /> : null}
-            {gridPosts.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {gridPosts.map((post, index) => (
-                  <GridPostCard key={getPostKey(post, index)} post={post} />
-                ))}
-              </div>
-            ) : null}
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {gridPosts.map((post, index) => (
+              <GridPostCard key={getPostKey(post, index)} post={post} />
+            ))}
           </div>
         );
       }}
@@ -197,7 +206,7 @@ function ArticleGridPosts({ showFeatured }: { showFeatured?: boolean }) {
 
 /**
  * AmplifyUP placeable ArticleGrid (`component_id: ArticleGrid`).
- * List selection / query is AmplifyUP + Edge; this component only renders projected `posts`.
+ * Matches native /insights: featured card, then "All Posts" / sort row, then grid.
  */
 export function ArticleGrid({
   showFeatured,
@@ -205,54 +214,65 @@ export function ArticleGrid({
   viewAllHref = "/insights/",
 }: ArticleGridSettings) {
   return (
-    <section className="border-b bg-background py-10 md:py-14">
-      <PageShell className="space-y-6">
-        <div className="flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <h2 className="text-xl font-semibold md:text-2xl">
-              <Field name="heading" fallback="Latest Posts" />
-            </h2>
-            <Field
-              name="description"
-              render={(description) =>
-                description ? (
-                  <p className="text-sm text-muted-foreground">
-                    {String(description)}
-                  </p>
-                ) : null
-              }
-            />
-          </div>
-          <Field
-            name="sortLabel"
-            render={(sortLabel) =>
-              sortLabel ? (
-                <span className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
-                  {String(sortLabel)}
-                </span>
-              ) : null
-            }
-          />
-          {showViewAll ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              asChild
-              className="hidden shrink-0 sm:flex"
-            >
-              <Link
-                href={viewAllHref?.trim() || "/insights/"}
-                className="flex items-center gap-1.5 no-underline"
-              >
-                View All
-                <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          ) : null}
-        </div>
+    <section className="relative bg-background">
+      <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+        <div className="space-y-10">
+          {showFeatured ? <ArticleGridFeatured /> : null}
 
-        <ArticleGridPosts showFeatured={showFeatured} />
-      </PageShell>
+          <section className="space-y-6">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-1">
+                <h2 className="text-xl font-semibold md:text-2xl">
+                  <Field
+                    name="heading"
+                    render={(heading) => (
+                      <>{heading ? String(heading) : "All Posts"}</>
+                    )}
+                  />
+                </h2>
+                <Field
+                  name="description"
+                  render={(description) =>
+                    description ? (
+                      <p className="text-sm text-muted-foreground">
+                        {String(description)}
+                      </p>
+                    ) : null
+                  }
+                />
+              </div>
+              <Field
+                name="sortLabel"
+                render={(sortLabel) =>
+                  sortLabel ? (
+                    <span className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
+                      {String(sortLabel)}
+                    </span>
+                  ) : null
+                }
+              />
+              {showViewAll ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  asChild
+                  className="hidden shrink-0 sm:flex"
+                >
+                  <Link
+                    href={viewAllHref?.trim() || "/insights/"}
+                    className="flex items-center gap-1.5 no-underline"
+                  >
+                    View All
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
+                </Button>
+              ) : null}
+            </div>
+
+            <ArticleGridCards skipFirst={showFeatured} />
+          </section>
+        </div>
+      </div>
     </section>
   );
 }

@@ -8,7 +8,6 @@ import {
 } from "@/components/amplifyup";
 import { Layout } from "@/components/ui/Layout/Layout";
 
-/** Minimal context for legacy placeables if Composer still uses them. */
 const emptyPageData = {
   listPosts: [],
   searchQuery: "",
@@ -25,15 +24,11 @@ interface InsightsTestClientProps {
   pageConfig: PageConfig | null;
 }
 
-/**
- * Client canvas for `/insights/test`.
- * Missing Edge layout shows AmplifyPageContent fallback / empty canvas — not a 404.
- */
 export function InsightsTestClient({ pageConfig }: InsightsTestClientProps) {
   return (
     <Layout
-      metaTitle="Insights AmplifyUP test"
-      metaDescription="AmplifyUP layout sandbox for insights — use Composer against /insights/test"
+      metaTitle="Dylan Young: Blog Content on AI, Sitecore and Typescript/React"
+      metaDescription="Explore blog posts and articles covering AI/ML, Sitecore, TypeScript, React, and more"
       flushTop
     >
       <InsightsPageDataProvider value={emptyPageData}>
