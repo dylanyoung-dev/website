@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import { Field, useComponentProps } from "@amplifyup/sdk/react";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { InsightsFilterBar } from "@/components/insights";
 import { PageShell } from "@/components/ui/Layout/PageShell";
 import { cn } from "@/lib/utils";
 import type {
@@ -181,11 +184,22 @@ function SecondaryLinks({ links }: { links: IHeroSecondaryLink[] }) {
   );
 }
 
-/**
- * AmplifyUP placeable Hero (`component_id: Hero`).
- * Use `<Field>` for Composer-editable content. Settings like `variant` are plain props
- * (no Field) — read them to choose layout, not for in-browser editing.
- */
+function InsightsHeroSearch() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname() || "/insights/";
+  const searchQuery = searchParams.get("q")?.trim() || "";
+  const searchPath = pathname.endsWith("/") ? pathname : `${pathname}/`;
+
+  return (
+    <InsightsFilterBar
+      key={searchQuery}
+      showSearch
+      showCategoryFilters={false}
+      searchQuery={searchQuery}
+      searchPath={searchPath}
+    />
+  );
+}
 export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
   const live = useComponentProps<HeroProps>();
   const variant = live.variant ?? variantProp ?? "default";
@@ -327,6 +341,19 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
               }}
             />
           </div>
+        ) : null}
+        {isInsights ? (
+          <Suspense
+            fallback={
+              <InsightsFilterBar
+                showSearch
+                showCategoryFilters={false}
+                searchQuery=""
+              />
+            }
+          >
+            <InsightsHeroSearch />
+          </Suspense>
         ) : null}
       </PageShell>
     </section>
