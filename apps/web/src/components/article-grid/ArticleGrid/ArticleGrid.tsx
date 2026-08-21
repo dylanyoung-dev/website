@@ -2,6 +2,8 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Field } from "@amplifyup/sdk/react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -37,6 +39,19 @@ function getPostImageAlt(post: IArticleGridPost): string {
 
 function asPostList(posts: unknown): IArticleGridPost[] {
   return Array.isArray(posts) ? (posts as IArticleGridPost[]) : [];
+}
+
+function filterPostsByQuery(
+  posts: IArticleGridPost[],
+  query: string
+): IArticleGridPost[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return posts;
+  return posts.filter((post) =>
+    [post.title, post.excerpt, post.body, post.slug]
+      .filter((value): value is string => Boolean(value))
+      .some((value) => value.toLowerCase().includes(q))
+  );
 }
 
 function FeaturedGridPost({ post }: { post: IArticleGridPost }) {
@@ -164,41 +179,114 @@ function GridPostCard({ post }: { post: IArticleGridPost }) {
   );
 }
 
-function ArticleGridFeatured() {
+function ArticleGridBody({
+  showFeatured,
+  showViewAll,
+  viewAllHref = "/insights/",
+  searchQuery,
+}: ArticleGridSettings & { searchQuery: string }) {
+  const isSearching = searchQuery.length > 0;
+
   return (
     <Field
       name="posts"
       render={(posts) => {
-        const featured = asPostList(posts)[0];
-        return featured ? <FeaturedGridPost post={featured} /> : null;
-      }}
-    />
-  );
-}
-
-function ArticleGridCards({ skipFirst }: { skipFirst?: boolean }) {
-  return (
-    <Field
-      name="posts"
-      render={(posts) => {
-        const list = asPostList(posts);
-        const gridPosts = skipFirst ? list.slice(1) : list;
-
-        if (!gridPosts.length) {
-          return (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <p className="text-muted-foreground">No posts available yet.</p>
-              </CardContent>
-            </Card>
-          );
-        }
+        const list = filterPostsByQuery(asPostList(posts), searchQuery);
+        const featured = showFeatured && !isSearching ? list[0] : null;
+        const gridPosts = featured ? list.slice(1) : list;
 
         return (
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {gridPosts.map((post, index) => (
-              <GridPostCard key={getPostKey(post, index)} post={post} />
-            ))}
+          <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
+            <div className="space-y-10">
+              {featured ? <FeaturedGridPost post={featured} /> : null}
+
+              {isSearching ? (
+                <p className="text-sm text-muted-foreground">
+                  {list.length} {list.length === 1 ? "result" : "results"} for{" "}
+                  <span className="font-medium text-foreground">
+                    &ldquo;{searchQuery}&rdquo;
+                  </span>
+                </p>
+              ) : null}
+
+              <section className="space-y-6">
+                <div className="flex items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <h2 className="text-xl font-semibold md:text-2xl">
+                      {isSearching ? (
+                        "Search Results"
+                      ) : (
+                        <Field
+                          name="heading"
+                          render={(heading) =>
+                            heading ? String(heading) : "All Posts"
+                          }
+                        />
+                      )}
+                    </h2>
+                    {isSearching ? null : (
+                      <Field
+                        name="description"
+                        render={(description) =>
+                          description ? (
+                            <p className="text-sm text-muted-foreground">
+                              {String(description)}
+                            </p>
+                          ) : null
+                        }
+                      />
+                    )}
+                  </div>
+                  <Field
+                    name="sortLabel"
+                    render={(sortLabel) =>
+                      sortLabel ? (
+                        <span className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
+                          {String(sortLabel)}
+                        </span>
+                      ) : null
+                    }
+                  />
+                  {showViewAll && !isSearching ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      asChild
+                      className="hidden shrink-0 sm:flex"
+                    >
+                      <Link
+                        href={viewAllHref?.trim() || "/insights/"}
+                        className="flex items-center gap-1.5 no-underline"
+                      >
+                        View All
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </Link>
+                    </Button>
+                  ) : null}
+                </div>
+
+                {gridPosts.length > 0 ? (
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                    {gridPosts.map((post, index) => (
+                      <GridPostCard
+                        key={getPostKey(post, index)}
+                        post={post}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <Card>
+                    <CardContent className="py-12 text-center">
+                      <p className="text-muted-foreground">
+                        {isSearching
+                          ? "No posts matched your search."
+                          : "No posts available yet."}
+                      </p>
+                    </CardContent>
+                  </Card>
+                )}
+              </section>
+            </div>
           </div>
         );
       }}
@@ -206,73 +294,21 @@ function ArticleGridCards({ skipFirst }: { skipFirst?: boolean }) {
   );
 }
 
+function ArticleGridWithSearch(props: ArticleGridSettings) {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get("q")?.trim() || "";
+  return <ArticleGridBody {...props} searchQuery={searchQuery} />;
+}
+
 /**
  * AmplifyUP placeable ArticleGrid (`component_id: ArticleGrid`).
  * Matches native /insights: featured card, then "All Posts" / sort row, then grid.
+ * Insights Hero search uses `?q=` on the current route to filter this list.
  */
-export function ArticleGrid({
-  showFeatured,
-  showViewAll,
-  viewAllHref = "/insights/",
-}: ArticleGridSettings) {
+export function ArticleGrid(props: ArticleGridSettings) {
   return (
-    <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
-      <div className="space-y-10">
-        {showFeatured ? <ArticleGridFeatured /> : null}
-
-        <section className="space-y-6">
-          <div className="flex items-center justify-between gap-4">
-            <div className="space-y-1">
-              <h2 className="text-xl font-semibold md:text-2xl">
-                <Field
-                  name="heading"
-                  render={(heading) =>
-                    heading ? String(heading) : "All Posts"
-                  }
-                />
-              </h2>
-              <Field
-                name="description"
-                render={(description) =>
-                  description ? (
-                    <p className="text-sm text-muted-foreground">
-                      {String(description)}
-                    </p>
-                  ) : null
-                }
-              />
-            </div>
-            <Field
-              name="sortLabel"
-              render={(sortLabel) =>
-                sortLabel ? (
-                  <span className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
-                    {String(sortLabel)}
-                  </span>
-                ) : null
-              }
-            />
-            {showViewAll ? (
-              <Button
-                variant="ghost"
-                size="sm"
-                asChild
-                className="hidden shrink-0 sm:flex"
-              >
-                <Link
-                  href={viewAllHref?.trim() || "/insights/"}
-                  className="flex items-center gap-1.5 no-underline"
-                >
-                  View All
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </Button>
-            ) : null}
-          </div>
-
-          <ArticleGridCards skipFirst={showFeatured} />
-        </section>
-      </div>
-    </div>
+    <Suspense fallback={<ArticleGridBody {...props} searchQuery="" />}>
+      <ArticleGridWithSearch {...props} />
+    </Suspense>
   );
 }
