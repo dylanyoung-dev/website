@@ -18,7 +18,7 @@
         "download-mvp-badges": "node scripts/download-mvp-badges.js"
     },
     "dependencies": {
-        "@amplifyup/sdk": "^0.1.38",
+        "@amplifyup/sdk": "^0.1.41",
         "@netlify/plugin-nextjs": "^5.15.3",
         "@radix-ui/react-accordion": "^1.2.1",
         "@radix-ui/react-avatar": "^1.1.1",
