@@ -17,26 +17,6 @@ import type {
   IHeroSecondaryLink,
 } from "@/interfaces/IHero";
 
-function hasHref(value?: string): value is string {
-  return Boolean(value?.trim());
-}
-
-function completeActions(actions: IHeroAction[] | undefined): IHeroAction[] {
-  if (!Array.isArray(actions)) return [];
-  return actions.filter(
-    (action) => hasHref(action?.href) && Boolean(action.label?.trim())
-  );
-}
-
-function completeSecondaryLinks(
-  links: IHeroSecondaryLink[] | undefined
-): IHeroSecondaryLink[] {
-  if (!Array.isArray(links)) return [];
-  return links.filter(
-    (link) => hasHref(link?.href) && Boolean(link.label?.trim())
-  );
-}
-
 function HeroDotGrid({ stronger }: { stronger?: boolean }) {
   return (
     <div
@@ -124,7 +104,8 @@ function HeroActionButton({
   size?: "default" | "lg";
 }) {
   const href = action.href?.trim();
-  if (!href || !action.label?.trim()) return null;
+  const label = action.label?.trim();
+  if (!href || !label) return null;
 
   const buttonVariant =
     action.style === "outline"
@@ -150,37 +131,10 @@ function HeroActionButton({
         target={action.openInNewTab ? "_blank" : undefined}
         rel={action.openInNewTab ? "noopener noreferrer" : undefined}
       >
-        {action.label}
+        {label}
         {isPrimary ? <ArrowRight className="ml-1 h-4 w-4" /> : null}
       </Link>
     </Button>
-  );
-}
-
-function SecondaryLinks({ links }: { links: IHeroSecondaryLink[] }) {
-  if (!links.length) return null;
-
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      {links.map((link, index) => {
-        const href = link.href?.trim();
-        if (!href) return null;
-        return (
-          <Badge
-            key={link._key || `${href}-${link.label}-${index}`}
-            variant="outline"
-            className="rounded-full border-border/80 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
-          >
-            <Link
-              href={href}
-              className="no-underline text-inherit hover:text-inherit"
-            >
-              {link.label}
-            </Link>
-          </Badge>
-        );
-      })}
-    </div>
   );
 }
 
@@ -200,6 +154,11 @@ function InsightsHeroSearch() {
     />
   );
 }
+
+/**
+ * AmplifyUP placeable Hero (`component_id: Hero`).
+ * Content → `<Field>`. Settings like `variant` → plain props.
+ */
 export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
   const live = useComponentProps<HeroProps>();
   const variant = live.variant ?? variantProp ?? "default";
@@ -224,36 +183,27 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
       >
         <Field
           name="badge"
-          render={(badge: IHeroBadge | undefined) => {
-            if (!badge?.text) return null;
-            return (
-              <Badge
-                variant="outline"
-                className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
-              >
-                {badge.showPulse !== false ? (
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                  </span>
-                ) : null}
-                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
-                  {badge.text}
+          render={(badge: IHeroBadge) => (
+            <Badge
+              variant="outline"
+              className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
+            >
+              {badge?.showPulse !== false ? (
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
                 </span>
-              </Badge>
-            );
-          }}
+              ) : null}
+              <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
+                {badge?.text}
+              </span>
+            </Badge>
+          )}
         />
 
         <Field
           name="eyebrow"
-          render={(eyebrow) =>
-            eyebrow ? (
-              <p className="mb-4 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary">
-                {String(eyebrow)}
-              </p>
-            ) : null
-          }
+          className="mb-4 block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary"
         />
 
         <h1
@@ -264,94 +214,80 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
               : "max-w-4xl text-4xl leading-[1.1] md:text-5xl lg:text-[3.25rem]"
           )}
         >
-          <Field name="heading" fallback="Untitled" />
+          <Field name="heading" />
         </h1>
 
         <Field
           name="subtitle"
-          render={(subtitle) =>
-            subtitle ? (
-              <p
-                className={cn(
-                  "text-muted-foreground",
-                  isInsights
-                    ? "mt-2 text-base md:text-lg"
-                    : "mt-3 text-xl md:text-2xl"
-                )}
-              >
-                {String(subtitle)}
-              </p>
-            ) : null
-          }
+          className={cn(
+            "block text-muted-foreground",
+            isInsights
+              ? "mt-2 text-base md:text-lg"
+              : "mt-3 text-xl md:text-2xl"
+          )}
         />
 
         <Field
           name="description"
-          render={(description) =>
-            description ? (
-              <p
-                className={cn(
-                  "max-w-2xl leading-relaxed text-muted-foreground",
-                  isInsights
-                    ? "mt-4 text-base md:text-lg"
-                    : "mt-6 text-lg md:text-xl"
-                )}
-              >
-                {String(description)}
-              </p>
-            ) : null
-          }
+          className={cn(
+            "block max-w-2xl leading-relaxed text-muted-foreground",
+            isInsights
+              ? "mt-4 text-base md:text-lg"
+              : "mt-6 text-lg md:text-xl"
+          )}
         />
 
-        {completeActions(live.actions).length > 0 ||
-        completeSecondaryLinks(live.secondaryLinks).length > 0 ? (
-          <div
-            className={cn(
-              "flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-center",
-              isInsights ? "mt-8" : "mt-9"
+        <div
+          className={cn(
+            "flex flex-col gap-5 sm:flex-row sm:flex-wrap sm:items-center",
+            isInsights ? "mt-8" : "mt-9"
+          )}
+        >
+          <Field
+            name="actions"
+            render={(actions: IHeroAction[] | undefined) => (
+              <div className="flex flex-wrap items-center gap-3">
+                {(Array.isArray(actions) ? actions : []).map((action, index) => (
+                  <HeroActionButton
+                    key={action._key || `${action.href}-${action.label}-${index}`}
+                    action={action}
+                    size={isInsights ? "default" : "lg"}
+                  />
+                ))}
+              </div>
             )}
-          >
-            <Field
-              name="actions"
-              render={(actions: IHeroAction[] | undefined) => {
-                const actionList = completeActions(actions);
-                if (!actionList.length) return null;
-                return (
-                  <div className="flex flex-wrap items-center gap-3">
-                    {actionList.map((action, index) => (
-                      <HeroActionButton
-                        key={
-                          action._key ||
-                          `${action.href}-${action.label}-${index}`
-                        }
-                        action={action}
-                        size={isInsights ? "default" : "lg"}
-                      />
-                    ))}
-                  </div>
-                );
-              }}
-            />
-            <Field
-              name="secondaryLinks"
-              render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => {
-                const links = completeSecondaryLinks(secondaryLinks);
-                if (!links.length) return null;
-                return <SecondaryLinks links={links} />;
-              }}
-            />
-          </div>
-        ) : null}
+          />
+          <Field
+            name="secondaryLinks"
+            render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => (
+              <div className="flex flex-wrap items-center gap-2">
+                {(Array.isArray(secondaryLinks) ? secondaryLinks : []).map(
+                  (link, index) => {
+                    const href = link.href?.trim();
+                    if (!href) return null;
+                    return (
+                      <Badge
+                        key={link._key || `${href}-${link.label}-${index}`}
+                        variant="outline"
+                        className="rounded-full border-border/80 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
+                      >
+                        <Link
+                          href={href}
+                          className="no-underline text-inherit hover:text-inherit"
+                        >
+                          {link.label}
+                        </Link>
+                      </Badge>
+                    );
+                  }
+                )}
+              </div>
+            )}
+          />
+        </div>
+
         {isInsights ? (
-          <Suspense
-            fallback={
-              <InsightsFilterBar
-                showSearch
-                showCategoryFilters={false}
-                searchQuery=""
-              />
-            }
-          >
+          <Suspense fallback={null}>
             <InsightsHeroSearch />
           </Suspense>
         ) : null}

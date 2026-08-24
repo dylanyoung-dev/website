@@ -182,7 +182,7 @@ function GridPostCard({ post }: { post: IArticleGridPost }) {
 function ArticleGridBody({
   showFeatured,
   showViewAll,
-  viewAllHref = "/insights/",
+  viewAllHref,
   searchQuery,
 }: ArticleGridSettings & { searchQuery: string }) {
   const isSearching = searchQuery.length > 0;
@@ -213,41 +213,18 @@ function ArticleGridBody({
                 <div className="flex items-center justify-between gap-4">
                   <div className="space-y-1">
                     <h2 className="text-xl font-semibold md:text-2xl">
-                      {isSearching ? (
-                        "Search Results"
-                      ) : (
-                        <Field
-                          name="heading"
-                          render={(heading) =>
-                            heading ? String(heading) : "All Posts"
-                          }
-                        />
-                      )}
+                      <Field name="heading" />
                     </h2>
-                    {isSearching ? null : (
-                      <Field
-                        name="description"
-                        render={(description) =>
-                          description ? (
-                            <p className="text-sm text-muted-foreground">
-                              {String(description)}
-                            </p>
-                          ) : null
-                        }
-                      />
-                    )}
+                    <Field
+                      name="description"
+                      className="block text-sm text-muted-foreground"
+                    />
                   </div>
                   <Field
                     name="sortLabel"
-                    render={(sortLabel) =>
-                      sortLabel ? (
-                        <span className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline">
-                          {String(sortLabel)}
-                        </span>
-                      ) : null
-                    }
+                    className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline"
                   />
-                  {showViewAll && !isSearching ? (
+                  {showViewAll && viewAllHref ? (
                     <Button
                       variant="ghost"
                       size="sm"
@@ -255,7 +232,7 @@ function ArticleGridBody({
                       className="hidden shrink-0 sm:flex"
                     >
                       <Link
-                        href={viewAllHref?.trim() || "/insights/"}
+                        href={viewAllHref}
                         className="flex items-center gap-1.5 no-underline"
                       >
                         View All
@@ -265,26 +242,11 @@ function ArticleGridBody({
                   ) : null}
                 </div>
 
-                {gridPosts.length > 0 ? (
-                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {gridPosts.map((post, index) => (
-                      <GridPostCard
-                        key={getPostKey(post, index)}
-                        post={post}
-                      />
-                    ))}
-                  </div>
-                ) : (
-                  <Card>
-                    <CardContent className="py-12 text-center">
-                      <p className="text-muted-foreground">
-                        {isSearching
-                          ? "No posts matched your search."
-                          : "No posts available yet."}
-                      </p>
-                    </CardContent>
-                  </Card>
-                )}
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                  {gridPosts.map((post, index) => (
+                    <GridPostCard key={getPostKey(post, index)} post={post} />
+                  ))}
+                </div>
               </section>
             </div>
           </div>
@@ -300,14 +262,10 @@ function ArticleGridWithSearch(props: ArticleGridSettings) {
   return <ArticleGridBody {...props} searchQuery={searchQuery} />;
 }
 
-/**
- * AmplifyUP placeable ArticleGrid (`component_id: ArticleGrid`).
- * Matches native /insights: featured card, then "All Posts" / sort row, then grid.
- * Insights Hero search uses `?q=` on the current route to filter this list.
- */
+/** AmplifyUP placeable ArticleGrid (`component_id: ArticleGrid`). */
 export function ArticleGrid(props: ArticleGridSettings) {
   return (
-    <Suspense fallback={<ArticleGridBody {...props} searchQuery="" />}>
+    <Suspense fallback={null}>
       <ArticleGridWithSearch {...props} />
     </Suspense>
   );
