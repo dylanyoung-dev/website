@@ -3,7 +3,11 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
-import { Field, useComponentProps } from "@amplifyup/sdk/react";
+import {
+  Field,
+  isComposerPreview,
+  useComponentProps,
+} from "@amplifyup/sdk/react";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -183,22 +187,27 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
       >
         <Field
           name="badge"
-          render={(badge: IHeroBadge) => (
-            <Badge
-              variant="outline"
-              className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
-            >
-              {badge?.showPulse !== false ? (
-                <span className="relative flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+          render={(badge: IHeroBadge | undefined) => {
+            const inComposer = isComposerPreview();
+            if (!inComposer && !badge?.text) return null;
+
+            return (
+              <Badge
+                variant="outline"
+                className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
+              >
+                {badge?.showPulse !== false ? (
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+                  </span>
+                ) : null}
+                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
+                  {badge?.text || (inComposer ? "Badge" : null)}
                 </span>
-              ) : null}
-              <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
-                {badge?.text}
-              </span>
-            </Badge>
-          )}
+              </Badge>
+            );
+          }}
         />
 
         <Field
