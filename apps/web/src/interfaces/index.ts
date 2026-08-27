@@ -5,5 +5,7 @@ export * from './IImage';
 export * from './IVideoPost';
 export * from './ISnippet';
 export * from './IHero';
+export * from './IAmplifyPost';
 export * from './IArticleGrid';
+export * from './IArticleDetail';
 

@@ -3,6 +3,7 @@
 import type { ComponentType, ReactNode } from "react";
 import { ComponentContextProvider } from "@amplifyup/sdk/react";
 import { ArticleGrid } from "@/components/article-grid";
+import { ArticleDetail } from "@/components/article-detail";
 import { Hero } from "@/components/hero";
 
 /**
@@ -12,6 +13,7 @@ import { Hero } from "@/components/hero";
 const registry: Record<string, ComponentType<Record<string, unknown>>> = {
   Hero,
   ArticleGrid,
+  ArticleDetail,
 };
 
 export function renderAmplifyComponent(
