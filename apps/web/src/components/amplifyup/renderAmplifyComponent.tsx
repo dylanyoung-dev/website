@@ -4,7 +4,9 @@ import type { ComponentType, ReactNode } from "react";
 import { ComponentContextProvider } from "@amplifyup/sdk/react";
 import { ArticleGrid } from "@/components/article-grid";
 import { ArticleDetail } from "@/components/article-detail";
+import { AwardsSection } from "@/components/home";
 import { Hero } from "@/components/hero";
+import { SubscribeBanner } from "@/components/subscribe";
 
 /**
  * Placeable registry — keys must match AmplifyUP `component_id`.
@@ -14,6 +16,8 @@ const registry: Record<string, ComponentType<Record<string, unknown>>> = {
   Hero,
   ArticleGrid,
   ArticleDetail,
+  SubscribeBanner,
+  AwardsSection,
 };
 
 export function renderAmplifyComponent(

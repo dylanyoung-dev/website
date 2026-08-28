@@ -1,6 +1,8 @@
 import { FeaturedPost, LatestPosts } from "@/components/blogs";
-import { AwardsSection } from "@/components/home";
-import { SubscribeBanner } from "@/components/subscribe";
+import {
+  HomeAwardsSection,
+  HomeSubscribeBanner,
+} from "@/components/home";
 import { HomeHero, Layout } from "@/components/ui/Layout";
 import { getPostCategoriesByPostCount, getPosts } from "@/services/post.service";
 
@@ -69,11 +71,11 @@ export default async function Home() {
         </div>
 
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
-          <SubscribeBanner />
+          <HomeSubscribeBanner />
         </div>
 
         <div className="container mx-auto px-4 py-8 md:py-12 max-w-6xl border-t">
-          <AwardsSection />
+          <HomeAwardsSection />
         </div>
       </section>
     </Layout>

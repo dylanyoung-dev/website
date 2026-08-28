@@ -820,3 +820,205 @@ export const hero = {
     }
 };
 
+export const subscribeBanner = {
+    name: 'subscribeBanner',
+    title: 'Subscribe Banner',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Title',
+            description: 'Internal label in Studio (e.g. "Home subscribe")',
+            type: 'string',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'heading',
+            title: 'Heading',
+            type: 'string'
+        },
+        {
+            name: 'description',
+            title: 'Description',
+            type: 'text',
+            rows: 2
+        },
+        {
+            name: 'rssLabel',
+            title: 'RSS link label',
+            type: 'string'
+        },
+        {
+            name: 'rssHref',
+            title: 'RSS link URL',
+            type: 'string',
+            initialValue: '/feed.xml'
+        },
+        {
+            name: 'emailPlaceholder',
+            title: 'Email placeholder',
+            type: 'string',
+            initialValue: 'you@email.com'
+        },
+        {
+            name: 'buttonLabel',
+            title: 'Button label',
+            type: 'string',
+            initialValue: 'Subscribe'
+        },
+        {
+            name: 'successMessage',
+            title: 'Success message',
+            type: 'string'
+        },
+        {
+            name: 'errorMessage',
+            title: 'Error message',
+            type: 'string'
+        },
+        {
+            name: 'formSource',
+            title: 'Form source',
+            description: 'Netlify form source value (e.g. homepage)',
+            type: 'string',
+            initialValue: 'homepage'
+        }
+    ],
+    preview: {
+        select: {
+            title: 'title',
+            subtitle: 'heading'
+        }
+    }
+};
+
+export const awardsSection = {
+    name: 'awardsSection',
+    title: 'Awards Section',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Title',
+            description: 'Internal label in Studio (e.g. "Home awards")',
+            type: 'string',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'heading',
+            title: 'Heading',
+            type: 'string'
+        },
+        {
+            name: 'description',
+            title: 'Description',
+            type: 'text',
+            rows: 2
+        },
+        {
+            name: 'mvpLabel',
+            title: 'MVP label',
+            description: 'Eyebrow above award logos',
+            type: 'string'
+        },
+        {
+            name: 'certificationsLabel',
+            title: 'Certifications label',
+            description: 'Eyebrow above certification logos',
+            type: 'string'
+        },
+        {
+            name: 'awards',
+            title: 'Awards',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    name: 'awardItem',
+                    title: 'Award',
+                    fields: [
+                        {
+                            name: 'image',
+                            title: 'Image',
+                            type: 'image',
+                            options: { hotspot: true },
+                            fields: [
+                                {
+                                    name: 'alt',
+                                    title: 'Alternative text',
+                                    type: 'string'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'alt',
+                            title: 'Alt text',
+                            type: 'string'
+                        },
+                        {
+                            name: 'href',
+                            title: 'Link URL',
+                            type: 'url'
+                        }
+                    ],
+                    preview: {
+                        select: {
+                            title: 'alt',
+                            media: 'image'
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            name: 'certifications',
+            title: 'Certifications',
+            type: 'array',
+            of: [
+                {
+                    type: 'object',
+                    name: 'certificationItem',
+                    title: 'Certification',
+                    fields: [
+                        {
+                            name: 'image',
+                            title: 'Image',
+                            type: 'image',
+                            options: { hotspot: true },
+                            fields: [
+                                {
+                                    name: 'alt',
+                                    title: 'Alternative text',
+                                    type: 'string'
+                                }
+                            ]
+                        },
+                        {
+                            name: 'alt',
+                            title: 'Alt text',
+                            type: 'string'
+                        },
+                        {
+                            name: 'href',
+                            title: 'Link URL',
+                            type: 'url'
+                        }
+                    ],
+                    preview: {
+                        select: {
+                            title: 'alt',
+                            media: 'image'
+                        }
+                    }
+                }
+            ]
+        }
+    ],
+    preview: {
+        select: {
+            title: 'title',
+            subtitle: 'heading'
+        }
+    }
+};
+

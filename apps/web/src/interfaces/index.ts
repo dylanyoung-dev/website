@@ -8,4 +8,6 @@ export * from './IHero';
 export * from './IAmplifyPost';
 export * from './IArticleGrid';
 export * from './IArticleDetail';
+export * from './ISubscribeBanner';
+export * from './IAwardsSection';
 

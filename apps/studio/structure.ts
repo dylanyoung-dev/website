@@ -1,6 +1,11 @@
 import type { StructureResolver } from "sanity/structure";
 
-const V2_TYPES = ["hero", "articleGrid"] as const;
+const V2_TYPES = [
+  "hero",
+  "articleGrid",
+  "subscribeBanner",
+  "awardsSection",
+] as const;
 
 /**
  * Desk structure: AmplifyUP-oriented docs under V2; everything else in the main list.
@@ -18,6 +23,8 @@ export const structure: StructureResolver = (S) =>
             .items([
               S.documentTypeListItem("hero").title("Hero"),
               S.documentTypeListItem("articleGrid").title("Article Grid"),
+              S.documentTypeListItem("subscribeBanner").title("Subscribe Banner"),
+              S.documentTypeListItem("awardsSection").title("Awards Section"),
             ])
         ),
       S.divider(),

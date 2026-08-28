@@ -1,0 +1,1 @@
+export { HomeAwardsSection } from "./HomeAwardsSection";
