@@ -2,7 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Field, isComposerPreview } from "@amplifyup/sdk/react";
+import { usePathname } from "next/navigation";
+import {
+  Field,
+  isComposerPreview,
+  useComponentProps,
+} from "@amplifyup/sdk/react";
 import { ArrowLeft, Calendar, Clock, FileText, Sparkles } from "lucide-react";
 import { ShareButtons } from "@/components/blogs";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
 import type { IAmplifyPost, IAmplifyPostCategory } from "@/interfaces";
+import { resolveAmplifyPost } from "@/lib/amplify-post";
 import { formatPublishedDate } from "@/lib/utils";
 
 function getPostImageUrl(post: IAmplifyPost): string | undefined {
@@ -29,19 +35,31 @@ function getCategoryTitle(category: IAmplifyPostCategory): string | undefined {
   return category.title?.trim() || undefined;
 }
 
-function getShareUrl(slug: string): string {
-  const path = `/insights/${slug}`;
+function getShareUrl(slug: string, pathname: string | null): string {
+  const onTestRoute = pathname?.includes("/insights/test");
+  const path = onTestRoute ? `/insights/test/${slug}` : `/insights/${slug}`;
   if (typeof window !== "undefined" && window.location?.origin) {
     return `${window.location.origin}${path}`;
   }
   return path;
 }
 
-function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
+function getBackHref(pathname: string | null): string {
+  return pathname?.includes("/insights/test") ? "/insights/test" : "/insights";
+}
+
+function ArticleDetailBody({
+  post,
+  pathname,
+}: {
+  post: IAmplifyPost;
+  pathname: string | null;
+}) {
   const imageUrl = getPostImageUrl(post);
   const publishedLabel = formatPublishedDate(post.publishedAt);
   const slug = post.slug?.trim();
-  const shareUrl = slug ? getShareUrl(slug) : "/insights/";
+  const shareUrl = slug ? getShareUrl(slug, pathname) : getBackHref(pathname);
+  const backHref = getBackHref(pathname);
   const categoriesWithTitle = (post.categories || []).filter((c) =>
     getCategoryTitle(c)
   );
@@ -196,7 +214,7 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
 
             <div className="pt-4">
               <Button variant="ghost" asChild>
-                <Link href="/insights" className="flex items-center gap-2">
+                <Link href={backHref} className="flex items-center gap-2">
                   <ArrowLeft className="h-4 w-4" />
                   Back to Insights
                 </Link>
@@ -211,23 +229,29 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
 
 /**
  * AmplifyUP placeable ArticleDetail (`component_id: ArticleDetail`).
- * Post content comes from Edge via `<Field name="post">`.
+ * Post content from Edge via `<Field name="post">` or flat entity props on the component.
  */
 export function ArticleDetail() {
+  const pathname = usePathname();
+  const componentProps = useComponentProps<Record<string, unknown>>();
+
   return (
     <Field
       name="post"
-      render={(post: IAmplifyPost | undefined) => {
+      render={(fieldPost) => {
         const inComposer = isComposerPreview();
-        if (!post?.title && !inComposer) return null;
+        const post = resolveAmplifyPost(fieldPost, componentProps);
 
-        const resolved: IAmplifyPost = post ?? {
-          _id: "",
-          title: "Article",
-          slug: "",
-        };
+        if (!post && !inComposer) return null;
 
-        return <ArticleDetailBody post={resolved} />;
+        const resolved: IAmplifyPost =
+          post ??
+          ({
+            title: "Article title",
+            slug: "",
+          } as IAmplifyPost);
+
+        return <ArticleDetailBody post={resolved} pathname={pathname} />;
       }}
     />
   );

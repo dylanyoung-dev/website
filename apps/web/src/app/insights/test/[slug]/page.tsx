@@ -51,5 +51,5 @@ export default async function InsightsTestSlugPage({ params }: Props) {
     ? await fetchPageConfigServer(route, trackingId)
     : null;
 
-  return <InsightsTestClient pageConfig={pageConfig} />;
+  return <InsightsTestClient pageConfig={pageConfig} slug={slug} />;
 }

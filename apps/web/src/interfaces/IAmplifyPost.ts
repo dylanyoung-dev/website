@@ -21,7 +21,7 @@ export interface IAmplifyPostCategory {
 }
 
 export interface IAmplifyPost {
-  _id: string;
+  _id?: string;
   id?: string;
   _type?: string;
   title: string;
@@ -34,4 +34,5 @@ export interface IAmplifyPost {
   body?: string;
   readingTime?: string;
   excerpt?: string;
+  metaTitle?: string;
 }
