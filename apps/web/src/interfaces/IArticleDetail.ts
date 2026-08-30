@@ -20,8 +20,11 @@ export interface IArticleDetail {
   publishedAt?: string;
   readingTime?: string;
   metaTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
   mainImage?: IAmplifyPost["mainImage"];
   landscapeImage?: IAmplifyPost["landscapeImage"];
+  socialImage?: IAmplifyPost["socialImage"];
   categories?: IAmplifyPost["categories"];
 }
 

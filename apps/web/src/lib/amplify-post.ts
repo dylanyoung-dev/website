@@ -13,10 +13,14 @@ const POST_PROP_KEYS = [
   "publishedAt",
   "readingTime",
   "metaTitle",
+  "metaDescription",
+  "canonicalUrl",
   "mainImage",
   "landscapeImage",
+  "socialImage",
   "categories",
   "tagging",
+  "_updatedAt",
 ] as const;
 
 type LayoutNode = {

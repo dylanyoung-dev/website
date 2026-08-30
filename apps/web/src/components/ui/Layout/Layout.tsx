@@ -5,8 +5,8 @@ import { cn } from "@/lib/utils";
 
 interface LayoutProps {
   children: React.ReactNode;
-  metaTitle: string;
-  metaDescription: string;
+  metaTitle?: string;
+  metaDescription?: string;
   ogPhoto?: string;
   ogUrl?: string;
   /** Remove top padding so a full-width hero sits flush under the nav. */
@@ -15,10 +15,6 @@ interface LayoutProps {
 
 export function Layout({
   children,
-  metaTitle,
-  metaDescription,
-  ogPhoto,
-  ogUrl,
   flushTop = false,
 }: LayoutProps) {
   return (

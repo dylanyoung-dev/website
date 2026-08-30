@@ -1,0 +1,48 @@
+---
+description: Never reimplement AmplifyUP SDK features in this site repo
+alwaysApply: true
+---
+
+# AmplifyUP — use the SDK, do not rebuild it
+
+AmplifyUP SDK (`@amplifyup/sdk`) already owns layout resolve, Composer preview, Field/Slot/props context, personalization, page context, tracking, and the component-ID → render pipeline.
+
+## Hard rules
+
+- **Do not reimplement SDK functionality** in this repository (no parallel “Amplify framework”).
+- **Do not create** local catalogs, registries, ComponentRenderer wrappers, placeable indexes, or duplicate Edge/resolve/preview/pageContext helpers.
+- **Do not expand** `renderAmplifyComponent` into a registry system. That file is only the thin `renderComponent` callback `AmplifyPageContent` requires: map `component_id` → existing React placeable, wrap with SDK `ComponentContextProvider`, return.
+- Before adding Amplify infrastructure, **read current SDK types/docs** (`@amplifyup/sdk/react`, `@amplifyup/sdk/server`). Prefer SDK exports over site-built equivalents.
+- Site work for Amplify is: **placeable React components** (`Field` / `Slot` / `useComponentProps` / `isComposerPreview`) and **page wiring** (`AmplifyPageContent`, `fetchPageConfigServer`, provider `pageContext`).
+
+## When adding a placeable
+
+1. Create the React component (same patterns as `Hero`, `ArticleDetail`).
+2. Register its `component_id` in AmplifyUP Composer (dashboard), not via a new site catalog.
+3. Add one entry to the existing `renderAmplifyComponent` map if the page uses that callback — nothing more.
+
+## Examples
+
+```tsx
+// ❌ BAD — local catalog / registry abstraction
+const localCatalog = { Hero, ArticleGrid };
+function ComponentRenderer({ componentId }) { ... }
+
+// ❌ BAD — reimplementing resolve / preview / props context
+fetch('/v1/resolve') // site-owned
+const ComposerContext = createContext(...)
+
+// ✅ GOOD — thin SDK renderComponent adapter only
+const Component = map[componentId];
+return (
+  <ComponentContextProvider props={props} slots={slots} layoutNodeId={context?.layoutNodeId} componentId={componentId}>
+    <Component {...props} />
+  </ComponentContextProvider>
+);
+
+// ✅ GOOD — placeable uses SDK primitives
+export function PageMeta() {
+  const live = useComponentProps();
+  return <Field name="metaTitle" />;
+}
+```

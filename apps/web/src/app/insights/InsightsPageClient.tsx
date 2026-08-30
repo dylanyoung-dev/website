@@ -23,11 +23,7 @@ function InsightsPageContent({ pageConfig }: { pageConfig: PageConfig | null }) 
 
 export function InsightsPageClient({ pageConfig, slug }: InsightsPageClientProps) {
   const content = (
-    <Layout
-      metaTitle="Dylan Young: Blog Content on AI, Sitecore and Typescript/React"
-      metaDescription="Explore blog posts and articles covering AI/ML, Sitecore, TypeScript, React, and more"
-      flushTop
-    >
+    <Layout flushTop>
       <InsightsPageContent pageConfig={pageConfig} />
     </Layout>
   );

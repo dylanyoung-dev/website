@@ -28,6 +28,7 @@ export interface IAmplifyPost {
   slug: string;
   mainImage?: IAmplifyPostImage;
   landscapeImage?: IAmplifyPostImage;
+  socialImage?: IAmplifyPostImage;
   categories?: IAmplifyPostCategory[];
   tagging?: IAmplifyPostCategory[] | string[];
   publishedAt?: string;
@@ -35,4 +36,7 @@ export interface IAmplifyPost {
   readingTime?: string;
   excerpt?: string;
   metaTitle?: string;
+  metaDescription?: string;
+  canonicalUrl?: string;
+  _updatedAt?: string;
 }
