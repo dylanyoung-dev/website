@@ -11,9 +11,22 @@ export const Footer = () => (
   <footer className="border-t border-b bg-muted/30">
     <PageShell>
       <div className="flex flex-col gap-4 py-6 sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-muted-foreground">
-          &copy; {new Date().getFullYear()} Dylan Young &middot; Built with care
-        </p>
+        <div className="space-y-1">
+          <p className="text-sm text-muted-foreground">
+            &copy; {new Date().getFullYear()} Dylan Young &middot; Built with care
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Powered by{" "}
+            <a
+              href="https://amplifyup.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium text-muted-foreground no-underline transition-colors hover:text-foreground"
+            >
+              Amplify UP
+            </a>
+          </p>
+        </div>
         <nav
           className="flex flex-wrap items-center gap-x-5 gap-y-2"
           aria-label="Social links"
