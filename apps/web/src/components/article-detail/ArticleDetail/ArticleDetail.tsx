@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   Field,
   isComposerPreview,
@@ -35,31 +34,20 @@ function getCategoryTitle(category: IAmplifyPostCategory): string | undefined {
   return category.title?.trim() || undefined;
 }
 
-function getShareUrl(slug: string, pathname: string | null): string {
-  const onTestRoute = pathname?.includes("/insights/test");
-  const path = onTestRoute ? `/insights/test/${slug}` : `/insights/${slug}`;
+function getShareUrl(slug: string): string {
+  const path = `/insights/${slug}`;
   if (typeof window !== "undefined" && window.location?.origin) {
     return `${window.location.origin}${path}`;
   }
   return path;
 }
 
-function getBackHref(pathname: string | null): string {
-  return pathname?.includes("/insights/test") ? "/insights/test" : "/insights";
-}
-
-function ArticleDetailBody({
-  post,
-  pathname,
-}: {
-  post: IAmplifyPost;
-  pathname: string | null;
-}) {
+function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
   const imageUrl = getPostImageUrl(post);
   const publishedLabel = formatPublishedDate(post.publishedAt);
   const slug = post.slug?.trim();
-  const shareUrl = slug ? getShareUrl(slug, pathname) : getBackHref(pathname);
-  const backHref = getBackHref(pathname);
+  const shareUrl = slug ? getShareUrl(slug) : "/insights";
+  const backHref = "/insights";
   const categoriesWithTitle = (post.categories || []).filter((c) =>
     getCategoryTitle(c)
   );
@@ -232,7 +220,6 @@ function ArticleDetailBody({
  * Post content from Edge via `<Field name="post">` or flat entity props on the component.
  */
 export function ArticleDetail() {
-  const pathname = usePathname();
   const componentProps = useComponentProps<Record<string, unknown>>();
 
   return (
@@ -251,7 +238,7 @@ export function ArticleDetail() {
             slug: "",
           } as IAmplifyPost);
 
-        return <ArticleDetailBody post={resolved} pathname={pathname} />;
+        return <ArticleDetailBody post={resolved} />;
       }}
     />
   );

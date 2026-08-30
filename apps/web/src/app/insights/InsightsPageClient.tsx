@@ -6,13 +6,13 @@ import { AmplifySlugPageScope } from "@/components/amplifyup/AmplifySlugPageScop
 import { renderAmplifyComponent } from "@/components/amplifyup/renderAmplifyComponent";
 import { Layout } from "@/components/ui/Layout/Layout";
 
-interface InsightsTestClientProps {
+interface InsightsPageClientProps {
   pageConfig: PageConfig | null;
-  /** Set on `/insights/test/:slug` for Composer "From page" post resolution. */
+  /** Set on `/insights/:slug` for Composer "From page" post resolution. */
   slug?: string;
 }
 
-function InsightsTestContent({ pageConfig }: { pageConfig: PageConfig | null }) {
+function InsightsPageContent({ pageConfig }: { pageConfig: PageConfig | null }) {
   return (
     <AmplifyPageContent
       pageConfig={pageConfig}
@@ -21,14 +21,14 @@ function InsightsTestContent({ pageConfig }: { pageConfig: PageConfig | null }) 
   );
 }
 
-export function InsightsTestClient({ pageConfig, slug }: InsightsTestClientProps) {
+export function InsightsPageClient({ pageConfig, slug }: InsightsPageClientProps) {
   const content = (
     <Layout
       metaTitle="Dylan Young: Blog Content on AI, Sitecore and Typescript/React"
       metaDescription="Explore blog posts and articles covering AI/ML, Sitecore, TypeScript, React, and more"
       flushTop
     >
-      <InsightsTestContent pageConfig={pageConfig} />
+      <InsightsPageContent pageConfig={pageConfig} />
     </Layout>
   );
 

@@ -15,7 +15,7 @@ interface AmplifySlugPageScopeProps {
 }
 
 /**
- * Applies Composer "From page" context for `/insights/test/:slug` routes.
+ * Applies Composer "From page" context for `/insights/:slug` routes.
  * Nested provider updates the SDK singleton with resource key + resolved fields.
  */
 export function AmplifySlugPageScope({
