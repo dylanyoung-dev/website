@@ -1,9 +1,9 @@
 "use client";
 
-import { Field, isComposerPreview } from "@amplifyup/sdk/react";
+import { Field, isComposerPreview, useComponentProps } from "@amplifyup/sdk/react";
 import { MvpLogo } from "@/components/ui/MvpLogo";
 import { Card, CardContent } from "@/components/ui/card";
-import type { IAwardsItem } from "@/interfaces/IAwardsSection";
+import type { IAwardsItem, IAwardsSection } from "@/interfaces/IAwardsSection";
 
 function getItemImageUrl(item: IAwardsItem): string | undefined {
   if (typeof item.image === "string" && item.image.trim()) {
@@ -61,11 +61,11 @@ function AwardBadge({ item }: { item: IAwardsItem }) {
 }
 
 function AwardGroup({
-  labelName,
+  label,
   items,
   showInComposerWhenEmpty,
 }: {
-  labelName: string;
+  label?: string;
   items: IAwardsItem[];
   showInComposerWhenEmpty?: boolean;
 }) {
@@ -74,7 +74,7 @@ function AwardGroup({
   return (
     <div className="space-y-4">
       <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-primary">
-        <Field name={labelName} />
+        <Field value={label} />
       </p>
       {items.length > 0 ? (
         <div className="flex flex-wrap items-center gap-4 md:gap-5">
@@ -92,19 +92,20 @@ function AwardGroup({
 
 /**
  * AmplifyUP placeable AwardsSection (`component_id: AwardsSection`).
- * Heading, labels, and logo lists via `<Field>`.
+ * Heading, labels, and logo lists via `<Field value={…}>`.
  */
 export function AwardsSection() {
+  const live = useComponentProps<IAwardsSection>();
   const inComposer = isComposerPreview();
 
   return (
     <section className="space-y-6">
       <div className="space-y-1">
         <h2 className="text-xl font-semibold md:text-2xl">
-          <Field name="heading" />
+          <Field value={live.heading} />
         </h2>
         <Field
-          name="description"
+          value={live.description}
           className="block text-sm text-muted-foreground"
         />
       </div>
@@ -112,7 +113,7 @@ export function AwardsSection() {
       <Card className="border-border/80 shadow-sm">
         <CardContent className="space-y-8 p-6 md:p-8">
           <Field
-            name="awards"
+            value={live.awards}
             render={(awardsRaw) => {
               const awards = asItemList(awardsRaw).filter((item) =>
                 getItemImageUrl(item)
@@ -120,7 +121,7 @@ export function AwardsSection() {
               if (awards.length === 0 && !inComposer) return null;
               return (
                 <AwardGroup
-                  labelName="mvpLabel"
+                  label={live.mvpLabel}
                   items={awards}
                   showInComposerWhenEmpty={inComposer}
                 />
@@ -129,7 +130,7 @@ export function AwardsSection() {
           />
 
           <Field
-            name="certifications"
+            value={live.certifications}
             render={(certsRaw) => {
               const certs = asItemList(certsRaw).filter((item) =>
                 getItemImageUrl(item)
@@ -138,7 +139,7 @@ export function AwardsSection() {
               return (
                 <div className="border-t border-border/60 pt-8">
                   <AwardGroup
-                    labelName="certificationsLabel"
+                    label={live.certificationsLabel}
                     items={certs}
                     showInComposerWhenEmpty={inComposer}
                   />

@@ -81,7 +81,7 @@ export function normalizeAmplifyPost(raw: unknown): IAmplifyPost | undefined {
 }
 
 /**
- * Resolve a post from `<Field name="post">` or flat entity props on the component.
+ * Resolve a post from `<Field value={post}>` or flat entity props on the component.
  * AmplifyUP may bind a single `post` object or project entity fields at the prop root.
  */
 export function resolveAmplifyPost(

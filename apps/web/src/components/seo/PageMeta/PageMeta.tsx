@@ -65,13 +65,13 @@ export function PageMeta() {
     <>
       {/* Keep Field bindings discoverable for Composer / Edge projection */}
       <span className="sr-only" aria-hidden>
-        <Field name="metaTitle" />
-        <Field name="metaDescription" />
-        <Field name="canonicalUrl" />
-        <Field name="ogImage" />
-        <Field name="ogType" />
-        <Field name="keywords" />
-        <Field name="robots" />
+        <Field value={live.metaTitle} />
+        <Field value={live.metaDescription} />
+        <Field value={live.canonicalUrl} />
+        <Field value={live.ogImage} />
+        <Field value={live.ogType} />
+        <Field value={live.keywords} />
+        <Field value={live.robots} />
       </span>
       {inComposer ? <PageMetaPreview meta={meta} /> : null}
     </>

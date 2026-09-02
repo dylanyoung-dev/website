@@ -186,7 +186,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
         )}
       >
         <Field
-          name="badge"
+          value={live.badge}
           render={(badge: IHeroBadge | undefined) => {
             const inComposer = isComposerPreview();
             if (!inComposer && !badge?.text) return null;
@@ -211,7 +211,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
         />
 
         <Field
-          name="eyebrow"
+          value={live.eyebrow}
           className="mb-4 block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary"
         />
 
@@ -223,11 +223,11 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
               : "max-w-4xl text-4xl leading-[1.1] md:text-5xl lg:text-[3.25rem]"
           )}
         >
-          <Field name="heading" />
+          <Field value={live.heading} />
         </h1>
 
         <Field
-          name="subtitle"
+          value={live.subtitle}
           className={cn(
             "block text-muted-foreground",
             isInsights
@@ -237,7 +237,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
         />
 
         <Field
-          name="description"
+          value={live.description}
           className={cn(
             "block max-w-2xl leading-relaxed text-muted-foreground",
             isInsights
@@ -253,7 +253,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
           )}
         >
           <Field
-            name="actions"
+            value={live.actions}
             render={(actions: IHeroAction[] | undefined) => (
               <div className="flex flex-wrap items-center gap-3">
                 {(Array.isArray(actions) ? actions : []).map((action, index) => (
@@ -267,7 +267,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
             )}
           />
           <Field
-            name="secondaryLinks"
+            value={live.secondaryLinks}
             render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => (
               <div className="flex flex-wrap items-center gap-2">
                 {(Array.isArray(secondaryLinks) ? secondaryLinks : []).map(

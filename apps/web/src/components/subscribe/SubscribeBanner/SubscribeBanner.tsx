@@ -17,7 +17,7 @@ type SubscribeBannerSettings = Pick<ISubscribeBanner, "formSource">;
 
 /**
  * AmplifyUP placeable SubscribeBanner (`component_id: SubscribeBanner`).
- * Copy via `<Field>`; Netlify submit stays on the site.
+ * Copy via `<Field value={…}>`; Netlify submit stays on the site.
  */
 export function SubscribeBanner({
   formSource: formSourceProp = "homepage",
@@ -72,31 +72,23 @@ export function SubscribeBanner({
                 id="subscribe-heading"
                 className="text-xl font-bold tracking-tight text-white md:text-2xl"
               >
-                <Field name="heading" />
+                <Field value={live.heading} />
               </h2>
               <p className="text-sm leading-relaxed text-slate-400 md:text-base">
-                <Field name="description" />{" "}
+                <Field value={live.description} />{" "}
                 <Field
-                  name="rssLabel"
+                  value={live.rssLabel}
                   render={(rssLabel: string | undefined) => {
                     if (!rssLabel?.trim() && !inComposer) return null;
+                    const href = live.rssHref?.trim();
+                    if (!href && !inComposer) return null;
                     return (
-                      <Field
-                        name="rssHref"
-                        render={(rssHref: string | undefined) => {
-                          const href = rssHref?.trim();
-                          if (!href && !inComposer) return null;
-                          return (
-                            <Link
-                              href={href || "/feed.xml"}
-                              className="no-underline text-slate-300 underline-offset-4 transition-colors hover:text-white hover:underline"
-                            >
-                              {rssLabel?.trim() ||
-                                (inComposer ? "RSS link" : null)}
-                            </Link>
-                          );
-                        }}
-                      />
+                      <Link
+                        href={href || "/feed.xml"}
+                        className="no-underline text-slate-300 underline-offset-4 transition-colors hover:text-white hover:underline"
+                      >
+                        {rssLabel?.trim() || (inComposer ? "RSS link" : null)}
+                      </Link>
                     );
                   }}
                 />
@@ -108,7 +100,7 @@ export function SubscribeBanner({
                 className="text-sm font-medium text-green-400 lg:shrink-0 lg:text-base"
                 role="status"
               >
-                <Field name="successMessage" />
+                <Field value={live.successMessage} />
               </p>
             ) : (
               <div className="flex w-full flex-col gap-2 lg:max-w-md lg:shrink-0 xl:max-w-lg">
@@ -130,7 +122,7 @@ export function SubscribeBanner({
                   </p>
 
                   <Field
-                    name="emailPlaceholder"
+                    value={live.emailPlaceholder}
                     render={(placeholder: string | undefined) => (
                       <Input
                         type="email"
@@ -156,7 +148,7 @@ export function SubscribeBanner({
                   />
 
                   <Field
-                    name="buttonLabel"
+                    value={live.buttonLabel}
                     render={(buttonLabel: string | undefined) => (
                       <Button
                         type="submit"
@@ -177,7 +169,7 @@ export function SubscribeBanner({
                     className="text-sm text-red-400"
                     role="alert"
                   >
-                    <Field name="errorMessage" />
+                    <Field value={live.errorMessage} />
                   </p>
                 ) : null}
               </div>

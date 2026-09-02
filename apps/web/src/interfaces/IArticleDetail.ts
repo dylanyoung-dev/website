@@ -1,7 +1,7 @@
 /**
  * AmplifyUP props for ArticleDetail (`component_id: ArticleDetail`).
  *
- * Content → `<Field name="post">` and/or flat Edge entity props (title, body, slug, …).
+ * Content → `<Field value={post}>` and/or flat Edge entity props (title, body, slug, …).
  */
 
 import type { IAmplifyPost } from "./IAmplifyPost";

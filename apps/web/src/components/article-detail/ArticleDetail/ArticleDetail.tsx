@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   Field,
+  RichText,
   isComposerPreview,
   useComponentProps,
 } from "@amplifyup/sdk/react";
@@ -14,8 +15,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
 import type { IAmplifyPost, IAmplifyPostCategory } from "@/interfaces";
+import type { IArticleDetail } from "@/interfaces/IArticleDetail";
 import { resolveAmplifyPost } from "@/lib/amplify-post";
 import { formatPublishedDate } from "@/lib/utils";
+
+const ARTICLE_PROSE_CLASS =
+  "prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-foreground prose-h2:!mt-20 prose-h2:!mb-8 prose-h2:first:!mt-0 prose-h3:!mt-16 prose-h3:!mb-6 prose-h3:first:!mt-0 prose-h4:!mt-12 prose-h4:!mb-4 prose-h4:first:!mt-0 prose-h5:!mt-10 prose-h5:!mb-3 prose-h5:first:!mt-0 prose-h6:!mt-8 prose-h6:!mb-2 prose-h6:first:!mt-0 prose-p:text-foreground prose-p:leading-relaxed prose-p:text-lg prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary/80 hover:prose-a:underline prose-strong:text-foreground prose-strong:font-semibold prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:pl-6 prose-img:rounded-lg prose-img:shadow-md prose-hr:border-border prose-hr:my-12 prose-ul:space-y-2 prose-ol:space-y-2 prose-li:text-foreground";
 
 function getPostImageUrl(post: IAmplifyPost): string | undefined {
   return post.landscapeImage?.url || post.mainImage?.url;
@@ -147,31 +152,13 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
           </div>
 
           {post.body ? (
-            <Card className="border-0 shadow-none">
-              <CardContent className="p-0">
-                <div
-                  className="prose prose-lg dark:prose-invert max-w-none
-                    prose-headings:font-bold prose-headings:text-foreground
-                    prose-h2:!mt-20 prose-h2:!mb-8 prose-h2:first:!mt-0
-                    prose-h3:!mt-16 prose-h3:!mb-6 prose-h3:first:!mt-0
-                    prose-h4:!mt-12 prose-h4:!mb-4 prose-h4:first:!mt-0
-                    prose-h5:!mt-10 prose-h5:!mb-3 prose-h5:first:!mt-0
-                    prose-h6:!mt-8 prose-h6:!mb-2 prose-h6:first:!mt-0
-                    prose-p:text-foreground prose-p:leading-relaxed prose-p:text-lg
-                    prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary/80 hover:prose-a:underline
-                    prose-strong:text-foreground prose-strong:font-semibold
-                    prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                    prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg
-                    prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:pl-6
-                    prose-img:rounded-lg prose-img:shadow-md
-                    prose-hr:border-border prose-hr:my-12
-                    prose-ul:space-y-2 prose-ol:space-y-2
-                    prose-li:text-foreground"
-                >
-                  <RenderMarkdown>{post.body}</RenderMarkdown>
-                </div>
-              </CardContent>
-            </Card>
+            isComposerPreview() ? (
+              <RichText value={post.body} className={ARTICLE_PROSE_CLASS} />
+            ) : (
+              <div className={ARTICLE_PROSE_CLASS}>
+                <RenderMarkdown>{post.body}</RenderMarkdown>
+              </div>
+            )
           ) : null}
 
           <footer className="mt-12 space-y-6 border-t pt-8">
@@ -217,14 +204,16 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
 
 /**
  * AmplifyUP placeable ArticleDetail (`component_id: ArticleDetail`).
- * Post content from Edge via `<Field name="post">` or flat entity props on the component.
+ * Post content from Edge via `<Field value={post}>` or flat entity props.
  */
 export function ArticleDetail() {
-  const componentProps = useComponentProps<Record<string, unknown>>();
+  const componentProps = useComponentProps<
+    IArticleDetail & Record<string, unknown>
+  >();
 
   return (
     <Field
-      name="post"
+      value={componentProps.post}
       render={(fieldPost) => {
         const inComposer = isComposerPreview();
         const post = resolveAmplifyPost(fieldPost, componentProps);

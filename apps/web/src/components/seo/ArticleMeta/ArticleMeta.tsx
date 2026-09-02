@@ -78,7 +78,7 @@ export function ArticleMeta() {
 
   return (
     <Field
-      name="post"
+      value={componentProps.post}
       render={(fieldPost) => {
         const post = resolveAmplifyPost(fieldPost, componentProps);
         return <ArticleMetaBody post={post} props={componentProps} />;

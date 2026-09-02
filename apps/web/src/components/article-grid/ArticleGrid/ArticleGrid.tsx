@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Field } from "@amplifyup/sdk/react";
+import { Field, useComponentProps } from "@amplifyup/sdk/react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -185,11 +185,12 @@ function ArticleGridBody({
   viewAllHref,
   searchQuery,
 }: ArticleGridSettings & { searchQuery: string }) {
+  const live = useComponentProps<IArticleGrid>();
   const isSearching = searchQuery.length > 0;
 
   return (
     <Field
-      name="posts"
+      value={live.posts}
       render={(posts) => {
         const list = filterPostsByQuery(asPostList(posts), searchQuery);
         const featured = showFeatured && !isSearching ? list[0] : null;
@@ -213,15 +214,15 @@ function ArticleGridBody({
                 <div className="flex items-center justify-between gap-4">
                   <div className="space-y-1">
                     <h2 className="text-xl font-semibold md:text-2xl">
-                      <Field name="heading" />
+                      <Field value={live.heading} />
                     </h2>
                     <Field
-                      name="description"
+                      value={live.description}
                       className="block text-sm text-muted-foreground"
                     />
                   </div>
                   <Field
-                    name="sortLabel"
+                    value={live.sortLabel}
                     className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline"
                   />
                   {showViewAll && viewAllHref ? (
