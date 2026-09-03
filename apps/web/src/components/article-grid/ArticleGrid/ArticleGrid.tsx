@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Field, useComponentProps } from "@amplifyup/sdk/react";
+import { Field, isComposerPreview, useComponentProps } from "@amplifyup/sdk/react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -187,6 +187,7 @@ function ArticleGridBody({
 }: ArticleGridSettings & { searchQuery: string }) {
   const live = useComponentProps<IArticleGrid>();
   const isSearching = searchQuery.length > 0;
+  const inComposer = isComposerPreview();
 
   return (
     <Field
@@ -200,6 +201,10 @@ function ArticleGridBody({
           <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
             <div className="space-y-10">
               {featured ? <FeaturedGridPost post={featured} /> : null}
+              
+              {list.length === 0 && inComposer ? (
+                <p className="text-muted-foreground text-sm">No posts yet. Configure post data in Composer.</p>
+              ) : null}
 
               {isSearching ? (
                 <p className="text-sm text-muted-foreground">

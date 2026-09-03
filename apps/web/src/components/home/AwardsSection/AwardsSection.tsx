@@ -85,6 +85,8 @@ function AwardGroup({
             />
           ))}
         </div>
+      ) : showInComposerWhenEmpty ? (
+        <p className="text-sm text-muted-foreground">Add items...</p>
       ) : null}
     </div>
   );

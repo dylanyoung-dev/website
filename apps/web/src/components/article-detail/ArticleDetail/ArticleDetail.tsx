@@ -48,6 +48,7 @@ function getShareUrl(slug: string): string {
 }
 
 function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
+  const inComposer = isComposerPreview();
   const imageUrl = getPostImageUrl(post);
   const publishedLabel = formatPublishedDate(post.publishedAt);
   const slug = post.slug?.trim();
@@ -62,17 +63,23 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
 
   return (
     <section className="relative bg-background">
-      {imageUrl ? (
+      {imageUrl || inComposer ? (
         <div className="container mx-auto mb-8 max-w-6xl px-4 pt-4">
           <div className="relative h-44 w-full overflow-hidden rounded-lg bg-muted sm:h-52 md:h-56">
-            <Image
-              src={imageUrl}
-              alt={getPostImageAlt(post)}
-              fill
-              className="object-cover"
-              priority
-              sizes="(max-width: 1152px) 100vw, 1152px"
-            />
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={getPostImageAlt(post)}
+                fill
+                className="object-cover"
+                priority
+                sizes="(max-width: 1152px) 100vw, 1152px"
+              />
+            ) : (
+              <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
+                Article image
+              </div>
+            )}
           </div>
         </div>
       ) : null}
@@ -82,17 +89,23 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
       >
         <article>
           <header className="mb-8 space-y-6">
-            {categoriesWithTitle.length > 0 ? (
+            {categoriesWithTitle.length > 0 || inComposer ? (
               <div className="flex flex-wrap gap-2">
-                {categoriesWithTitle.map((category, index) => (
-                  <Badge
-                    key={category.id || category._id || index}
-                    variant="secondary"
-                    className="text-sm font-medium"
-                  >
-                    {getCategoryTitle(category)}
+                {categoriesWithTitle.length > 0 ? (
+                  categoriesWithTitle.map((category, index) => (
+                    <Badge
+                      key={category.id || category._id || index}
+                      variant="secondary"
+                      className="text-sm font-medium"
+                    >
+                      {getCategoryTitle(category)}
+                    </Badge>
+                  ))
+                ) : (
+                  <Badge variant="secondary" className="text-sm font-medium text-muted-foreground">
+                    Categories
                   </Badge>
-                ))}
+                )}
               </div>
             ) : null}
 
@@ -101,18 +114,18 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
             </h1>
 
             <div className="flex flex-wrap items-center gap-4 border-t pt-4 md:gap-6">
-              {publishedLabel ? (
+              {publishedLabel || inComposer ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   <time dateTime={post.publishedAt} className="font-medium">
-                    {publishedLabel}
+                    {publishedLabel || "Publish date"}
                   </time>
                 </div>
               ) : null}
-              {post.readingTime ? (
+              {post.readingTime || inComposer ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
-                  <span className="font-medium">{post.readingTime}</span>
+                  <span className="font-medium">{post.readingTime || "Reading time"}</span>
                 </div>
               ) : null}
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -151,8 +164,8 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
             </Card>
           </div>
 
-          {post.body ? (
-            isComposerPreview() ? (
+          {post.body || inComposer ? (
+            inComposer ? (
               <RichText value={post.body} className={ARTICLE_PROSE_CLASS} />
             ) : (
               <div className={ARTICLE_PROSE_CLASS}>
@@ -162,27 +175,31 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
           ) : null}
 
           <footer className="mt-12 space-y-6 border-t pt-8">
-            {categoriesWithSlug.length > 0 ? (
+            {categoriesWithSlug.length > 0 || inComposer ? (
               <div className="space-y-2">
                 <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
                   Categories
                 </h3>
                 <div className="flex flex-wrap gap-2">
-                  {categoriesWithSlug.map((category, index) => {
-                    const categorySlug = getCategorySlug(category)!;
-                    return (
-                      <Button
-                        key={category.id || category._id || index}
-                        variant="outline"
-                        size="sm"
-                        asChild
-                      >
-                        <Link href={`/insights/categories/${categorySlug}`}>
-                          {getCategoryTitle(category)}
-                        </Link>
-                      </Button>
-                    );
-                  })}
+                  {categoriesWithSlug.length > 0 ? (
+                    categoriesWithSlug.map((category, index) => {
+                      const categorySlug = getCategorySlug(category)!;
+                      return (
+                        <Button
+                          key={category.id || category._id || index}
+                          variant="outline"
+                          size="sm"
+                          asChild
+                        >
+                          <Link href={`/insights/categories/${categorySlug}`}>
+                            {getCategoryTitle(category)}
+                          </Link>
+                        </Button>
+                      );
+                    })
+                  ) : (
+                    <span className="text-sm text-muted-foreground">No categories</span>
+                  )}
                 </div>
               </div>
             ) : null}
