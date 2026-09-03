@@ -8,7 +8,6 @@ import { AwardsSection } from "@/components/home";
 import { Hero } from "@/components/hero";
 import { ArticleMeta, PageMeta } from "@/components/seo";
 import { SubscribeBanner } from "@/components/subscribe";
-import { TooltipProvider } from "@/components/ui/tooltip";
 
 /**
  * Thin `renderComponent` adapter for AmplifyPageContent.
@@ -35,15 +34,13 @@ export function renderAmplifyComponent(
   if (!Component) return null;
 
   return (
-    <TooltipProvider>
-      <ComponentContextProvider
-        props={props}
-        slots={slots}
-        layoutNodeId={context?.layoutNodeId}
-        componentId={componentId}
-      >
-        <Component {...props} />
-      </ComponentContextProvider>
-    </TooltipProvider>
+    <ComponentContextProvider
+      props={props}
+      slots={slots}
+      layoutNodeId={context?.layoutNodeId}
+      componentId={componentId}
+    >
+      <Component {...props} />
+    </ComponentContextProvider>
   );
 }
