@@ -52,7 +52,7 @@ Also see `.cursor/rules/amplifyup-sdk.mdc`.
 - [ ] Editable content: `<Field|RichText|Image field={fields.…} />` — one each
 - [ ] Display reads: `fields.x.value` (never render `{fields.x}` as text)
 - [ ] Nested objects (e.g. badge) use leaf envelopes: `fields.badge.text`
-- [ ] Arrays/lists: `field={fields.posts}` + `render`, or `fields.posts.value`
+- [ ] Arrays/lists: `<Field field={fields.posts} render={…} />` — rows are plain objects; search/load-more via `queryContent` + `postsPagination`, not client-side filtering
 - [ ] Settings are plain props, not Field-wrapped
 - [ ] Empty-state null checks gated with `!isComposerPreview()`
 - [ ] One `renderAmplifyComponent` map entry; `component_id` in Composer

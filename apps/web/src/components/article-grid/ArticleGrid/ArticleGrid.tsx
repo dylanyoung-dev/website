@@ -1,293 +1,171 @@
 "use client";
 
-import NextImage from "next/image";
+import Image from "next/image";
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   Field,
   isComposerPreview,
+  queryContent,
+  searchSpec,
   type LayoutComponentProps,
+  type QueryPagination,
 } from "@amplifyup/sdk/react";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import type {
-  IArticleGrid,
-  IArticleGridPost,
-} from "@/interfaces/IArticleGrid";
+import type { IAmplifyPost } from "@/interfaces";
 import { formatPublishedDate } from "@/lib/utils";
 
-type ArticleGridSettings = Pick<
-  IArticleGrid,
-  "showFeatured" | "showViewAll" | "viewAllHref"
->;
-type ArticleGridContent = Omit<
-  IArticleGrid,
-  "showFeatured" | "showViewAll" | "viewAllHref" | "title"
->;
+const TRACKING_ID = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID?.trim() || "";
+const ROUTE = "/insights";
 
-function getPostKey(post: IArticleGridPost, index: number): string {
-  return post._id || post.id || post.slug || String(index);
-}
+type Content = {
+  heading?: string;
+  description?: string;
+  posts?: IAmplifyPost[];
+} & Record<string, unknown>;
 
-function getPostHref(post: IArticleGridPost): string {
-  const slug = post.slug?.trim();
-  return slug ? `/insights/${slug}` : "/insights/";
-}
+type ArticleGridProps = LayoutComponentProps<Content> & {
+  /** Pagination meta from a paginated Composer query connection on `posts`. */
+  postsPagination?: QueryPagination;
+  showFeatured?: boolean;
+};
 
-function getPostImageUrl(post: IArticleGridPost): string | undefined {
-  return post.landscapeImage?.url || post.mainImage?.url;
-}
-
-function getPostImageAlt(post: IArticleGridPost): string {
-  return post.landscapeImage?.alt || post.mainImage?.alt || post.title;
-}
-
-function asPostList(posts: unknown): IArticleGridPost[] {
-  return Array.isArray(posts) ? (posts as IArticleGridPost[]) : [];
-}
-
-function filterPostsByQuery(
-  posts: IArticleGridPost[],
-  query: string
-): IArticleGridPost[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return posts;
-  return posts.filter((post) =>
-    [post.title, post.excerpt, post.body, post.slug]
-      .filter((value): value is string => Boolean(value))
-      .some((value) => value.toLowerCase().includes(q))
-  );
-}
-
-function FeaturedGridPost({ post }: { post: IArticleGridPost }) {
-  const imageUrl = getPostImageUrl(post);
-  const postHref = getPostHref(post);
-  const publishedLabel = formatPublishedDate(post.publishedAt, "MMMM dd, yyyy");
+function PostCard({ post }: { post: IAmplifyPost }) {
+  const href = post.slug ? `/insights/${post.slug}` : "/insights/";
+  const image = post.landscapeImage;
+  const date = formatPublishedDate(post.publishedAt, "MMM dd, yyyy");
 
   return (
-    <article className="overflow-hidden rounded-xl border border-border/80 bg-card shadow-sm transition-shadow hover:shadow-md">
-      <div className="flex flex-col md:grid md:grid-cols-2 md:items-stretch">
-        <Link
-          href={postHref}
-          className="group relative block aspect-[16/10] overflow-hidden bg-muted md:order-2 md:min-h-[220px] md:h-full md:aspect-auto"
-        >
-          {imageUrl ? (
-            <NextImage
-              src={imageUrl}
-              alt={getPostImageAlt(post)}
-              fill
-              sizes="(max-width: 768px) 100vw, 50vw"
-              className="object-cover transition-transform duration-300 group-hover:scale-[1.02]"
-              priority
-            />
-          ) : (
-            <div
-              className="absolute inset-0 bg-gradient-to-br from-primary/80 to-primary/40"
-              aria-hidden
-            />
-          )}
-          <div className="absolute bottom-4 left-4 text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/90 drop-shadow-sm max-md:hidden">
-            01 / Featured
-          </div>
-        </Link>
-
-        <div className="flex flex-col justify-between gap-4 p-5 md:order-1 md:p-6">
-          <div className="space-y-3">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge className="gap-1 rounded-full px-2.5 py-0.5 text-[0.65rem] font-semibold uppercase tracking-wider">
-                <Sparkles className="h-3 w-3" aria-hidden />
-                Featured
-              </Badge>
-            </div>
-
-            <h2 className="text-xl font-bold leading-tight tracking-tight md:text-2xl lg:text-3xl">
-              <Link
-                href={postHref}
-                className="text-foreground no-underline transition-colors hover:text-primary"
-              >
-                {post.title}
-              </Link>
-            </h2>
-
-            {post.excerpt ? (
-              <div className="space-y-2">
-                <p className="line-clamp-3 max-w-xl text-sm leading-relaxed text-muted-foreground md:text-base">
-                  {post.excerpt}
-                </p>
-                <Link
-                  href={postHref}
-                  className="inline-flex items-center gap-1 text-sm font-medium text-primary no-underline hover:opacity-80"
-                >
-                  Read more
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            ) : null}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            {publishedLabel ? (
-              <time dateTime={String(post.publishedAt)}>{publishedLabel}</time>
-            ) : null}
-            {publishedLabel && post.readingTime ? <span aria-hidden>•</span> : null}
-            {post.readingTime ? <span>{post.readingTime}</span> : null}
-          </div>
-        </div>
+    <Link
+      href={href}
+      className="group flex h-full flex-col overflow-hidden rounded-xl border border-border/80 bg-card no-underline transition-shadow hover:shadow-md"
+    >
+      <div className="relative aspect-[16/10] bg-muted">
+        {image?.url ? (
+          <Image
+            src={image.url}
+            alt={image.alt || post.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        ) : null}
       </div>
-    </article>
+      <div className="flex flex-1 flex-col gap-2 p-5">
+        <h3 className="text-base font-semibold leading-snug text-foreground group-hover:text-primary">
+          {post.title}
+        </h3>
+      </div>
+      <div className="flex justify-between border-t px-5 py-3 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+        {date ? <time dateTime={post.publishedAt}>{date}</time> : <span />}
+        {post.readingTime ? <span>{post.readingTime}</span> : null}
+      </div>
+    </Link>
   );
 }
 
-function GridPostCard({ post }: { post: IArticleGridPost }) {
-  const imageUrl = getPostImageUrl(post);
-  const postHref = getPostHref(post);
-  const publishedLabel = formatPublishedDate(post.publishedAt, "MMM dd, yyyy");
-
-  return (
-    <Card className="group h-full overflow-hidden border-border/80 transition-shadow hover:shadow-md">
-      <CardContent className="flex h-full flex-col p-0">
-        <Link href={postHref} className="flex h-full flex-col no-underline">
-          <div className="relative aspect-[16/10] overflow-hidden bg-muted">
-            {imageUrl ? (
-              <NextImage
-                src={imageUrl}
-                alt={getPostImageAlt(post)}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
-              />
-            ) : (
-              <div
-                className="absolute inset-0 bg-gradient-to-br from-primary/70 to-primary/40"
-                aria-hidden
-              />
-            )}
-          </div>
-
-          <div className="flex flex-1 flex-col gap-3 p-5">
-            <h3 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary">
-              {post.title}
-            </h3>
-          </div>
-
-          <div className="flex items-center justify-between border-t px-5 py-3.5 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
-            {publishedLabel ? (
-              <time dateTime={String(post.publishedAt)}>{publishedLabel}</time>
-            ) : (
-              <span>&nbsp;</span>
-            )}
-            {post.readingTime ? <span>{post.readingTime}</span> : null}
-          </div>
-        </Link>
-      </CardContent>
-    </Card>
-  );
-}
-
-function ArticleGridBody({
-  fields,
+function PostGrid({
+  posts,
   showFeatured,
-  showViewAll,
-  viewAllHref,
-  searchQuery,
-}: LayoutComponentProps<ArticleGridContent> &
-  ArticleGridSettings & { searchQuery: string }) {
-  const isSearching = searchQuery.length > 0;
-  const inComposer = isComposerPreview();
+}: {
+  posts: IAmplifyPost[];
+  showFeatured?: boolean;
+}) {
+  const featured = showFeatured ? posts[0] : null;
+  const rest = featured ? posts.slice(1) : posts;
 
   return (
-    <Field
-      field={fields.posts}
-      render={(posts) => {
-        const list = filterPostsByQuery(asPostList(posts), searchQuery);
-        const featured = showFeatured && !isSearching ? list[0] : null;
-        const gridPosts = featured ? list.slice(1) : list;
-
-        return (
-          <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
-            <div className="space-y-10">
-              {featured ? <FeaturedGridPost post={featured} /> : null}
-
-              {list.length === 0 && inComposer ? (
-                <p className="text-muted-foreground text-sm">
-                  No posts yet. Configure post data in Composer.
-                </p>
-              ) : null}
-
-              {isSearching ? (
-                <p className="text-sm text-muted-foreground">
-                  {list.length} {list.length === 1 ? "result" : "results"} for{" "}
-                  <span className="font-medium text-foreground">
-                    &ldquo;{searchQuery}&rdquo;
-                  </span>
-                </p>
-              ) : null}
-
-              <section className="space-y-6">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <h2 className="text-xl font-semibold md:text-2xl">
-                      <Field field={fields.heading} />
-                    </h2>
-                    <Field
-                      field={fields.description}
-                      className="block text-sm text-muted-foreground"
-                    />
-                  </div>
-                  <Field
-                    field={fields.sortLabel}
-                    className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline"
-                  />
-                  {showViewAll && viewAllHref ? (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      asChild
-                      className="hidden shrink-0 sm:flex"
-                    >
-                      <Link
-                        href={viewAllHref}
-                        className="flex items-center gap-1.5 no-underline"
-                      >
-                        View All
-                        <ArrowRight className="h-3.5 w-3.5" />
-                      </Link>
-                    </Button>
-                  ) : null}
-                </div>
-
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                  {gridPosts.map((post, index) => (
-                    <GridPostCard key={getPostKey(post, index)} post={post} />
-                  ))}
-                </div>
-              </section>
-            </div>
-          </div>
-        );
-      }}
-    />
+    <>
+      {featured ? <PostCard post={featured} /> : null}
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+        {rest.map((post, i) => (
+          <PostCard key={post._id || post.id || post.slug || i} post={post} />
+        ))}
+      </div>
+    </>
   );
 }
 
-function ArticleGridWithSearch(
-  props: LayoutComponentProps<ArticleGridContent> & ArticleGridSettings
-) {
-  const searchParams = useSearchParams();
-  const searchQuery = searchParams.get("q")?.trim() || "";
-  return <ArticleGridBody {...props} searchQuery={searchQuery} />;
+function ArticleGridInner({
+  fields,
+  postsPagination,
+  showFeatured,
+}: ArticleGridProps) {
+  const q = useSearchParams().get("q")?.trim() || "";
+  const inComposer = isComposerPreview();
+  const [hits, setHits] = useState<IAmplifyPost[] | null>(null);
+
+  useEffect(() => {
+    if (!q || !TRACKING_ID || !postsPagination) {
+      setHits(null);
+      return;
+    }
+
+    let cancelled = false;
+    queryContent<IAmplifyPost>({
+      trackingId: TRACKING_ID,
+      route: ROUTE,
+      spec: searchSpec(postsPagination, "title", q),
+    })
+      .then((result) => {
+        if (!cancelled) setHits(result.results);
+      })
+      .catch(() => {
+        if (!cancelled) setHits([]);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [q, postsPagination]);
+
+  return (
+    <div className="container mx-auto max-w-6xl space-y-8 px-4 py-8 md:py-12">
+      <div className="space-y-1">
+        <h2 className="text-xl font-semibold md:text-2xl">
+          <Field field={fields.heading} />
+        </h2>
+        <Field
+          field={fields.description}
+          className="block text-sm text-muted-foreground"
+        />
+      </div>
+
+      {q ? (
+        <p className="text-sm text-muted-foreground">
+          {hits
+            ? `${hits.length} ${hits.length === 1 ? "result" : "results"} for “${q}”`
+            : `Searching for “${q}”…`}
+        </p>
+      ) : null}
+
+      {inComposer && !fields.posts?.value?.length ? (
+        <p className="text-sm text-muted-foreground">No posts yet.</p>
+      ) : null}
+
+      {/*
+        Bind the list envelope for Composer. Search overrides display via
+        queryContent — list rows are plain objects, not field envelopes.
+      */}
+      <Field
+        field={fields.posts}
+        render={(posts) => {
+          if (hits) {
+            return <PostGrid posts={hits} showFeatured={false} />;
+          }
+          const list = Array.isArray(posts) ? posts : [];
+          return <PostGrid posts={list} showFeatured={showFeatured && !q} />;
+        }}
+      />
+    </div>
+  );
 }
 
 /** AmplifyUP placeable ArticleGrid (`component_id: ArticleGrid`). */
-export function ArticleGrid(
-  props: LayoutComponentProps<ArticleGridContent> & ArticleGridSettings
-) {
+export function ArticleGrid(props: ArticleGridProps) {
   return (
     <Suspense fallback={null}>
-      <ArticleGridWithSearch {...props} />
+      <ArticleGridInner {...props} />
     </Suspense>
   );
 }
