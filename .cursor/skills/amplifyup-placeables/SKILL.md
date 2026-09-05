@@ -2,130 +2,191 @@
 name: amplifyup-placeables
 description: >-
   Build and edit AmplifyUP placeable components without overengineering or
-  fighting the SDK. Use when creating or changing placeables, Field/RichText/Image
-  bindings, fields envelopes, ArticleDetail/Hero/ArticleGrid, Composer preview,
-  renderAmplifyComponent, or anything involving @amplifyup/sdk.
+  fighting the SDK. Use when creating or changing placeables, Field/RichText/Image/
+  Slot bindings, ListRow lists, fields envelopes, ArticleDetail/Hero/ArticleGrid,
+  Composer preview, queryContent, pagination, renderAmplifyComponent, or @amplifyup/sdk.
 ---
 
-# AmplifyUP placeables — trust the SDK
+# AmplifyUP SDK — placeables & site wiring
 
-AmplifyUP already owns layout resolve, Composer preview, field overlays,
-personalization, and projection. This site only builds React placeables and
-thin page wiring.
+Canonical docs: [npm `@amplifyup/sdk`](https://www.npmjs.com/package/@amplifyup/sdk) ·
+[Lists & queries](https://amplifyup.ai/docs/developers/lists) · always-on rule
+`.cursor/rules/amplifyup-sdk.mdc`.
 
-Before writing Amplify code: read current SDK types in
-`node_modules/@amplifyup/sdk/dist/react.d.ts` and
-`AmplifyRenderer-*.d.ts`. Do not invent helpers the SDK already provides.
+Before writing Amplify code, read current types in
+`node_modules/@amplifyup/sdk/dist/react.d.ts` and `types-*.d.ts` (APIs move).
 
-Also see `.cursor/rules/amplifyup-sdk.mdc`.
+AmplifyUP owns layout resolve, Composer preview, field envelopes, personalization,
+page context, and tracking. This site only builds **placeable React components**
+and **thin page wiring**.
+
+---
+
+## Mental model
+
+```
+Composer (author) → Deploy → Edge /v1/resolve → AmplifyPageContent
+  → renderAmplifyComponent → ComponentContextProvider → YourPlaceable({ fields, …settings })
+```
+
+Every content entry is a **field envelope**, identical on live, draft, and Composer:
+
+```ts
+fields.heading  // → { value: '…', name: 'heading', ref? }
+fields.cover    // → { value: { url, alt } | null, name: 'cover' }
+```
+
+List rows are **`ListRow<T>`** = enveloped fields + plain `id`:
+
+```ts
+fields.posts.value[0]
+// → { id: 'post-1', title: { value, name, ref? }, landscapeImage: { value, name }, slug: '…' }
+```
+
+- Identifiers stay plain on the row: `id`, `slug`, `_id`, `_type`, `_key`, …
+- Content fields on the row are envelopes — use `<Field|Image|RichText field={post.title} />`
+- Never invent write targets (`ref`) yourself
+
+---
 
 ## Hard rules
 
-1. **`fields` envelopes are the source of truth.** Components receive
-   `LayoutComponentProps<T>` → `{ fields: Fields<T>, …settings }`.
-   Bind with `<Field field={fields.x} />` (same for `RichText` / `Image`).
-   Read display-only values as `fields.x.value`.
-2. **Do not use `useComponentProps`.** Removed. Take `fields` from props.
-3. **Do not use bare `value={live.x}` for CMS fields.** That API is only for
-   **computed** values, and then you must pass `name` + `value` together.
-   Prefer `field={fields.x}` always for schema-backed content.
-4. **One editable field → one SDK binding.** Never `a || b || c` across CMS
-   fields. Composer maps to the envelope you pass. If live display should
-   differ, keep the single binding and branch with `isComposerPreview()`.
-5. **Do not reconstruct entities** (`resolvePost`, `live || post` merges).
-   Fix Composer field bindings instead.
-6. **Settings stay plain props** (e.g. `variant`, `showFeatured`, `formSource`)
-   — they come from `node.settings`, not `fields`.
-7. **Composer empty fields must still render.** Null-check only when
-   `!isComposerPreview()`. Empty Field/Image collapses on the live site;
-   Composer keeps them clickable.
-8. **Do not fix Composer/product bugs in this app.** Fix Composer/SDK or uptick.
-9. **Do not reimplement the SDK.** No local catalogs, registries, Edge clients,
-   or parallel preview context.
-10. **`renderAmplifyComponent` stays thin:** map `component_id` → component,
-    wrap `ComponentContextProvider`, return.
+1. **Trust envelopes / list rows.** Never reconstruct entities or merge `live || post`.
+2. **Editable → SDK component; non-visible → `.value` (or plain id/slug).**
+3. **One field → one binding.** Never `fields.a || fields.b` in `field={…}`.
+4. **`<Field>` is scalar-only.** Never pass a list or a whole row.
+5. **Object arrays are list rows** — map `fields.posts.value`, render with Field/Image
+   on each row. **No `<Collection>`** (removed). Scalar lists (`string[]`) stay
+   `fields.tags.value`.
+6. **Computed display:** `value={…}` **and** `name={fields.x.name}` together.
+7. **Empty hide:** `if (!fields.x.value && !isComposerPreview()) return null`.
+8. **Composer vs live:** `isComposerPreview()` (docs may say `useInComposer`).
+   Branch one element, not the whole tree.
+9. **Settings** (`variant`, `showFeatured`, `postsPagination`) are plain props.
+10. **Search / load more:** `queryContent` + `searchSpec` / `nextPageSpec` from
+    `{field}Pagination` (e.g. `postsPagination`). Same row renderer for Edge list
+    and query results. Never hand-build `spec`.
+11. **Do not reimplement the SDK.**
+12. **`renderAmplifyComponent` stays thin.**
+13. **Do not fix Composer bugs here** — uptick/fix the SDK.
 
-## Placeable checklist
+---
 
-- [ ] Content shape `T` matches Composer field names
-- [ ] Component props: `LayoutComponentProps<T> & Settings`
-- [ ] Editable content: `<Field|RichText|Image field={fields.…} />` — one each
-- [ ] Display reads: `fields.x.value` (never render `{fields.x}` as text)
-- [ ] Nested objects (e.g. badge) use leaf envelopes: `fields.badge.text`
-- [ ] Arrays/lists: `<Field field={fields.posts} render={…} />` — rows are plain objects; search/load-more via `queryContent` + `postsPagination`, not client-side filtering
-- [ ] Settings are plain props, not Field-wrapped
-- [ ] Empty-state null checks gated with `!isComposerPreview()`
-- [ ] One `renderAmplifyComponent` map entry; `component_id` in Composer
+## SDK components
 
-## Correct pattern
+| Component | Use for | Notes |
+| --- | --- | --- |
+| `<Field field={…} />` | string / number | Text node; wrap with your own tags |
+| `<RichText field={…} />` | markdown | Prefer for body/copy |
+| `<Image field={…} />` | `ImageValue` | Editable images |
+| `<Slot name="…" />` | drop zones | Reads context — no `slots` prop |
 
 ```tsx
-"use client";
 import {
-  Field,
-  Image,
-  RichText,
-  isComposerPreview,
-  type LayoutComponentProps,
-  type ImageValue,
+  Field, RichText, Image, Slot, isComposerPreview,
+  queryContent, nextPageSpec, searchSpec,
+  type Fields, type ListRow, type QueryPagination, type ImageValue,
 } from "@amplifyup/sdk/react";
+```
 
-type ArticleFields = {
-  title: string;
-  body?: string;
-  landscapeImage?: ImageValue;
-};
+---
 
-export function ArticleDetail({ fields }: LayoutComponentProps<ArticleFields>) {
-  const inComposer = isComposerPreview();
-  const body = fields.body?.value;
+## Correct patterns
 
-  return (
-    <article>
-      <Image field={fields.landscapeImage} className="…" />
-      <h1><Field field={fields.title} /></h1>
-      {inComposer ? (
-        <RichText field={fields.body} className="prose" />
-      ) : body ? (
-        <YourSiteMarkdown>{body}</YourSiteMarkdown>
-      ) : null}
-    </article>
-  );
+### List rows (ArticleGrid, CTAs, awards)
+
+```tsx
+type Post = { id: string; title: string; slug: string; landscapeImage?: ImageValue };
+
+const posts = fields.posts.value ?? [];
+posts.map((post) => (
+  <article key={post.id}>
+    <Image field={post.landscapeImage} />
+    <a href={`/insights/${post.slug}`}>
+      <Field field={post.title} />
+    </a>
+  </article>
+));
+```
+
+### Paginated list + search + load more
+
+Mark the query connection **paginated** in Composer → sibling prop `postsPagination`
+(`{ hasMore, limit, offset, nextOffset, spec }`).
+
+```tsx
+export function ArticleGrid({
+  fields,
+  postsPagination,
+}: {
+  fields: Fields<{ heading: string; posts: Post[] }>;
+  postsPagination?: QueryPagination;
+}) {
+  // Search (resets to first page of the published connection)
+  const hits = await queryContent({
+    trackingId,
+    route: "/insights",
+    spec: searchSpec(postsPagination, "title", term),
+  });
+
+  // Load more
+  const more = await queryContent({
+    trackingId,
+    route: "/insights",
+    spec: nextPageSpec(postsPagination),
+  });
+
+  const posts = hits ?? fields.posts.value ?? [];
+  // one renderer for both — rows are ListRow<Post>
 }
 ```
 
-## Forbidden patterns
+Always start from `postsPagination.spec` via the helpers. Hand-built specs →
+read-only rows in Composer.
+
+### Empty gating
 
 ```tsx
-// ❌ Removed API
-const live = useComponentProps();
-<Field value={live.title} />
-
-// ❌ Rendering the envelope object, not its value
-<p>{fields.description}</p> // wrong — use fields.description.value or <Field />
-
-// ❌ Multi-field fallbacks
-<Image field={fields.landscapeImage || fields.mainImage} />
-
-// ❌ Entity reconstruction
-const post = resolveAmplifyPost(…)
-
-// ❌ Computed value without name
-<Field value={computed} /> // must be value + name together
+const inComposer = isComposerPreview();
+if (!fields.message.value && !inComposer) return null;
+return <Field field={fields.message} />;
 ```
+
+---
+
+## Forbidden
+
+```tsx
+useComponentProps()                    // removed
+<Collection …>                         // removed in 0.1.64+
+<Field field={fields.posts} />         // list
+<Field field={post} />                 // whole row
+<Field field={fields.x} render={…} />  // no render prop
+hand-built query spec                  // rows become read-only
+{fields.heading} as JSX child
+if (!fields.x.value) return null       // without !inComposer
+fork entire return on inComposer
+resolveAmplifyPost / live || post
+```
+
+---
+
+## Placeable checklist
+
+- [ ] Schema field names match `fields.*`
+- [ ] Props: `{ fields: Fields<Content> } & Settings` (incl. `postsPagination`)
+- [ ] Scalars → Field/RichText/Image; object lists → map `ListRow` + Field on cells
+- [ ] `key={post.id}`; `href` from plain `slug` / `.value`
+- [ ] Search/load-more via `searchSpec` / `nextPageSpec` only
+- [ ] Empty hide uses `&& !isComposerPreview()`
+- [ ] Thin `renderAmplifyComponent`; Deploy after Composer binds
+
+---
 
 ## Page wiring (allowed)
 
+- `AmplifyUpProvider` + `trackingId`
 - `AmplifyPageContent` + thin `renderAmplifyComponent`
-- `fetchPageConfigServer` / `generateAmplifyStaticParams` from `@amplifyup/sdk/server`
-- Provider `pageContext` for From-page routes (at provider init)
-- `queryContent` for visitor-driven lists — list row strings use `value={…}`
-  (not field envelopes); see SDK docs
-- Unwrap envelopes for SSG helpers with `isFieldEnvelope` / `unwrapAmplifyFields`
-
-## When something “doesn't load”
-
-1. Confirm Composer field name matches `fields.exactName`.
-2. Confirm the placeable uses `field={fields.exactName}`.
-3. Deploy the route; uptick `@amplifyup/sdk` if the API moved.
-4. Do **not** add resolvers or multi-field fallbacks.
+- `fetchPageConfigServer` / `generateAmplifyStaticParams` / `listPublishedRoutes`
+- `pageContext` at provider init for From-page routes
+- `queryContent` / `searchSpec` / `nextPageSpec`

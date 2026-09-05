@@ -5,43 +5,29 @@ alwaysApply: true
 
 # AmplifyUP — use the SDK, do not rebuild it
 
-AmplifyUP SDK (`@amplifyup/sdk`) already owns layout resolve, Composer preview, Field/Slot/props context, personalization, page context, tracking, and the component-ID → render pipeline.
+AmplifyUP SDK (`@amplifyup/sdk`) owns layout resolve, Composer preview, field envelopes, personalization, page context, tracking, and the render pipeline.
 
-For placeable work, follow `.cursor/skills/amplifyup-placeables/SKILL.md`.
+Placeable details: `.cursor/skills/amplifyup-placeables/SKILL.md` · [lists docs](https://amplifyup.ai/docs/developers/lists) · [npm](https://www.npmjs.com/package/@amplifyup/sdk).
 
 ## Hard rules
 
-- **Do not reimplement SDK functionality** in this repository (no parallel “Amplify framework”).
-- **Do not create** local catalogs, registries, ComponentRenderer wrappers, placeable indexes, or duplicate Edge/resolve/preview/pageContext helpers.
-- **Do not expand** `renderAmplifyComponent` into a registry system. That file is only the thin `renderComponent` callback `AmplifyPageContent` requires: map `component_id` → existing React placeable, wrap with SDK `ComponentContextProvider`, return.
-- **Trust `fields` envelopes.** Placeables take `LayoutComponentProps<T>` and bind `<Field field={fields.x} />` (same for RichText/Image). Read with `fields.x.value`. Do not use removed `useComponentProps` or bare `value={live.x}` for schema fields.
-- **One field per SDK binding.** Never `landscapeImage || mainImage` in `field={…}`. Use `isComposerPreview()` only to change display.
-- Before adding Amplify infrastructure, **read current SDK types** (`@amplifyup/sdk/react`, `@amplifyup/sdk/server`). Prefer SDK exports over site-built equivalents.
-- Site work for Amplify is: **placeable React components** (`Field` / `RichText` / `Image` / `Slot` / `isComposerPreview`) and **page wiring** (`AmplifyPageContent`, `fetchPageConfigServer`, provider `pageContext`).
-- **Do not fix Composer/product bugs in this site.** Fix Composer/SDK or uptick the package.
+- **Do not reimplement** SDK features (no local catalogs, Edge clients, preview frameworks).
+- **`renderAmplifyComponent` stays thin:** map `component_id` → placeable, wrap `ComponentContextProvider`, return.
+- **Trust field envelopes:** `{ value, name, ref? }`. Editable → `<Field|RichText|Image field={…} />`. Non-visible → `.value` (or plain `id`/`slug` on list rows).
+- **`<Field>` is scalar-only.** Object lists are `ListRow[]` — map `fields.posts.value`, use `<Field field={post.title} />`. No `<Collection>`. Never `Field` + `render`.
+- **One field per binding** — no `a || b` in `field={…}`.
+- Empty hide: `if (!fields.x.value && !isComposerPreview()) return null`.
+- Search/load-more: `queryContent` + `searchSpec` / `nextPageSpec` from `postsPagination` — never hand-build `spec`.
+- Do not fix Composer bugs in this site — uptick/fix the SDK.
 
-## When adding a placeable
-
-1. Content interface matches Composer field names.
-2. Props: `LayoutComponentProps<Content> & Settings`.
-3. Bind every editable field with `field={fields.…}` — no multi-field fallbacks.
-4. Register `component_id` in Composer; one `renderAmplifyComponent` map entry.
-5. Only null-check missing content when **not** in Composer.
-
-## Examples
+## Example
 
 ```tsx
-// ❌ BAD
-const live = useComponentProps();
-<Field value={live.title} />
-const img = live.landscapeImage || live.mainImage;
-
-// ✅ GOOD
-export function ArticleDetail({ fields }: LayoutComponentProps<{ title: string; landscapeImage?: ImageValue }>) {
+export function Hero({ fields }: { fields: Fields<{ heading: string; image: ImageValue }> }) {
   return (
     <>
-      <Image field={fields.landscapeImage} />
-      <h1><Field field={fields.title} /></h1>
+      <Image field={fields.image} />
+      <h1><Field field={fields.heading} /></h1>
     </>
   );
 }

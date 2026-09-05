@@ -82,21 +82,15 @@ export function SubscribeBanner({
               </h2>
               <p className="text-sm leading-relaxed text-slate-400 md:text-base">
                 <Field field={fields.description} />{" "}
-                <Field
-                  field={fields.rssLabel}
-                  render={(rssLabel: string | undefined) => {
-                    if (!rssLabel?.trim() && !inComposer) return null;
-                    if (!rssHref && !inComposer) return null;
-                    return (
-                      <Link
-                        href={rssHref || "/feed.xml"}
-                        className="no-underline text-slate-300 underline-offset-4 transition-colors hover:text-white hover:underline"
-                      >
-                        {rssLabel?.trim() || (inComposer ? "RSS link" : null)}
-                      </Link>
-                    );
-                  }}
-                />
+                {(fields.rssLabel?.value?.trim() || inComposer) &&
+                (rssHref || inComposer) ? (
+                  <Link
+                    href={rssHref || "/feed.xml"}
+                    className="no-underline text-slate-300 underline-offset-4 transition-colors hover:text-white hover:underline"
+                  >
+                    <Field field={fields.rssLabel} />
+                  </Link>
+                ) : null}
               </p>
             </div>
 
@@ -126,46 +120,38 @@ export function SubscribeBanner({
                     </label>
                   </p>
 
-                  <Field
-                    field={fields.emailPlaceholder}
-                    render={(placeholder: string | undefined) => (
-                      <Input
-                        type="email"
-                        name="email"
-                        value={email}
-                        onChange={(event) => {
-                          setEmail(event.target.value);
-                          if (status === "error") {
-                            setStatus("idle");
-                          }
-                        }}
-                        placeholder={placeholder}
-                        required
-                        autoComplete="email"
-                        disabled={status === "submitting" || inComposer}
-                        className="h-11 border-0 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-primary"
-                        aria-invalid={status === "error"}
-                        aria-describedby={
-                          status === "error" ? "subscribe-error" : undefined
-                        }
-                      />
-                    )}
+                  <Input
+                    type="email"
+                    name="email"
+                    value={email}
+                    onChange={(event) => {
+                      setEmail(event.target.value);
+                      if (status === "error") {
+                        setStatus("idle");
+                      }
+                    }}
+                    placeholder={fields.emailPlaceholder?.value}
+                    required
+                    autoComplete="email"
+                    disabled={status === "submitting" || inComposer}
+                    className="h-11 border-0 bg-white text-slate-900 placeholder:text-slate-400 focus-visible:ring-primary"
+                    aria-invalid={status === "error"}
+                    aria-describedby={
+                      status === "error" ? "subscribe-error" : undefined
+                    }
                   />
 
-                  <Field
-                    field={fields.buttonLabel}
-                    render={(buttonLabel: string | undefined) => (
-                      <Button
-                        type="submit"
-                        disabled={status === "submitting" || inComposer}
-                        className="h-11 shrink-0 rounded-lg px-6 font-semibold shadow-md shadow-primary/25"
-                      >
-                        {status === "submitting"
-                          ? "Subscribing…"
-                          : buttonLabel}
-                      </Button>
+                  <Button
+                    type="submit"
+                    disabled={status === "submitting" || inComposer}
+                    className="h-11 shrink-0 rounded-lg px-6 font-semibold shadow-md shadow-primary/25"
+                  >
+                    {status === "submitting" ? (
+                      "Subscribing…"
+                    ) : (
+                      <Field field={fields.buttonLabel} />
                     )}
-                  />
+                  </Button>
                 </form>
 
                 {status === "error" ? (

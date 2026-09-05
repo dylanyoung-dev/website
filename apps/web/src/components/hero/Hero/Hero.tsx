@@ -7,6 +7,7 @@ import {
   Field,
   isComposerPreview,
   type LayoutComponentProps,
+  type ListRow,
 } from "@amplifyup/sdk/react";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -14,11 +15,7 @@ import { Button } from "@/components/ui/button";
 import { InsightsFilterBar } from "@/components/insights";
 import { PageShell } from "@/components/ui/Layout/PageShell";
 import { cn } from "@/lib/utils";
-import type {
-  IHero,
-  IHeroAction,
-  IHeroSecondaryLink,
-} from "@/interfaces/IHero";
+import type { IHero, IHeroAction, IHeroSecondaryLink } from "@/interfaces/IHero";
 
 type HeroSettings = Pick<IHero, "variant">;
 type HeroContent = Omit<IHero, "variant">;
@@ -106,21 +103,18 @@ function HeroActionButton({
   action,
   size = "default",
 }: {
-  action: IHeroAction;
+  action: ListRow<IHeroAction>;
   size?: "default" | "lg";
 }) {
-  const href = action.href?.trim();
-  const label = action.label?.trim();
-  if (!href || !label) return null;
+  const href = action.href?.value?.trim();
+  const style = action.style?.value;
+  const openInNewTab = Boolean(action.openInNewTab?.value);
+  if (!href || !action.label?.value?.trim()) return null;
 
   const buttonVariant =
-    action.style === "outline"
-      ? "outline"
-      : action.style === "ghost"
-        ? "ghost"
-        : "default";
+    style === "outline" ? "outline" : style === "ghost" ? "ghost" : "default";
 
-  const isPrimary = !action.style || action.style === "primary";
+  const isPrimary = !style || style === "primary";
 
   return (
     <Button
@@ -134,10 +128,10 @@ function HeroActionButton({
       <Link
         href={href}
         className="no-underline"
-        target={action.openInNewTab ? "_blank" : undefined}
-        rel={action.openInNewTab ? "noopener noreferrer" : undefined}
+        target={openInNewTab ? "_blank" : undefined}
+        rel={openInNewTab ? "noopener noreferrer" : undefined}
       >
-        {label}
+        <Field field={action.label} />
         {isPrimary ? <ArrowRight className="ml-1 h-4 w-4" /> : null}
       </Link>
     </Button>
@@ -251,47 +245,36 @@ export function Hero({
             isInsights ? "mt-8" : "mt-9"
           )}
         >
-          <Field
-            field={fields.actions}
-            render={(actions: IHeroAction[] | undefined) => (
-              <div className="flex flex-wrap items-center gap-3">
-                {(Array.isArray(actions) ? actions : []).map((action, index) => (
-                  <HeroActionButton
-                    key={action._key || `${action.href}-${action.label}-${index}`}
-                    action={action}
-                    size={isInsights ? "default" : "lg"}
-                  />
-                ))}
-              </div>
-            )}
-          />
-          <Field
-            field={fields.secondaryLinks}
-            render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => (
-              <div className="flex flex-wrap items-center gap-2">
-                {(Array.isArray(secondaryLinks) ? secondaryLinks : []).map(
-                  (link, index) => {
-                    const href = link.href?.trim();
-                    if (!href) return null;
-                    return (
-                      <Badge
-                        key={link._key || `${href}-${link.label}-${index}`}
-                        variant="outline"
-                        className="rounded-full border-border/80 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
-                      >
-                        <Link
-                          href={href}
-                          className="no-underline text-inherit hover:text-inherit"
-                        >
-                          {link.label}
-                        </Link>
-                      </Badge>
-                    );
-                  }
-                )}
-              </div>
-            )}
-          />
+          <div className="flex flex-wrap items-center gap-3">
+            {(fields.actions.value ?? []).map((action) => (
+              <HeroActionButton
+                key={action.id}
+                action={action as ListRow<IHeroAction>}
+                size={isInsights ? "default" : "lg"}
+              />
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {(fields.secondaryLinks.value ?? []).map((link) => {
+              const row = link as ListRow<IHeroSecondaryLink>;
+              const href = row.href?.value?.trim();
+              if (!href) return null;
+              return (
+                <Badge
+                  key={row.id}
+                  variant="outline"
+                  className="rounded-full border-border/80 bg-background/60 px-3 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/30 hover:text-foreground"
+                >
+                  <Link
+                    href={href}
+                    className="no-underline text-inherit hover:text-inherit"
+                  >
+                    <Field field={row.label} />
+                  </Link>
+                </Badge>
+              );
+            })}
+          </div>
         </div>
 
         {isInsights ? (

@@ -1,17 +1,18 @@
 /**
- * AmplifyUP ArticleGrid (`component_id: ArticleGrid`).
- * Content → `fields` envelopes. `postsPagination` → plain prop from Edge.
+ * AmplifyUP props for ArticleGrid (`component_id: ArticleGrid`).
+ * `posts` is a list field — rows arrive as `ListRow<IAmplifyPost>`.
+ * Paginated connections also pass `postsPagination` (plain prop).
  */
 
 import type { IAmplifyPost } from "./IAmplifyPost";
 
 export type IArticleGridPost = IAmplifyPost;
 
-export type IArticleGrid = {
+export interface IArticleGrid {
   heading?: string;
   description?: string;
   posts?: IAmplifyPost[];
   showFeatured?: boolean;
-} & Record<string, unknown>;
+}
 
 export type ArticleGridProps = IArticleGrid;

@@ -1,20 +1,18 @@
-/** Hero action CTA — maps to Sanity `actions[]` / AmplifyUP array item. */
-export interface IHeroAction {
-  _key?: string;
-  _type?: string;
+/** Hero action CTA — AmplifyUP list row schema. */
+export type IHeroAction = {
+  id: string;
   label?: string;
   href?: string;
   style?: "primary" | "outline" | "ghost";
   openInNewTab?: boolean;
-}
+};
 
-/** Secondary pill/text link — maps to Sanity `secondaryLinks[]`. */
-export interface IHeroSecondaryLink {
-  _key?: string;
-  _type?: string;
+/** Secondary pill/text link — AmplifyUP list row schema. */
+export type IHeroSecondaryLink = {
+  id: string;
   label?: string;
   href?: string;
-}
+};
 
 /** Optional status badge (home-style). */
 export interface IHeroBadge {
@@ -27,23 +25,17 @@ export interface IHeroBadge {
  *
  * Content fields are bound via SDK `fields` envelopes (`field={fields.heading}`).
  * Settings like `variant` are plain component props — not Field-wrapped.
+ * Object arrays are `ListRow[]` (`Fields` + plain `id`).
  */
 export interface IHero {
   /** Layout style: home-style (default) or insights listing style. Plain prop, not `<Field>`. */
   variant?: "default" | "insights";
-  /** Small label above the heading. */
   eyebrow?: string;
-  /** Main H1 heading. */
   heading: string;
-  /** Supporting copy under the heading. */
   description?: string;
-  /** Optional line under the heading. */
   subtitle?: string;
-  /** Optional pulse badge (typically default variant). */
   badge?: IHeroBadge;
-  /** CTA buttons. */
   actions?: IHeroAction[];
-  /** Pill / text links under the CTAs. */
   secondaryLinks?: IHeroSecondaryLink[];
 }
 

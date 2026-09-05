@@ -1,34 +1,35 @@
 /**
  * AmplifyUP Edge-projected post shape (not Sanity GROQ `IPost`).
  * Shared by ArticleGrid, ArticleDetail, and related placeables.
+ *
+ * In placeables, list items arrive as `ListRow<IAmplifyPost>` (enveloped fields
+ * + plain `id` / `slug`). Page-level From-page fields stay flat envelopes on
+ * `fields.*`.
  */
 
-export interface IAmplifyPostImage {
-  url: string;
-  assetId?: string;
-  width?: number;
-  height?: number;
-  alt?: string;
-}
+import type { ImageValue } from "@amplifyup/sdk/react";
 
-/** Category/tag as Edge may project — refs only, or resolved title/slug when available. */
-export interface IAmplifyPostCategory {
-  id?: string;
+export type IAmplifyPostImage = ImageValue;
+
+/** Category/tag as Edge may project — list row schema includes plain `id`. */
+export type IAmplifyPostCategory = {
+  id: string;
   _id?: string;
   type?: string;
   title?: string;
   slug?: string | { current?: string };
-}
+};
 
-export interface IAmplifyPost {
+/** Post schema. List usage: `ListRow<IAmplifyPost>` from `fields.posts.value`. */
+export type IAmplifyPost = {
+  id: string;
   _id?: string;
-  id?: string;
   _type?: string;
   title: string;
   slug: string;
-  mainImage?: IAmplifyPostImage;
-  landscapeImage?: IAmplifyPostImage;
-  socialImage?: IAmplifyPostImage;
+  mainImage?: ImageValue;
+  landscapeImage?: ImageValue;
+  socialImage?: ImageValue;
   categories?: IAmplifyPostCategory[];
   tagging?: IAmplifyPostCategory[] | string[];
   publishedAt?: string;
@@ -39,4 +40,4 @@ export interface IAmplifyPost {
   metaDescription?: string;
   canonicalUrl?: string;
   _updatedAt?: string;
-}
+};

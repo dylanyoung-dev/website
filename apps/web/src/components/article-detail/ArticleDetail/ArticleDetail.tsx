@@ -9,6 +9,7 @@ import {
   type FieldEnvelope,
   type ImageValue,
   type LayoutComponentProps,
+  type ListRow,
 } from "@amplifyup/sdk/react";
 import { ArrowLeft, Calendar, Clock, FileText, Sparkles } from "lucide-react";
 import { ShareButtons } from "@/components/blogs";
@@ -22,6 +23,8 @@ import { formatPublishedDate } from "@/lib/utils";
 
 const ARTICLE_PROSE_CLASS =
   "prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-foreground prose-h2:!mt-20 prose-h2:!mb-8 prose-h2:first:!mt-0 prose-h3:!mt-16 prose-h3:!mb-6 prose-h3:first:!mt-0 prose-h4:!mt-12 prose-h4:!mb-4 prose-h4:first:!mt-0 prose-h5:!mt-10 prose-h5:!mb-3 prose-h5:first:!mt-0 prose-h6:!mt-8 prose-h6:!mb-2 prose-h6:first:!mt-0 prose-p:text-foreground prose-p:leading-relaxed prose-p:text-lg prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary/80 hover:prose-a:underline prose-strong:text-foreground prose-strong:font-semibold prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:pl-6 prose-img:rounded-lg prose-img:shadow-md prose-hr:border-border prose-hr:my-12 prose-ul:space-y-2 prose-ol:space-y-2 prose-li:text-foreground";
+
+type CategoryRow = ListRow<IAmplifyPostCategory>;
 
 function hasLandscapeImage(image: ImageValue | string | null | undefined): boolean {
   if (typeof image === "string") return image.trim().length > 0;
@@ -38,13 +41,26 @@ function landscapeImageAlt(
   return fallback;
 }
 
-function getCategorySlug(category: IAmplifyPostCategory): string | undefined {
-  if (typeof category.slug === "string") return category.slug.trim() || undefined;
-  return category.slug?.current?.trim() || undefined;
+function getCategorySlug(category: CategoryRow): string | undefined {
+  const slug = category.slug;
+  if (typeof slug === "string") return slug.trim() || undefined;
+  if (slug && typeof slug === "object" && "current" in slug) {
+    return (slug as { current?: string }).current?.trim() || undefined;
+  }
+  return undefined;
 }
 
-function getCategoryTitle(category: IAmplifyPostCategory): string | undefined {
-  return category.title?.trim() || undefined;
+function getCategoryTitle(category: CategoryRow): string | undefined {
+  return category.title?.value?.trim() || undefined;
+}
+
+function plainSlug(fields: LayoutComponentProps<IArticleDetail>["fields"]): string {
+  const slug = fields.slug as unknown;
+  if (typeof slug === "string") return slug.trim();
+  if (slug && typeof slug === "object" && "value" in slug) {
+    return String((slug as FieldEnvelope<string | null>).value ?? "").trim();
+  }
+  return "";
 }
 
 function getShareUrl(slug: string): string {
@@ -64,15 +80,13 @@ export function ArticleDetail({
 }: LayoutComponentProps<IArticleDetail>) {
   const inComposer = isComposerPreview();
   const title = fields.title?.value ?? "";
-  const slug = (fields.slug?.value ?? "").trim();
+  const slug = plainSlug(fields);
   const excerpt = fields.excerpt?.value;
   const body = fields.body?.value;
   const publishedAt = fields.publishedAt?.value;
   const readingTime = fields.readingTime?.value;
   const landscapeImage = fields.landscapeImage?.value;
-  const categories = Array.isArray(fields.categories?.value)
-    ? fields.categories.value
-    : [];
+  const categories = (fields.categories?.value ?? []) as CategoryRow[];
 
   const hasImage = hasLandscapeImage(landscapeImage);
   const publishedLabel = formatPublishedDate(publishedAt);
@@ -104,13 +118,13 @@ export function ArticleDetail({
             {categoriesWithTitle.length > 0 || inComposer ? (
               <div className="flex flex-wrap gap-2">
                 {categoriesWithTitle.length > 0 ? (
-                  categoriesWithTitle.map((category, index) => (
+                  categoriesWithTitle.map((category) => (
                     <Badge
-                      key={category.id || category._id || index}
+                      key={category.id}
                       variant="secondary"
                       className="text-sm font-medium"
                     >
-                      {getCategoryTitle(category)}
+                      <Field field={category.title} />
                     </Badge>
                   ))
                 ) : (
@@ -202,17 +216,17 @@ export function ArticleDetail({
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {categoriesWithSlug.length > 0 ? (
-                    categoriesWithSlug.map((category, index) => {
+                    categoriesWithSlug.map((category) => {
                       const categorySlug = getCategorySlug(category)!;
                       return (
                         <Button
-                          key={category.id || category._id || index}
+                          key={category.id}
                           variant="outline"
                           size="sm"
                           asChild
                         >
                           <Link href={`/insights/categories/${categorySlug}`}>
-                            {getCategoryTitle(category)}
+                            <Field field={category.title} />
                           </Link>
                         </Button>
                       );

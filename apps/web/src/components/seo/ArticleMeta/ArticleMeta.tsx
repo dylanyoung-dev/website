@@ -4,8 +4,11 @@ import { useEffect } from "react";
 import {
   Field,
   isComposerPreview,
+  type FieldEnvelope,
   type LayoutComponentProps,
+  type ListRow,
 } from "@amplifyup/sdk/react";
+import type { IAmplifyPostCategory } from "@/interfaces";
 import type { IArticleMeta } from "@/interfaces/IArticleMeta";
 import {
   applyDocumentMeta,
@@ -31,6 +34,26 @@ function ArticleMetaPreview({ meta }: { meta: IDocumentMeta }) {
   );
 }
 
+function plainSlug(fields: LayoutComponentProps<IArticleMeta>["fields"]): string {
+  const slug = fields.slug as unknown;
+  if (typeof slug === "string") return slug.trim();
+  if (slug && typeof slug === "object" && "value" in slug) {
+    return String((slug as FieldEnvelope<string | null>).value ?? "").trim();
+  }
+  return "";
+}
+
+function unwrapCategories(
+  rows: ListRow<IAmplifyPostCategory>[] | undefined
+): IAmplifyPostCategory[] {
+  if (!rows?.length) return [];
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title?.value ?? undefined,
+    slug: row.slug,
+  }));
+}
+
 /**
  * AmplifyUP placeable ArticleMeta (`component_id: ArticleMeta`).
  * SEO from the same flat entity fields as ArticleDetail.
@@ -43,9 +66,15 @@ export function ArticleMeta({ fields }: LayoutComponentProps<IArticleMeta>) {
     process.env.HOST_URL ||
     "https://dylanyoung.dev";
 
+  const slug = plainSlug(fields);
+  const categories = unwrapCategories(
+    fields.categories?.value as ListRow<IAmplifyPostCategory>[] | undefined
+  );
+
   const post = {
+    id: slug || "article",
     title: fields.title?.value ?? "",
-    slug: fields.slug?.value ?? "",
+    slug,
     excerpt: fields.excerpt?.value,
     metaTitle: fields.metaTitle?.value,
     metaDescription: fields.metaDescription?.value,
@@ -53,7 +82,7 @@ export function ArticleMeta({ fields }: LayoutComponentProps<IArticleMeta>) {
     canonicalUrl: fields.canonicalUrl?.value,
     landscapeImage: fields.landscapeImage?.value ?? undefined,
     socialImage: fields.socialImage?.value ?? undefined,
-    categories: fields.categories?.value,
+    categories,
   };
 
   const meta = resolveArticleMeta(
@@ -62,12 +91,12 @@ export function ArticleMeta({ fields }: LayoutComponentProps<IArticleMeta>) {
       metaTitle: fields.metaTitle?.value,
       metaDescription: fields.metaDescription?.value,
       excerpt: fields.excerpt?.value,
-      slug: fields.slug?.value,
+      slug,
       publishedAt: fields.publishedAt?.value,
       canonicalUrl: fields.canonicalUrl?.value,
       landscapeImage: fields.landscapeImage?.value ?? undefined,
       socialImage: fields.socialImage?.value ?? undefined,
-      categories: fields.categories?.value,
+      categories,
     },
     { baseUrl }
   );
@@ -90,9 +119,7 @@ export function ArticleMeta({ fields }: LayoutComponentProps<IArticleMeta>) {
         <Field field={fields.metaDescription} />
         <Field field={fields.title} />
         <Field field={fields.excerpt} />
-        <Field field={fields.slug} />
         <Field field={fields.canonicalUrl} />
-        <Field field={fields.landscapeImage} />
       </span>
       {inComposer ? <ArticleMetaPreview meta={meta} /> : null}
     </>
