@@ -22,19 +22,13 @@ import { formatPublishedDate } from "@/lib/utils";
 const ARTICLE_PROSE_CLASS =
   "prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-foreground prose-h2:!mt-20 prose-h2:!mb-8 prose-h2:first:!mt-0 prose-h3:!mt-16 prose-h3:!mb-6 prose-h3:first:!mt-0 prose-h4:!mt-12 prose-h4:!mb-4 prose-h4:first:!mt-0 prose-h5:!mt-10 prose-h5:!mb-3 prose-h5:first:!mt-0 prose-h6:!mt-8 prose-h6:!mb-2 prose-h6:first:!mt-0 prose-p:text-foreground prose-p:leading-relaxed prose-p:text-lg prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary/80 hover:prose-a:underline prose-strong:text-foreground prose-strong:font-semibold prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:pl-6 prose-img:rounded-lg prose-img:shadow-md prose-hr:border-border prose-hr:my-12 prose-ul:space-y-2 prose-ol:space-y-2 prose-li:text-foreground";
 
-function resolveArticleImage(
-  live: IArticleDetail,
-  post: IAmplifyPost
-): IAmplifyPostImage | string | undefined {
-  return (
-    live.landscapeImage ||
-    live.mainImage ||
-    post.landscapeImage ||
-    post.mainImage
-  );
+/** Hero image is always `landscapeImage` — one Composer field, one binding. */
+function hasLandscapeImage(image: IAmplifyPostImage | string | undefined): boolean {
+  if (typeof image === "string") return image.trim().length > 0;
+  return Boolean(image?.url?.trim());
 }
 
-function getImageAlt(
+function landscapeImageAlt(
   image: IAmplifyPostImage | string | undefined,
   fallback: string
 ): string {
@@ -42,11 +36,6 @@ function getImageAlt(
     return image.alt.trim();
   }
   return fallback;
-}
-
-function hasImageSrc(image: IAmplifyPostImage | string | undefined): boolean {
-  if (typeof image === "string") return image.trim().length > 0;
-  return Boolean(image?.url?.trim());
 }
 
 function getCategorySlug(category: IAmplifyPostCategory): string | undefined {
@@ -69,8 +58,7 @@ function getShareUrl(slug: string): string {
 function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
   const live = useComponentProps<IArticleDetail>();
   const inComposer = isComposerPreview();
-  const articleImage = resolveArticleImage(live, post);
-  const hasImage = hasImageSrc(articleImage);
+  const hasImage = hasLandscapeImage(live.landscapeImage);
   const publishedLabel = formatPublishedDate(post.publishedAt);
   const slug = post.slug?.trim();
   const shareUrl = slug ? getShareUrl(slug) : "/insights";
@@ -88,8 +76,8 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
         <div className="container mx-auto mb-8 max-w-6xl px-4 pt-4">
           <div className="relative h-44 w-full overflow-hidden rounded-lg bg-muted sm:h-52 md:h-56">
             <Image
-              value={articleImage}
-              alt={getImageAlt(articleImage, post.title)}
+              value={live.landscapeImage}
+              alt={landscapeImageAlt(live.landscapeImage, post.title)}
               className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
