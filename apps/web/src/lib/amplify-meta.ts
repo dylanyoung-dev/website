@@ -3,7 +3,7 @@ import type { PageConfig } from "@amplifyup/sdk";
 import type { IAmplifyPost } from "@/interfaces";
 import type { IArticleMeta } from "@/interfaces/IArticleMeta";
 import type { IPageMeta } from "@/interfaces/IPageMeta";
-import { resolveAmplifyPost } from "@/lib/amplify-post";
+import { unwrapAmplifyFields } from "@/lib/amplify-post";
 import {
   resolveArticleMeta,
   resolvePageMeta,
@@ -48,24 +48,41 @@ function findFirstNode(
   return found;
 }
 
+function propsFromNode(node: LayoutNode): Record<string, unknown> {
+  if (!isRecord(node.props)) return {};
+  return unwrapAmplifyFields(node.props.fields ?? node.props);
+}
+
 /** Pull PageMeta props from a server-fetched Edge pageConfig. */
 export function extractPageMetaFromPageConfig(
   pageConfig: PageConfig | null | undefined
 ): IPageMeta | undefined {
   const node = findFirstNode(pageConfig, "PageMeta");
-  if (!node || !isRecord(node.props)) return undefined;
-  return node.props as IPageMeta;
+  if (!node) return undefined;
+  return propsFromNode(node) as IPageMeta;
 }
 
-/** Pull ArticleMeta + resolved post from a server-fetched Edge pageConfig. */
+/** Pull ArticleMeta fields from a server-fetched Edge pageConfig. */
 export function extractArticleMetaFromPageConfig(
   pageConfig: PageConfig | null | undefined
 ): { props: IArticleMeta; post?: IAmplifyPost } | undefined {
   const node = findFirstNode(pageConfig, "ArticleMeta");
-  if (!node || !isRecord(node.props)) return undefined;
+  if (!node) return undefined;
 
-  const props = node.props as IArticleMeta & Record<string, unknown>;
-  const post = resolveAmplifyPost(props.post, props);
+  const props = propsFromNode(node) as IArticleMeta;
+  const post = {
+    title: props.title ?? "",
+    slug: props.slug ?? "",
+    excerpt: props.excerpt,
+    metaTitle: props.metaTitle,
+    metaDescription: props.metaDescription,
+    publishedAt: props.publishedAt,
+    canonicalUrl: props.canonicalUrl,
+    landscapeImage: props.landscapeImage,
+    socialImage: props.socialImage,
+    categories: props.categories,
+  } as IAmplifyPost;
+
   return { props, post };
 }
 

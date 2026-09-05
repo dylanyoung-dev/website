@@ -1,28 +1,22 @@
 /**
- * AmplifyUP props for ArticleMeta (`component_id: ArticleMeta`).
- * SEO metadata derived from an Edge-projected post (same binding pattern as ArticleDetail).
+ * AmplifyUP content fields for ArticleMeta (`component_id: ArticleMeta`).
+ * Flat From-page / entity projection — same field names as ArticleDetail SEO.
  */
 
-import type { IAmplifyPost } from "./IAmplifyPost";
+import type { ImageValue } from "@amplifyup/sdk/react";
+import type { IAmplifyPostCategory } from "./IAmplifyPost";
 
-export type IArticleMetaPost = IAmplifyPost;
-
-export interface IArticleMeta {
-  /** Internal Amplify / Studio label. */
-  title?: string;
-  /** Edge-resolved post when bound as a single entity field. */
-  post?: IArticleMetaPost;
-  /** Flat entity projection overrides / "From page" fields. */
+export type IArticleMeta = {
   metaTitle?: string;
   metaDescription?: string;
   excerpt?: string;
+  title?: string;
   slug?: string;
   publishedAt?: string;
   canonicalUrl?: string;
-  mainImage?: IAmplifyPost["mainImage"];
-  landscapeImage?: IAmplifyPost["landscapeImage"];
-  socialImage?: IAmplifyPost["socialImage"];
-  categories?: IAmplifyPost["categories"];
-}
+  landscapeImage?: ImageValue;
+  socialImage?: ImageValue;
+  categories?: IAmplifyPostCategory[];
+} & Record<string, unknown>;
 
 export type ArticleMetaProps = IArticleMeta;

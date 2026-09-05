@@ -2,7 +2,11 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
-import { Field, isComposerPreview, useComponentProps } from "@amplifyup/sdk/react";
+import {
+  Field,
+  isComposerPreview,
+  type LayoutComponentProps,
+} from "@amplifyup/sdk/react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { ISubscribeBanner } from "@/interfaces/ISubscribeBanner";
@@ -14,19 +18,21 @@ const FORM_NAME = "newsletter-subscribe";
 type FormStatus = "idle" | "submitting" | "success" | "error";
 
 type SubscribeBannerSettings = Pick<ISubscribeBanner, "formSource">;
+type SubscribeBannerContent = Omit<ISubscribeBanner, "formSource" | "title">;
 
 /**
  * AmplifyUP placeable SubscribeBanner (`component_id: SubscribeBanner`).
- * Copy via `<Field value={…}>`; Netlify submit stays on the site.
+ * Copy via `fields` envelopes; Netlify submit stays on the site.
  */
 export function SubscribeBanner({
+  fields,
   formSource: formSourceProp = "homepage",
-}: SubscribeBannerSettings) {
-  const live = useComponentProps<ISubscribeBanner>();
-  const formSource = live.formSource ?? formSourceProp ?? "homepage";
+}: LayoutComponentProps<SubscribeBannerContent> & SubscribeBannerSettings) {
+  const formSource = formSourceProp ?? "homepage";
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<FormStatus>("idle");
   const inComposer = isComposerPreview();
+  const rssHref = fields.rssHref?.value?.trim();
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -72,19 +78,18 @@ export function SubscribeBanner({
                 id="subscribe-heading"
                 className="text-xl font-bold tracking-tight text-white md:text-2xl"
               >
-                <Field value={live.heading} />
+                <Field field={fields.heading} />
               </h2>
               <p className="text-sm leading-relaxed text-slate-400 md:text-base">
-                <Field value={live.description} />{" "}
+                <Field field={fields.description} />{" "}
                 <Field
-                  value={live.rssLabel}
+                  field={fields.rssLabel}
                   render={(rssLabel: string | undefined) => {
                     if (!rssLabel?.trim() && !inComposer) return null;
-                    const href = live.rssHref?.trim();
-                    if (!href && !inComposer) return null;
+                    if (!rssHref && !inComposer) return null;
                     return (
                       <Link
-                        href={href || "/feed.xml"}
+                        href={rssHref || "/feed.xml"}
                         className="no-underline text-slate-300 underline-offset-4 transition-colors hover:text-white hover:underline"
                       >
                         {rssLabel?.trim() || (inComposer ? "RSS link" : null)}
@@ -100,7 +105,7 @@ export function SubscribeBanner({
                 className="text-sm font-medium text-green-400 lg:shrink-0 lg:text-base"
                 role="status"
               >
-                <Field value={live.successMessage} />
+                <Field field={fields.successMessage} />
               </p>
             ) : (
               <div className="flex w-full flex-col gap-2 lg:max-w-md lg:shrink-0 xl:max-w-lg">
@@ -122,7 +127,7 @@ export function SubscribeBanner({
                   </p>
 
                   <Field
-                    value={live.emailPlaceholder}
+                    field={fields.emailPlaceholder}
                     render={(placeholder: string | undefined) => (
                       <Input
                         type="email"
@@ -148,7 +153,7 @@ export function SubscribeBanner({
                   />
 
                   <Field
-                    value={live.buttonLabel}
+                    field={fields.buttonLabel}
                     render={(buttonLabel: string | undefined) => (
                       <Button
                         type="submit"
@@ -169,7 +174,7 @@ export function SubscribeBanner({
                     className="text-sm text-red-400"
                     role="alert"
                   >
-                    <Field value={live.errorMessage} />
+                    <Field field={fields.errorMessage} />
                   </p>
                 ) : null}
               </div>

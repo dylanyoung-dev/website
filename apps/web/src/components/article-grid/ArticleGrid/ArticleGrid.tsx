@@ -1,10 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import NextImage from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { Field, isComposerPreview, useComponentProps } from "@amplifyup/sdk/react";
+import {
+  Field,
+  isComposerPreview,
+  type LayoutComponentProps,
+} from "@amplifyup/sdk/react";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -18,6 +22,10 @@ import { formatPublishedDate } from "@/lib/utils";
 type ArticleGridSettings = Pick<
   IArticleGrid,
   "showFeatured" | "showViewAll" | "viewAllHref"
+>;
+type ArticleGridContent = Omit<
+  IArticleGrid,
+  "showFeatured" | "showViewAll" | "viewAllHref" | "title"
 >;
 
 function getPostKey(post: IArticleGridPost, index: number): string {
@@ -67,7 +75,7 @@ function FeaturedGridPost({ post }: { post: IArticleGridPost }) {
           className="group relative block aspect-[16/10] overflow-hidden bg-muted md:order-2 md:min-h-[220px] md:h-full md:aspect-auto"
         >
           {imageUrl ? (
-            <Image
+            <NextImage
               src={imageUrl}
               alt={getPostImageAlt(post)}
               fill
@@ -144,7 +152,7 @@ function GridPostCard({ post }: { post: IArticleGridPost }) {
         <Link href={postHref} className="flex h-full flex-col no-underline">
           <div className="relative aspect-[16/10] overflow-hidden bg-muted">
             {imageUrl ? (
-              <Image
+              <NextImage
                 src={imageUrl}
                 alt={getPostImageAlt(post)}
                 fill
@@ -180,18 +188,19 @@ function GridPostCard({ post }: { post: IArticleGridPost }) {
 }
 
 function ArticleGridBody({
+  fields,
   showFeatured,
   showViewAll,
   viewAllHref,
   searchQuery,
-}: ArticleGridSettings & { searchQuery: string }) {
-  const live = useComponentProps<IArticleGrid>();
+}: LayoutComponentProps<ArticleGridContent> &
+  ArticleGridSettings & { searchQuery: string }) {
   const isSearching = searchQuery.length > 0;
   const inComposer = isComposerPreview();
 
   return (
     <Field
-      value={live.posts}
+      field={fields.posts}
       render={(posts) => {
         const list = filterPostsByQuery(asPostList(posts), searchQuery);
         const featured = showFeatured && !isSearching ? list[0] : null;
@@ -201,9 +210,11 @@ function ArticleGridBody({
           <div className="container mx-auto max-w-6xl px-4 py-8 md:py-12">
             <div className="space-y-10">
               {featured ? <FeaturedGridPost post={featured} /> : null}
-              
+
               {list.length === 0 && inComposer ? (
-                <p className="text-muted-foreground text-sm">No posts yet. Configure post data in Composer.</p>
+                <p className="text-muted-foreground text-sm">
+                  No posts yet. Configure post data in Composer.
+                </p>
               ) : null}
 
               {isSearching ? (
@@ -219,15 +230,15 @@ function ArticleGridBody({
                 <div className="flex items-center justify-between gap-4">
                   <div className="space-y-1">
                     <h2 className="text-xl font-semibold md:text-2xl">
-                      <Field value={live.heading} />
+                      <Field field={fields.heading} />
                     </h2>
                     <Field
-                      value={live.description}
+                      field={fields.description}
                       className="block text-sm text-muted-foreground"
                     />
                   </div>
                   <Field
-                    value={live.sortLabel}
+                    field={fields.sortLabel}
                     className="hidden shrink-0 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground sm:inline"
                   />
                   {showViewAll && viewAllHref ? (
@@ -262,14 +273,18 @@ function ArticleGridBody({
   );
 }
 
-function ArticleGridWithSearch(props: ArticleGridSettings) {
+function ArticleGridWithSearch(
+  props: LayoutComponentProps<ArticleGridContent> & ArticleGridSettings
+) {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q")?.trim() || "";
   return <ArticleGridBody {...props} searchQuery={searchQuery} />;
 }
 
 /** AmplifyUP placeable ArticleGrid (`component_id: ArticleGrid`). */
-export function ArticleGrid(props: ArticleGridSettings) {
+export function ArticleGrid(
+  props: LayoutComponentProps<ArticleGridContent> & ArticleGridSettings
+) {
   return (
     <Suspense fallback={null}>
       <ArticleGridWithSearch {...props} />

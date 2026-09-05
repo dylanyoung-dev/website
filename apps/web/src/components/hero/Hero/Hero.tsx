@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import {
   Field,
   isComposerPreview,
-  useComponentProps,
+  type LayoutComponentProps,
 } from "@amplifyup/sdk/react";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -15,11 +15,13 @@ import { InsightsFilterBar } from "@/components/insights";
 import { PageShell } from "@/components/ui/Layout/PageShell";
 import { cn } from "@/lib/utils";
 import type {
-  HeroProps,
+  IHero,
   IHeroAction,
-  IHeroBadge,
   IHeroSecondaryLink,
 } from "@/interfaces/IHero";
+
+type HeroSettings = Pick<IHero, "variant">;
+type HeroContent = Omit<IHero, "variant">;
 
 function HeroDotGrid({ stronger }: { stronger?: boolean }) {
   return (
@@ -161,12 +163,17 @@ function InsightsHeroSearch() {
 
 /**
  * AmplifyUP placeable Hero (`component_id: Hero`).
- * Content → `<Field>`. Settings like `variant` → plain props.
+ * Content → `fields` envelopes. Settings like `variant` → plain props.
  */
-export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
-  const live = useComponentProps<HeroProps>();
-  const variant = live.variant ?? variantProp ?? "default";
+export function Hero({
+  fields,
+  variant: variantProp,
+}: LayoutComponentProps<HeroContent> & HeroSettings) {
+  const variant = variantProp ?? "default";
   const isInsights = variant === "insights";
+  const inComposer = isComposerPreview();
+  const badgeText = fields.badge?.text?.value;
+  const showPulse = fields.badge?.showPulse?.value;
 
   return (
     <section className="relative overflow-hidden border-b bg-background">
@@ -185,33 +192,25 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
           isInsights ? "py-10 md:py-14 lg:py-16" : "py-14 md:py-20 lg:py-24"
         )}
       >
-        <Field
-          value={live.badge}
-          render={(badge: IHeroBadge | undefined) => {
-            const inComposer = isComposerPreview();
-            if (!inComposer && !badge?.text) return null;
-
-            return (
-              <Badge
-                variant="outline"
-                className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
-              >
-                {badge?.showPulse !== false ? (
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-                  </span>
-                ) : null}
-                <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
-                  {badge?.text || (inComposer ? "Badge" : null)}
-                </span>
-              </Badge>
-            );
-          }}
-        />
+        {badgeText || inComposer ? (
+          <Badge
+            variant="outline"
+            className="mb-6 gap-2 border-primary/25 bg-background/80 px-3 py-1.5 text-primary backdrop-blur-sm"
+          >
+            {showPulse !== false ? (
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+              </span>
+            ) : null}
+            <span className="text-[0.65rem] font-semibold uppercase tracking-[0.14em]">
+              {fields.badge ? <Field field={fields.badge.text} /> : "Badge"}
+            </span>
+          </Badge>
+        ) : null}
 
         <Field
-          value={live.eyebrow}
+          field={fields.eyebrow}
           className="mb-4 block text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-primary"
         />
 
@@ -223,11 +222,11 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
               : "max-w-4xl text-4xl leading-[1.1] md:text-5xl lg:text-[3.25rem]"
           )}
         >
-          <Field value={live.heading} />
+          <Field field={fields.heading} />
         </h1>
 
         <Field
-          value={live.subtitle}
+          field={fields.subtitle}
           className={cn(
             "block text-muted-foreground",
             isInsights
@@ -237,7 +236,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
         />
 
         <Field
-          value={live.description}
+          field={fields.description}
           className={cn(
             "block max-w-2xl leading-relaxed text-muted-foreground",
             isInsights
@@ -253,7 +252,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
           )}
         >
           <Field
-            value={live.actions}
+            field={fields.actions}
             render={(actions: IHeroAction[] | undefined) => (
               <div className="flex flex-wrap items-center gap-3">
                 {(Array.isArray(actions) ? actions : []).map((action, index) => (
@@ -267,7 +266,7 @@ export function Hero({ variant: variantProp }: Pick<HeroProps, "variant">) {
             )}
           />
           <Field
-            value={live.secondaryLinks}
+            field={fields.secondaryLinks}
             render={(secondaryLinks: IHeroSecondaryLink[] | undefined) => (
               <div className="flex flex-wrap items-center gap-2">
                 {(Array.isArray(secondaryLinks) ? secondaryLinks : []).map(

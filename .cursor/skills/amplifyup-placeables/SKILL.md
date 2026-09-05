@@ -3,86 +3,91 @@ name: amplifyup-placeables
 description: >-
   Build and edit AmplifyUP placeable components without overengineering or
   fighting the SDK. Use when creating or changing placeables, Field/RichText/Image
-  bindings, useComponentProps, ArticleDetail/Hero/ArticleGrid, Composer preview,
+  bindings, fields envelopes, ArticleDetail/Hero/ArticleGrid, Composer preview,
   renderAmplifyComponent, or anything involving @amplifyup/sdk.
 ---
 
 # AmplifyUP placeables — trust the SDK
 
-AmplifyUP already owns layout resolve, Composer preview, field overlays, props
-context, personalization, and projection. This site only builds React placeables
-and thin page wiring.
+AmplifyUP already owns layout resolve, Composer preview, field overlays,
+personalization, and projection. This site only builds React placeables and
+thin page wiring.
 
 Before writing Amplify code: read current SDK types in
-`node_modules/@amplifyup/sdk/dist/react.d.ts` (and server types if needed). Do
-not invent helpers the SDK already provides.
+`node_modules/@amplifyup/sdk/dist/react.d.ts` and
+`AmplifyRenderer-*.d.ts`. Do not invent helpers the SDK already provides.
 
-Also see the always-on rule `.cursor/rules/amplifyup-sdk.mdc`.
+Also see `.cursor/rules/amplifyup-sdk.mdc`.
 
 ## Hard rules
 
-1. **Props are the source of truth.** Call `useComponentProps()`, then bind
-   `value={live.fieldName}`. That is the whole data path.
-2. **One editable field → one SDK binding.** Each `<Field>`, `<RichText>`, or
-   `<Image>` binds exactly one prop name. Never `a || b || c` across CMS image
-   (or text) fields — Composer can only map to the value you pass. If live
-   display should differ from what is editable, keep the single binding and
-   branch UI with `isComposerPreview()` (e.g. show the editable field in
-   Composer; use a different presentation on the live site). Do not invent
-   multi-field fallbacks so “something shows up.”
-3. **Do not reconstruct entities.** No `resolvePost` / `normalizePost` /
-   `live.* || post.*` merges for rendering. If Composer/Edge projects a shape,
-   use that shape. Fix Composer field bindings — do not paper over them in the site.
-4. **Do not dual-path.** One prop name, one binding. Prefer flat fields the
-   component is registered with (`title`, `body`, `landscapeImage`), not a
-   hand-rolled nested `post` object plus fallbacks.
-5. **Use SDK primitives only:**
-   - Text → `<Field value={live.x} />`
-   - Markdown → `<RichText value={live.body} />` (Composer); site markdown
-     renderer only when live site styling requires it and `isComposerPreview()`
-     is false
-   - Images → `<Image value={live.landscapeImage} />` (not Next/Image for
-     editable CMS images) — always that one prop, never landscape||main||…
-6. **Never pass `name` with `value`.** Prefer `value={…}`; `name` is deprecated.
-7. **Composer empty fields must still render.** Do not `return null` for missing
-   content when `isComposerPreview()` is true. Null-check only on the live site.
-8. **Do not fix Composer/product bugs in this app** (e.g. wrapping the site in
-   `TooltipProvider` because Composer crashed). Fix or uptick Composer/SDK.
-9. **Do not reimplement the SDK** — no local catalogs, registries,
-   ComponentRenderer frameworks, Edge clients, or parallel preview context.
+1. **`fields` envelopes are the source of truth.** Components receive
+   `LayoutComponentProps<T>` → `{ fields: Fields<T>, …settings }`.
+   Bind with `<Field field={fields.x} />` (same for `RichText` / `Image`).
+   Read display-only values as `fields.x.value`.
+2. **Do not use `useComponentProps`.** Removed. Take `fields` from props.
+3. **Do not use bare `value={live.x}` for CMS fields.** That API is only for
+   **computed** values, and then you must pass `name` + `value` together.
+   Prefer `field={fields.x}` always for schema-backed content.
+4. **One editable field → one SDK binding.** Never `a || b || c` across CMS
+   fields. Composer maps to the envelope you pass. If live display should
+   differ, keep the single binding and branch with `isComposerPreview()`.
+5. **Do not reconstruct entities** (`resolvePost`, `live || post` merges).
+   Fix Composer field bindings instead.
+6. **Settings stay plain props** (e.g. `variant`, `showFeatured`, `formSource`)
+   — they come from `node.settings`, not `fields`.
+7. **Composer empty fields must still render.** Null-check only when
+   `!isComposerPreview()`. Empty Field/Image collapses on the live site;
+   Composer keeps them clickable.
+8. **Do not fix Composer/product bugs in this app.** Fix Composer/SDK or uptick.
+9. **Do not reimplement the SDK.** No local catalogs, registries, Edge clients,
+   or parallel preview context.
 10. **`renderAmplifyComponent` stays thin:** map `component_id` → component,
-    wrap `ComponentContextProvider`, return. One new map entry per placeable.
+    wrap `ComponentContextProvider`, return.
 
 ## Placeable checklist
 
-When adding or editing a placeable:
-
-- [ ] Props interface matches Composer field names (no shadow “resolved” type)
-- [ ] `const live = useComponentProps<YourProps>()`
-- [ ] Every editable field is `<Field|RichText|Image value={live.…} />` — **one prop each**, no `||` across fields
-- [ ] No site-side fetch/normalize of Amplify content for that component
+- [ ] Content shape `T` matches Composer field names
+- [ ] Component props: `LayoutComponentProps<T> & Settings`
+- [ ] Editable content: `<Field|RichText|Image field={fields.…} />` — one each
+- [ ] Display reads: `fields.x.value` (never render `{fields.x}` as text)
+- [ ] Nested objects (e.g. badge) use leaf envelopes: `fields.badge.text`
+- [ ] Arrays/lists: `field={fields.posts}` + `render`, or `fields.posts.value`
+- [ ] Settings are plain props, not Field-wrapped
 - [ ] Empty-state null checks gated with `!isComposerPreview()`
-- [ ] `component_id` registered in Composer; one entry in `renderAmplifyComponent`
+- [ ] One `renderAmplifyComponent` map entry; `component_id` in Composer
 
 ## Correct pattern
 
 ```tsx
 "use client";
-import { Field, Image, RichText, isComposerPreview, useComponentProps } from "@amplifyup/sdk/react";
-import type { IArticleDetail } from "@/interfaces/IArticleDetail";
+import {
+  Field,
+  Image,
+  RichText,
+  isComposerPreview,
+  type LayoutComponentProps,
+  type ImageValue,
+} from "@amplifyup/sdk/react";
 
-export function ArticleDetail() {
-  const live = useComponentProps<IArticleDetail>();
+type ArticleFields = {
+  title: string;
+  body?: string;
+  landscapeImage?: ImageValue;
+};
+
+export function ArticleDetail({ fields }: LayoutComponentProps<ArticleFields>) {
   const inComposer = isComposerPreview();
+  const body = fields.body?.value;
 
   return (
     <article>
-      <Image value={live.landscapeImage} className="…" />
-      <h1><Field value={live.title} /></h1>
+      <Image field={fields.landscapeImage} className="…" />
+      <h1><Field field={fields.title} /></h1>
       {inComposer ? (
-        <RichText value={live.body} className="prose" />
-      ) : live.body ? (
-        <YourSiteMarkdown>{live.body}</YourSiteMarkdown>
+        <RichText field={fields.body} className="prose" />
+      ) : body ? (
+        <YourSiteMarkdown>{body}</YourSiteMarkdown>
       ) : null}
     </article>
   );
@@ -92,54 +97,35 @@ export function ArticleDetail() {
 ## Forbidden patterns
 
 ```tsx
-// ❌ Reconstructing / merging shapes the SDK already projected
-const post = resolveAmplifyPost(fieldPost, componentProps);
-const image = live.landscapeImage || post.landscapeImage || post.mainImage;
+// ❌ Removed API
+const live = useComponentProps();
+<Field value={live.title} />
 
-// ❌ Multi-field fallbacks — Composer cannot know which field to map
-<Image value={live.landscapeImage || live.mainImage || live.socialImage} />
+// ❌ Rendering the envelope object, not its value
+<p>{fields.description}</p> // wrong — use fields.description.value or <Field />
 
-// ❌ Nulling out fields Composer needs to edit
-if (!live.title) return null;
+// ❌ Multi-field fallbacks
+<Image field={fields.landscapeImage || fields.mainImage} />
 
-// ❌ Deprecated name API / fighting value inference
-<Field name="title" value={live.title} />
-<Image name="landscapeImage" />
+// ❌ Entity reconstruction
+const post = resolveAmplifyPost(…)
 
-// ❌ Site-owned Amplify infrastructure
-fetch("/v1/resolve")
-const LocalComposerContext = createContext(…)
-const catalog = { Hero, ArticleDetail }
+// ❌ Computed value without name
+<Field value={computed} /> // must be value + name together
 ```
-
-## Composer vs live display
-
-Editable binding stays one prop. Branch presentation only:
-
-```tsx
-const live = useComponentProps<IArticleDetail>();
-const inComposer = isComposerPreview();
-
-// Always bind landscapeImage — Composer maps to this field only
-{(hasLandscapeImage(live.landscapeImage) || inComposer) && (
-  <Image value={live.landscapeImage} className="…" />
-)}
-```
-
-Do not bind `mainImage` as a silent fallback for the same slot. If the live
-site needs a different visual when empty, gate that with `!inComposer` — still
-do not point `<Image>` at multiple fields.
 
 ## Page wiring (allowed)
 
 - `AmplifyPageContent` + thin `renderAmplifyComponent`
 - `fetchPageConfigServer` / `generateAmplifyStaticParams` from `@amplifyup/sdk/server`
-- Provider `pageContext` for From-page routes (pass at provider init, not after paint)
-- `queryContent` for visitor-driven lists/search — do not embed CMS queries in the site
+- Provider `pageContext` for From-page routes (at provider init)
+- `queryContent` for visitor-driven lists — list row strings use `value={…}`
+  (not field envelopes); see SDK docs
+- Unwrap envelopes for SSG helpers with `isFieldEnvelope` / `unwrapAmplifyFields`
 
 ## When something “doesn't load”
 
-1. Check Composer field binding / Deploy / Edge projection for that prop name.
-2. Confirm the placeable uses `value={live.exactPropName}`.
-3. Uptick `@amplifyup/sdk` if the API moved.
-4. Do **not** add a second resolver, fallback object, or prop-shape guesser.
+1. Confirm Composer field name matches `fields.exactName`.
+2. Confirm the placeable uses `field={fields.exactName}`.
+3. Deploy the route; uptick `@amplifyup/sdk` if the API moved.
+4. Do **not** add resolvers or multi-field fallbacks.

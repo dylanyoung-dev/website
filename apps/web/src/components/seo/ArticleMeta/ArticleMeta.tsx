@@ -1,23 +1,19 @@
 "use client";
 
 import { useEffect } from "react";
-import { Field, isComposerPreview, useComponentProps } from "@amplifyup/sdk/react";
-import type { IAmplifyPost } from "@/interfaces";
+import {
+  Field,
+  isComposerPreview,
+  type LayoutComponentProps,
+} from "@amplifyup/sdk/react";
 import type { IArticleMeta } from "@/interfaces/IArticleMeta";
-import { resolveAmplifyPost } from "@/lib/amplify-post";
 import {
   applyDocumentMeta,
   resolveArticleMeta,
   type IDocumentMeta,
 } from "@/lib/document-meta";
 
-function ArticleMetaPreview({
-  meta,
-  post,
-}: {
-  meta: IDocumentMeta;
-  post?: IAmplifyPost;
-}) {
+function ArticleMetaPreview({ meta }: { meta: IDocumentMeta }) {
   return (
     <div
       className="border-b border-dashed border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground"
@@ -31,28 +27,50 @@ function ArticleMetaPreview({
         <span className="font-medium">Description:</span>{" "}
         {meta.description || "(empty)"}
       </p>
-      <p>
-        <span className="font-medium">Post:</span>{" "}
-        {post?.title || post?.slug || "(unresolved)"}
-      </p>
     </div>
   );
 }
 
-function ArticleMetaBody({
-  post,
-  props,
-}: {
-  post?: IAmplifyPost;
-  props: IArticleMeta;
-}) {
+/**
+ * AmplifyUP placeable ArticleMeta (`component_id: ArticleMeta`).
+ * SEO from the same flat entity fields as ArticleDetail.
+ */
+export function ArticleMeta({ fields }: LayoutComponentProps<IArticleMeta>) {
   const inComposer = isComposerPreview();
   const baseUrl =
     (typeof window !== "undefined" && window.location?.origin) ||
     process.env.NEXT_PUBLIC_HOST_URL ||
     process.env.HOST_URL ||
     "https://dylanyoung.dev";
-  const meta = resolveArticleMeta(post, props, { baseUrl });
+
+  const post = {
+    title: fields.title?.value ?? "",
+    slug: fields.slug?.value ?? "",
+    excerpt: fields.excerpt?.value,
+    metaTitle: fields.metaTitle?.value,
+    metaDescription: fields.metaDescription?.value,
+    publishedAt: fields.publishedAt?.value,
+    canonicalUrl: fields.canonicalUrl?.value,
+    landscapeImage: fields.landscapeImage?.value ?? undefined,
+    socialImage: fields.socialImage?.value ?? undefined,
+    categories: fields.categories?.value,
+  };
+
+  const meta = resolveArticleMeta(
+    post,
+    {
+      metaTitle: fields.metaTitle?.value,
+      metaDescription: fields.metaDescription?.value,
+      excerpt: fields.excerpt?.value,
+      slug: fields.slug?.value,
+      publishedAt: fields.publishedAt?.value,
+      canonicalUrl: fields.canonicalUrl?.value,
+      landscapeImage: fields.landscapeImage?.value ?? undefined,
+      socialImage: fields.socialImage?.value ?? undefined,
+      categories: fields.categories?.value,
+    },
+    { baseUrl }
+  );
 
   useEffect(() => {
     applyDocumentMeta(meta);
@@ -65,24 +83,18 @@ function ArticleMetaBody({
     meta.section,
   ]);
 
-  if (!inComposer) return null;
-  return <ArticleMetaPreview meta={meta} post={post} />;
-}
-
-/**
- * AmplifyUP placeable ArticleMeta (`component_id: ArticleMeta`).
- * Reads the Edge-projected post (same binding as ArticleDetail) for article SEO.
- */
-export function ArticleMeta() {
-  const componentProps = useComponentProps<IArticleMeta & Record<string, unknown>>();
-
   return (
-    <Field
-      value={componentProps.post}
-      render={(fieldPost) => {
-        const post = resolveAmplifyPost(fieldPost, componentProps);
-        return <ArticleMetaBody post={post} props={componentProps} />;
-      }}
-    />
+    <>
+      <span className="sr-only" aria-hidden>
+        <Field field={fields.metaTitle} />
+        <Field field={fields.metaDescription} />
+        <Field field={fields.title} />
+        <Field field={fields.excerpt} />
+        <Field field={fields.slug} />
+        <Field field={fields.canonicalUrl} />
+        <Field field={fields.landscapeImage} />
+      </span>
+      {inComposer ? <ArticleMetaPreview meta={meta} /> : null}
+    </>
   );
 }

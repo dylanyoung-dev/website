@@ -1,7 +1,6 @@
 import type { PageConfig } from "@amplifyup/sdk";
+import { isFieldEnvelope } from "@amplifyup/sdk/react";
 import type { IAmplifyPost } from "@/interfaces";
-
-const PAGE_RESOURCE_MARKER = "__amplifyupPageResource";
 
 const POST_PROP_KEYS = [
   "id",
@@ -33,11 +32,23 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === "object" && !Array.isArray(value);
 }
 
-function isPageResourceSentinel(value: unknown): boolean {
-  return (
-    isRecord(value) &&
-    typeof value[PAGE_RESOURCE_MARKER] === "string"
-  );
+/** Unwrap AmplifyUP field envelopes (`{ value, name }`) to plain values. */
+export function unwrapAmplifyFields(source: unknown): Record<string, unknown> {
+  if (!isRecord(source)) return {};
+  const out: Record<string, unknown> = {};
+  for (const [key, raw] of Object.entries(source)) {
+    if (isFieldEnvelope(raw)) {
+      out[key] = raw.value;
+      continue;
+    }
+    if (isRecord(raw) && !Array.isArray(raw)) {
+      const nested = unwrapAmplifyFields(raw);
+      out[key] = Object.keys(nested).length ? nested : raw;
+      continue;
+    }
+    out[key] = raw;
+  }
+  return out;
 }
 
 function hasPostContent(value: Record<string, unknown>): boolean {
@@ -57,9 +68,8 @@ function pickPostFields(source: Record<string, unknown>): Record<string, unknown
   return picked;
 }
 
-/** Normalize Edge / Composer post payloads (`id` vs `_id`, etc.). */
-export function normalizeAmplifyPost(raw: unknown): IAmplifyPost | undefined {
-  if (!isRecord(raw) || isPageResourceSentinel(raw)) return undefined;
+function normalizeAmplifyPost(raw: unknown): IAmplifyPost | undefined {
+  if (!isRecord(raw)) return undefined;
   if (!hasPostContent(raw)) return undefined;
 
   const slug =
@@ -80,24 +90,6 @@ export function normalizeAmplifyPost(raw: unknown): IAmplifyPost | undefined {
   } as IAmplifyPost;
 }
 
-/**
- * Resolve a post from `<Field value={post}>` or flat entity props on the component.
- * AmplifyUP may bind a single `post` object or project entity fields at the prop root.
- */
-export function resolveAmplifyPost(
-  fieldPost: unknown,
-  componentProps: Record<string, unknown>
-): IAmplifyPost | undefined {
-  const fromField = normalizeAmplifyPost(fieldPost);
-  if (fromField) return fromField;
-
-  const nestedPost = normalizeAmplifyPost(componentProps.post);
-  if (nestedPost) return nestedPost;
-
-  const picked = pickPostFields(componentProps);
-  return normalizeAmplifyPost(picked);
-}
-
 function walkLayoutNodes(nodes: LayoutNode[] | undefined, visit: (node: LayoutNode) => void) {
   if (!nodes?.length) return;
   for (const node of nodes) {
@@ -108,7 +100,10 @@ function walkLayoutNodes(nodes: LayoutNode[] | undefined, visit: (node: LayoutNo
   }
 }
 
-/** Pull a resolved post from server-fetched page config (for slug pageContext). */
+/**
+ * Pull a resolved post from server-fetched page config (for slug pageContext).
+ * Reads `props.fields` envelopes from ArticleDetail nodes.
+ */
 export function extractPostFromPageConfig(
   pageConfig: PageConfig | null | undefined
 ): Record<string, unknown> | undefined {
@@ -120,7 +115,12 @@ export function extractPostFromPageConfig(
     const props = node.props;
     if (!isRecord(props)) return;
 
-    const resolved = resolveAmplifyPost(props.post, props);
+    const unwrapped = unwrapAmplifyFields(props.fields ?? props);
+    const nestedPost = isRecord(unwrapped.post)
+      ? normalizeAmplifyPost(unwrapAmplifyFields(unwrapped.post))
+      : undefined;
+    const resolved =
+      nestedPost || normalizeAmplifyPost(pickPostFields(unwrapped));
     if (resolved) {
       found = resolved as unknown as Record<string, unknown>;
     }

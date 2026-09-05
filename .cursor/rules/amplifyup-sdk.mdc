@@ -7,58 +7,41 @@ alwaysApply: true
 
 AmplifyUP SDK (`@amplifyup/sdk`) already owns layout resolve, Composer preview, Field/Slot/props context, personalization, page context, tracking, and the component-ID → render pipeline.
 
-For placeable work, also follow the project skill `.cursor/skills/amplifyup-placeables/SKILL.md`.
+For placeable work, follow `.cursor/skills/amplifyup-placeables/SKILL.md`.
 
 ## Hard rules
 
 - **Do not reimplement SDK functionality** in this repository (no parallel “Amplify framework”).
 - **Do not create** local catalogs, registries, ComponentRenderer wrappers, placeable indexes, or duplicate Edge/resolve/preview/pageContext helpers.
 - **Do not expand** `renderAmplifyComponent` into a registry system. That file is only the thin `renderComponent` callback `AmplifyPageContent` requires: map `component_id` → existing React placeable, wrap with SDK `ComponentContextProvider`, return.
-- **Trust projected props.** Use `useComponentProps()` and bind `value={live.fieldName}`. Do not merge `live` vs nested `post`, or build `resolve*`/`normalize*` layers to guess Edge shapes.
-- **One field per SDK binding.** Never `landscapeImage || mainImage` (or similar) in `value={…}` — Composer maps to exactly one prop. Use `isComposerPreview()` only to change display, not to swap which field is bound.
-- Before adding Amplify infrastructure, **read current SDK types/docs** (`@amplifyup/sdk/react`, `@amplifyup/sdk/server`). Prefer SDK exports over site-built equivalents.
-- Site work for Amplify is: **placeable React components** (`Field` / `RichText` / `Image` / `Slot` / `useComponentProps` / `isComposerPreview`) and **page wiring** (`AmplifyPageContent`, `fetchPageConfigServer`, provider `pageContext`).
-- **Do not fix Composer/product bugs in this site** (providers, polyfills, workarounds for Composer UI). Fix Composer/SDK or uptick the package.
+- **Trust `fields` envelopes.** Placeables take `LayoutComponentProps<T>` and bind `<Field field={fields.x} />` (same for RichText/Image). Read with `fields.x.value`. Do not use removed `useComponentProps` or bare `value={live.x}` for schema fields.
+- **One field per SDK binding.** Never `landscapeImage || mainImage` in `field={…}`. Use `isComposerPreview()` only to change display.
+- Before adding Amplify infrastructure, **read current SDK types** (`@amplifyup/sdk/react`, `@amplifyup/sdk/server`). Prefer SDK exports over site-built equivalents.
+- Site work for Amplify is: **placeable React components** (`Field` / `RichText` / `Image` / `Slot` / `isComposerPreview`) and **page wiring** (`AmplifyPageContent`, `fetchPageConfigServer`, provider `pageContext`).
+- **Do not fix Composer/product bugs in this site.** Fix Composer/SDK or uptick the package.
 
 ## When adding a placeable
 
-1. Create the React component; props interface matches Composer field names.
-2. Register its `component_id` in AmplifyUP Composer (dashboard), not via a new site catalog.
-3. Bind every editable field with SDK primitives and `value={live.…}` — no `name` + `value` together.
-4. Add one entry to the existing `renderAmplifyComponent` map if the page uses that callback — nothing more.
-5. Only null-check missing content when **not** in Composer (`!isComposerPreview()`).
+1. Content interface matches Composer field names.
+2. Props: `LayoutComponentProps<Content> & Settings`.
+3. Bind every editable field with `field={fields.…}` — no multi-field fallbacks.
+4. Register `component_id` in Composer; one `renderAmplifyComponent` map entry.
+5. Only null-check missing content when **not** in Composer.
 
 ## Examples
 
 ```tsx
-// ❌ BAD — local catalog / registry abstraction
-const localCatalog = { Hero, ArticleGrid };
-function ComponentRenderer({ componentId }) { ... }
+// ❌ BAD
+const live = useComponentProps();
+<Field value={live.title} />
+const img = live.landscapeImage || live.mainImage;
 
-// ❌ BAD — reimplementing resolve / preview / props context
-fetch('/v1/resolve') // site-owned
-const ComposerContext = createContext(...)
-
-// ❌ BAD — fighting prop projection
-const post = resolveAmplifyPost(field, props);
-const img = live.landscapeImage || post.landscapeImage;
-
-// ✅ GOOD — thin SDK renderComponent adapter only
-const Component = map[componentId];
-return (
-  <ComponentContextProvider props={props} slots={slots} layoutNodeId={context?.layoutNodeId} componentId={componentId}>
-    <Component {...props} />
-  </ComponentContextProvider>
-);
-
-// ✅ GOOD — placeable uses SDK primitives and live props only
-export function ArticleDetail() {
-  const live = useComponentProps();
+// ✅ GOOD
+export function ArticleDetail({ fields }: LayoutComponentProps<{ title: string; landscapeImage?: ImageValue }>) {
   return (
     <>
-      <Image value={live.landscapeImage} />
-      <h1><Field value={live.title} /></h1>
-      <RichText value={live.body} />
+      <Image field={fields.landscapeImage} />
+      <h1><Field field={fields.title} /></h1>
     </>
   );
 }

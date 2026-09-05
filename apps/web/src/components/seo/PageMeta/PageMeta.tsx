@@ -1,7 +1,11 @@
 "use client";
 
 import { useEffect } from "react";
-import { Field, isComposerPreview, useComponentProps } from "@amplifyup/sdk/react";
+import {
+  Field,
+  isComposerPreview,
+  type LayoutComponentProps,
+} from "@amplifyup/sdk/react";
 import type { IPageMeta } from "@/interfaces/IPageMeta";
 import {
   applyDocumentMeta,
@@ -32,12 +36,13 @@ function PageMetaPreview({ meta }: { meta: IDocumentMeta }) {
   );
 }
 
+type PageMetaContent = Omit<IPageMeta, "title">;
+
 /**
  * AmplifyUP placeable PageMeta (`component_id: PageMeta`).
  * Generic page SEO fields projected from Edge / Composer.
  */
-export function PageMeta() {
-  const live = useComponentProps<IPageMeta>();
+export function PageMeta({ fields }: LayoutComponentProps<PageMetaContent>) {
   const inComposer = isComposerPreview();
   const baseUrl =
     (typeof window !== "undefined" && window.location?.origin) ||
@@ -47,7 +52,20 @@ export function PageMeta() {
   const pathname =
     typeof window !== "undefined" ? window.location.pathname : undefined;
 
-  const meta = resolvePageMeta(live, { baseUrl, pathname });
+  const meta = resolvePageMeta(
+    {
+      metaTitle: fields.metaTitle?.value,
+      metaDescription: fields.metaDescription?.value,
+      canonicalUrl: fields.canonicalUrl?.value,
+      ogImage: fields.ogImage?.value,
+      ogType: fields.ogType?.value,
+      keywords: fields.keywords?.value,
+      robots: fields.robots?.value,
+      twitterCard: fields.twitterCard?.value,
+      siteName: fields.siteName?.value,
+    },
+    { baseUrl, pathname }
+  );
 
   useEffect(() => {
     applyDocumentMeta(meta);
@@ -63,15 +81,14 @@ export function PageMeta() {
 
   return (
     <>
-      {/* Keep Field bindings discoverable for Composer / Edge projection */}
       <span className="sr-only" aria-hidden>
-        <Field value={live.metaTitle} />
-        <Field value={live.metaDescription} />
-        <Field value={live.canonicalUrl} />
-        <Field value={live.ogImage} />
-        <Field value={live.ogType} />
-        <Field value={live.keywords} />
-        <Field value={live.robots} />
+        <Field field={fields.metaTitle} />
+        <Field field={fields.metaDescription} />
+        <Field field={fields.canonicalUrl} />
+        <Field field={fields.ogImage} />
+        <Field field={fields.ogType} />
+        <Field field={fields.keywords} />
+        <Field field={fields.robots} />
       </span>
       {inComposer ? <PageMetaPreview meta={meta} /> : null}
     </>

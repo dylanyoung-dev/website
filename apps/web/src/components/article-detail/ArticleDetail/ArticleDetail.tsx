@@ -6,7 +6,9 @@ import {
   Image,
   RichText,
   isComposerPreview,
-  useComponentProps,
+  type FieldEnvelope,
+  type ImageValue,
+  type LayoutComponentProps,
 } from "@amplifyup/sdk/react";
 import { ArrowLeft, Calendar, Clock, FileText, Sparkles } from "lucide-react";
 import { ShareButtons } from "@/components/blogs";
@@ -14,22 +16,20 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { RenderMarkdown } from "@/components/ui/RenderMarkdown";
-import type { IAmplifyPost, IAmplifyPostCategory, IAmplifyPostImage } from "@/interfaces";
+import type { IAmplifyPostCategory } from "@/interfaces";
 import type { IArticleDetail } from "@/interfaces/IArticleDetail";
-import { resolveAmplifyPost } from "@/lib/amplify-post";
 import { formatPublishedDate } from "@/lib/utils";
 
 const ARTICLE_PROSE_CLASS =
   "prose prose-lg dark:prose-invert max-w-none prose-headings:font-bold prose-headings:text-foreground prose-h2:!mt-20 prose-h2:!mb-8 prose-h2:first:!mt-0 prose-h3:!mt-16 prose-h3:!mb-6 prose-h3:first:!mt-0 prose-h4:!mt-12 prose-h4:!mb-4 prose-h4:first:!mt-0 prose-h5:!mt-10 prose-h5:!mb-3 prose-h5:first:!mt-0 prose-h6:!mt-8 prose-h6:!mb-2 prose-h6:first:!mt-0 prose-p:text-foreground prose-p:leading-relaxed prose-p:text-lg prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary/80 hover:prose-a:underline prose-strong:text-foreground prose-strong:font-semibold prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:pl-6 prose-img:rounded-lg prose-img:shadow-md prose-hr:border-border prose-hr:my-12 prose-ul:space-y-2 prose-ol:space-y-2 prose-li:text-foreground";
 
-/** Hero image is always `landscapeImage` — one Composer field, one binding. */
-function hasLandscapeImage(image: IAmplifyPostImage | string | undefined): boolean {
+function hasLandscapeImage(image: ImageValue | string | null | undefined): boolean {
   if (typeof image === "string") return image.trim().length > 0;
   return Boolean(image?.url?.trim());
 }
 
 function landscapeImageAlt(
-  image: IAmplifyPostImage | string | undefined,
+  image: ImageValue | string | null | undefined,
   fallback: string
 ): string {
   if (image && typeof image === "object" && image.alt?.trim()) {
@@ -55,18 +55,30 @@ function getShareUrl(slug: string): string {
   return path;
 }
 
-function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
-  const live = useComponentProps<IArticleDetail>();
+/**
+ * AmplifyUP placeable ArticleDetail (`component_id: ArticleDetail`).
+ * Content via `fields` envelopes — one prop per SDK binding.
+ */
+export function ArticleDetail({
+  fields,
+}: LayoutComponentProps<IArticleDetail>) {
   const inComposer = isComposerPreview();
-  const hasImage = hasLandscapeImage(live.landscapeImage);
-  const publishedLabel = formatPublishedDate(post.publishedAt);
-  const slug = post.slug?.trim();
+  const title = fields.title?.value ?? "";
+  const slug = (fields.slug?.value ?? "").trim();
+  const excerpt = fields.excerpt?.value;
+  const body = fields.body?.value;
+  const publishedAt = fields.publishedAt?.value;
+  const readingTime = fields.readingTime?.value;
+  const landscapeImage = fields.landscapeImage?.value;
+  const categories = Array.isArray(fields.categories?.value)
+    ? fields.categories.value
+    : [];
+
+  const hasImage = hasLandscapeImage(landscapeImage);
+  const publishedLabel = formatPublishedDate(publishedAt);
   const shareUrl = slug ? getShareUrl(slug) : "/insights";
-  const backHref = "/insights";
-  const categoriesWithTitle = (post.categories || []).filter((c) =>
-    getCategoryTitle(c)
-  );
-  const categoriesWithSlug = (post.categories || []).filter(
+  const categoriesWithTitle = categories.filter((c) => getCategoryTitle(c));
+  const categoriesWithSlug = categories.filter(
     (c) => getCategoryTitle(c) && getCategorySlug(c)
   );
 
@@ -76,8 +88,8 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
         <div className="container mx-auto mb-8 max-w-6xl px-4 pt-4">
           <div className="relative h-44 w-full overflow-hidden rounded-lg bg-muted sm:h-52 md:h-56">
             <Image
-              value={live.landscapeImage}
-              alt={landscapeImageAlt(live.landscapeImage, post.title)}
+              field={fields.landscapeImage}
+              alt={landscapeImageAlt(landscapeImage, title)}
               className="absolute inset-0 h-full w-full object-cover"
             />
           </div>
@@ -102,7 +114,10 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
                     </Badge>
                   ))
                 ) : (
-                  <Badge variant="secondary" className="text-sm font-medium text-muted-foreground">
+                  <Badge
+                    variant="secondary"
+                    className="text-sm font-medium text-muted-foreground"
+                  >
                     Categories
                   </Badge>
                 )}
@@ -110,22 +125,24 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
             ) : null}
 
             <h1 className="text-4xl font-bold leading-tight text-foreground md:text-5xl lg:text-6xl">
-              {post.title}
+              <Field field={fields.title} />
             </h1>
 
             <div className="flex flex-wrap items-center gap-4 border-t pt-4 md:gap-6">
               {publishedLabel || inComposer ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <time dateTime={post.publishedAt} className="font-medium">
-                    {publishedLabel || "Publish date"}
+                  <time dateTime={publishedAt} className="font-medium">
+                    <Field field={fields.publishedAt} />
                   </time>
                 </div>
               ) : null}
-              {post.readingTime || inComposer ? (
+              {readingTime || inComposer ? (
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Clock className="h-4 w-4" />
-                  <span className="font-medium">{post.readingTime || "Reading time"}</span>
+                  <span className="font-medium">
+                    <Field field={fields.readingTime} />
+                  </span>
                 </div>
               ) : null}
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -135,8 +152,8 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
               <div className="w-full pt-2 md:ml-auto md:w-auto md:pt-0">
                 <ShareButtons
                   url={shareUrl}
-                  title={post.title}
-                  description={post.excerpt}
+                  title={title}
+                  description={excerpt}
                 />
               </div>
             </div>
@@ -164,12 +181,15 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
             </Card>
           </div>
 
-          {post.body || inComposer ? (
+          {body || inComposer ? (
             inComposer ? (
-              <RichText value={post.body} className={ARTICLE_PROSE_CLASS} />
+              <RichText
+                field={fields.body as FieldEnvelope<string | null>}
+                className={ARTICLE_PROSE_CLASS}
+              />
             ) : (
               <div className={ARTICLE_PROSE_CLASS}>
-                <RenderMarkdown>{post.body}</RenderMarkdown>
+                <RenderMarkdown>{body}</RenderMarkdown>
               </div>
             )
           ) : null}
@@ -198,7 +218,9 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
                       );
                     })
                   ) : (
-                    <span className="text-sm text-muted-foreground">No categories</span>
+                    <span className="text-sm text-muted-foreground">
+                      No categories
+                    </span>
                   )}
                 </div>
               </div>
@@ -206,7 +228,7 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
 
             <div className="pt-4">
               <Button variant="ghost" asChild>
-                <Link href={backHref} className="flex items-center gap-2">
+                <Link href="/insights" className="flex items-center gap-2">
                   <ArrowLeft className="h-4 w-4" />
                   Back to Insights
                 </Link>
@@ -216,36 +238,5 @@ function ArticleDetailBody({ post }: { post: IAmplifyPost }) {
         </article>
       </div>
     </section>
-  );
-}
-
-/**
- * AmplifyUP placeable ArticleDetail (`component_id: ArticleDetail`).
- * Post content from Edge via `<Field value={post}>` or flat entity props.
- */
-export function ArticleDetail() {
-  const componentProps = useComponentProps<
-    IArticleDetail & Record<string, unknown>
-  >();
-
-  return (
-    <Field
-      value={componentProps.post}
-      render={(fieldPost) => {
-        const inComposer = isComposerPreview();
-        const post = resolveAmplifyPost(fieldPost, componentProps);
-
-        if (!post && !inComposer) return null;
-
-        const resolved: IAmplifyPost =
-          post ??
-          ({
-            title: "Article title",
-            slug: "",
-          } as IAmplifyPost);
-
-        return <ArticleDetailBody post={resolved} />;
-      }}
-    />
   );
 }

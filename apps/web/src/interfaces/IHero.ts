@@ -24,10 +24,9 @@ export interface IHeroBadge {
 
 /**
  * Configurable Hero props for AmplifyUP / Sanity.
- * Import this interface into AmplifyUP to generate registry fields.
  *
- * Content fields (`eyebrow`, `heading`, …) are read via SDK `<Field>` for Composer editing.
- * Settings like `variant` are plain component props — no `<Field>` (not in-browser editable).
+ * Content fields are bound via SDK `fields` envelopes (`field={fields.heading}`).
+ * Settings like `variant` are plain component props — not Field-wrapped.
  */
 export interface IHero {
   /** Layout style: home-style (default) or insights listing style. Plain prop, not `<Field>`. */

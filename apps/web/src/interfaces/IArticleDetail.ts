@@ -1,31 +1,24 @@
 /**
- * AmplifyUP props for ArticleDetail (`component_id: ArticleDetail`).
- *
- * Content → `<Field value={post}>` and/or flat Edge entity props (title, body, slug, …).
+ * AmplifyUP content fields for ArticleDetail (`component_id: ArticleDetail`).
+ * Bound via `fields` envelopes — flat From-page / entity projection.
  */
 
-import type { IAmplifyPost } from "./IAmplifyPost";
+import type { ImageValue } from "@amplifyup/sdk/react";
+import type { IAmplifyPostCategory } from "./IAmplifyPost";
 
-export type IArticleDetailPost = IAmplifyPost;
-
-export interface IArticleDetail {
-  /** Internal Amplify / Studio label. */
+export type IArticleDetail = {
   title?: string;
-  /** Edge-resolved post object when bound as a single entity field. */
-  post?: IArticleDetailPost;
-  /** Flat entity projection (Amplify "From page" may map fields at the prop root). */
-  excerpt?: string;
-  body?: string;
   slug?: string;
+  excerpt?: string;
+  body?: string | null;
   publishedAt?: string;
   readingTime?: string;
   metaTitle?: string;
   metaDescription?: string;
   canonicalUrl?: string;
-  mainImage?: IAmplifyPost["mainImage"];
-  landscapeImage?: IAmplifyPost["landscapeImage"];
-  socialImage?: IAmplifyPost["socialImage"];
-  categories?: IAmplifyPost["categories"];
-}
+  /** Hero image — single Composer-bound image field. */
+  landscapeImage?: ImageValue;
+  categories?: IAmplifyPostCategory[];
+} & Record<string, unknown>;
 
 export type ArticleDetailProps = IArticleDetail;
