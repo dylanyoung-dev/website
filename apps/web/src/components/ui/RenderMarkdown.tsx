@@ -32,24 +32,46 @@ function getCoreProps(props: GetCoreProps): any {
 
 export function RenderMarkdown({ children }: RenderMarkdownProps) {
   const { theme } = useTheme();
-  const [copied, setCopied] = useState(false);
   const codeTheme = theme === "dark" ? themes.nightOwl : themes.nightOwlLight;
 
   const components = {
+    // Match `.prose` article styles in globals.css so live ≈ Composer RichText.
     h1: ({ node, ...props }: any) => (
-      <h1 className="mb-1 text-xl font-semibold" {...props}>
+      <h1
+        className="mb-6 mt-12 text-3xl font-bold tracking-tight text-foreground first:mt-0"
+        {...props}
+      >
         {props.children}
       </h1>
     ),
     h2: ({ node, ...props }: any) => (
-      <h2 className="mb-[-0.5rem] text-xl font-semibold" {...props}>
+      <h2
+        className="mb-8 mt-20 text-2xl font-bold tracking-tight text-foreground first:mt-0"
+        {...props}
+      >
         {props.children}
       </h2>
     ),
     h3: ({ node, ...props }: any) => (
-      <h3 className="mb-[-0.5rem] text-lg font-semibold" {...props}>
+      <h3
+        className="mb-6 mt-16 text-xl font-bold tracking-tight text-foreground first:mt-0"
+        {...props}
+      >
         {props.children}
       </h3>
+    ),
+    h4: ({ node, ...props }: any) => (
+      <h4
+        className="mb-4 mt-12 text-lg font-semibold text-foreground first:mt-0"
+        {...props}
+      >
+        {props.children}
+      </h4>
+    ),
+    p: ({ node, ...props }: any) => (
+      <p className="mb-4 text-lg leading-relaxed text-foreground" {...props}>
+        {props.children}
+      </p>
     ),
     code({ node, inline, className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || "");
@@ -57,7 +79,7 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
 
       return !inline && match ? (
         <div
-          className={`my-4 rounded-md border relative ${
+          className={`relative my-4 rounded-md border ${
             theme === "dark" ? "border-gray-600" : "border-gray-300"
           }`}
         >
@@ -71,7 +93,7 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
             <Button
               size="sm"
               variant="outline"
-              className="absolute top-2 right-2"
+              className="absolute right-2 top-2"
             >
               {codeCopied ? "Copied!" : "Copy"}
             </Button>
@@ -100,18 +122,13 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
         </div>
       ) : (
         <code
-          className="rounded-none bg-muted px-1 py-0.5 text-sm"
+          className="rounded bg-muted px-1.5 py-0.5 text-sm text-foreground"
           {...props}
         >
           {children}
         </code>
       );
     },
-    p: ({ node, ...props }: any) => (
-      <p className="mb-2" {...props}>
-        {props.children}
-      </p>
-    ),
     em: ({ node, ...props }: any) => (
       <em {...props}>{props.children}</em>
     ),
@@ -175,7 +192,7 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
     ),
     a: ({ node, ...props }: any) => (
       <a
-        className="underline"
+        className="text-primary no-underline hover:text-primary/80 hover:underline"
         target="_blank"
         rel="noopener noreferrer"
         {...props}

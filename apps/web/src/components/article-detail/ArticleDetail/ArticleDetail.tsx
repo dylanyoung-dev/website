@@ -196,6 +196,9 @@ export function ArticleDetail({
           </div>
 
           {body || inComposer ? (
+            // Composer needs <RichText> for canvas editing; live keeps
+            // RenderMarkdown for prism/code UX. Shared ARTICLE_PROSE_CLASS +
+            // globals `.prose` styles keep heading/body hierarchy close.
             inComposer ? (
               <RichText
                 field={fields.body as FieldEnvelope<string | null>}

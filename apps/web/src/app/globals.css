@@ -77,40 +77,96 @@
 }
 
 @layer utilities {
+  /*
+   * Article body — shared by live RenderMarkdown wrappers and Composer <RichText />.
+   * Typography plugin provides base `prose` / `prose-lg`; these keep heading rhythm
+   * aligned with ARTICLE_PROSE_CLASS even when plugin modifiers are incomplete.
+   */
+  .prose h1 {
+    @apply mt-12 mb-6 text-3xl font-bold tracking-tight text-foreground first:mt-0;
+  }
   .prose h2 {
-    margin-top: 3rem !important;
-    margin-bottom: 1rem !important;
+    margin-top: 5rem !important;
+    margin-bottom: 2rem !important;
+    @apply text-2xl font-bold tracking-tight text-foreground;
   }
   .prose h2:first-child {
     margin-top: 0 !important;
   }
   .prose h3 {
-    margin-top: 2.5rem !important;
-    margin-bottom: 0.75rem !important;
+    margin-top: 4rem !important;
+    margin-bottom: 1.5rem !important;
+    @apply text-xl font-bold tracking-tight text-foreground;
   }
   .prose h3:first-child {
     margin-top: 0 !important;
   }
   .prose h4 {
-    margin-top: 2rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-top: 3rem !important;
+    margin-bottom: 1rem !important;
+    @apply text-lg font-semibold text-foreground;
   }
   .prose h4:first-child {
     margin-top: 0 !important;
   }
   .prose h5 {
-    margin-top: 1.5rem !important;
-    margin-bottom: 0.5rem !important;
+    margin-top: 2.5rem !important;
+    margin-bottom: 0.75rem !important;
+    @apply text-base font-semibold text-foreground;
   }
   .prose h5:first-child {
     margin-top: 0 !important;
   }
   .prose h6 {
-    margin-top: 1.25rem !important;
-    margin-bottom: 0.375rem !important;
+    margin-top: 2rem !important;
+    margin-bottom: 0.5rem !important;
+    @apply text-sm font-semibold uppercase tracking-wide text-foreground;
   }
   .prose h6:first-child {
     margin-top: 0 !important;
+  }
+  .prose p {
+    @apply text-lg leading-relaxed text-foreground;
+  }
+  .prose a {
+    @apply text-primary no-underline;
+  }
+  .prose a:hover {
+    @apply text-primary/80 underline;
+  }
+  .prose strong {
+    @apply font-semibold text-foreground;
+  }
+  .prose code {
+    @apply rounded bg-muted px-1.5 py-0.5 text-sm text-foreground;
+  }
+  .prose pre {
+    @apply rounded-lg border border-border bg-muted;
+  }
+  .prose pre code {
+    @apply bg-transparent p-0;
+  }
+  .prose blockquote {
+    @apply border-l-4 border-primary pl-6 text-muted-foreground;
+  }
+  .prose ul,
+  .prose ol {
+    @apply my-4 space-y-2 pl-5 text-foreground;
+  }
+  .prose ul {
+    list-style-type: disc;
+  }
+  .prose ol {
+    list-style-type: decimal;
+  }
+  .prose li {
+    @apply text-foreground;
+  }
+  .prose hr {
+    @apply my-12 border-border;
+  }
+  .prose img {
+    @apply rounded-lg shadow-md;
   }
   
   /* YouTube player container constraints */
