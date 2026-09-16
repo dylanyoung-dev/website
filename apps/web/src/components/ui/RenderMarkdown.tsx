@@ -38,7 +38,7 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
     // Match `.prose` article styles in globals.css so live ≈ Composer RichText.
     h1: ({ node, ...props }: any) => (
       <h1
-        className="mb-6 mt-12 text-3xl font-bold tracking-tight text-foreground first:mt-0"
+        className="mb-3 mt-7 text-3xl font-bold tracking-tight text-foreground first:mt-0"
         {...props}
       >
         {props.children}
@@ -46,7 +46,7 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
     ),
     h2: ({ node, ...props }: any) => (
       <h2
-        className="mb-8 mt-20 text-2xl font-bold tracking-tight text-foreground first:mt-0"
+        className="mb-3 mt-7 text-2xl font-bold tracking-tight text-foreground first:mt-0"
         {...props}
       >
         {props.children}
@@ -54,7 +54,7 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
     ),
     h3: ({ node, ...props }: any) => (
       <h3
-        className="mb-6 mt-16 text-xl font-bold tracking-tight text-foreground first:mt-0"
+        className="mb-2 mt-6 text-xl font-bold tracking-tight text-foreground first:mt-0"
         {...props}
       >
         {props.children}
@@ -62,14 +62,14 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
     ),
     h4: ({ node, ...props }: any) => (
       <h4
-        className="mb-4 mt-12 text-lg font-semibold text-foreground first:mt-0"
+        className="mb-2 mt-5 text-lg font-semibold text-foreground first:mt-0"
         {...props}
       >
         {props.children}
       </h4>
     ),
     p: ({ node, ...props }: any) => (
-      <p className="mb-4 text-lg leading-relaxed text-foreground" {...props}>
+      <p className="mb-3 text-base leading-7 text-foreground" {...props}>
         {props.children}
       </p>
     ),
