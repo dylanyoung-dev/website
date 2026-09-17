@@ -73,18 +73,35 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
         {props.children}
       </p>
     ),
-    code({ node, inline, className, children, ...props }: any) {
+    // react-markdown wraps fenced code in <pre><code>. Our highlighter already
+    // emits a <pre>, so pass the outer wrapper through or you get one giant
+    // pre containing the Copy button + line numbers.
+    pre: ({ children }: any) => <>{children}</>,
+    code({ node, className, children, ...props }: any) {
       const match = /language-(\w+)/.exec(className || "");
+      const source = String(children).replace(/\n$/, "");
+      const isBlock = Boolean(match) || source.includes("\n");
       const [codeCopied, setCodeCopied] = useState(false);
 
-      return !inline && match ? (
+      if (!isBlock) {
+        return (
+          <code
+            className="rounded bg-muted px-1.5 py-0.5 text-sm text-foreground"
+            {...props}
+          >
+            {children}
+          </code>
+        );
+      }
+
+      return (
         <div
-          className={`relative my-4 rounded-md border ${
+          className={`relative my-4 overflow-hidden rounded-md border ${
             theme === "dark" ? "border-gray-600" : "border-gray-300"
           }`}
         >
           <CopyToClipboard
-            text={String(children).replace(/\n$/, "")}
+            text={source}
             onCopy={() => {
               setCodeCopied(true);
               setTimeout(() => setCodeCopied(false), 2000);
@@ -93,20 +110,25 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
             <Button
               size="sm"
               variant="outline"
-              className="absolute right-2 top-2"
+              className="absolute right-2 top-2 z-10"
             >
               {codeCopied ? "Copied!" : "Copy"}
             </Button>
           </CopyToClipboard>
           <Highlight
-            code={String(children).replace(/\n$/, "")}
-            language={match[1]}
+            code={source}
+            language={match?.[1] || "text"}
             theme={codeTheme}
           >
             {({ className, style, tokens, getLineProps, getTokenProps }) => (
               <pre
                 className={className}
-                style={{ ...style, overflowX: "auto", paddingLeft: "10px" }}
+                style={{
+                  ...style,
+                  margin: 0,
+                  overflowX: "auto",
+                  padding: "12px 10px",
+                }}
               >
                 {tokens.map((line, i) => (
                   <div key={i} className="ml-2" {...getLineProps({ line })}>
@@ -120,13 +142,6 @@ export function RenderMarkdown({ children }: RenderMarkdownProps) {
             )}
           </Highlight>
         </div>
-      ) : (
-        <code
-          className="rounded bg-muted px-1.5 py-0.5 text-sm text-foreground"
-          {...props}
-        >
-          {children}
-        </code>
       );
     },
     em: ({ node, ...props }: any) => (

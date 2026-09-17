@@ -147,7 +147,11 @@ export function ArticleDetail({
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   <time dateTime={publishedAt} className="font-medium">
-                    <Field field={fields.publishedAt} />
+                    {inComposer ? (
+                      <Field field={fields.publishedAt} />
+                    ) : (
+                      publishedLabel
+                    )}
                   </time>
                 </div>
               ) : null}
