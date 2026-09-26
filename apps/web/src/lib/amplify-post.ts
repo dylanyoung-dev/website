@@ -1,4 +1,10 @@
-import { isFieldEnvelope } from "@amplifyup/sdk/react";
+function isFieldEnvelope(
+  value: unknown
+): value is { name: string; value: unknown } {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  const rec = value as { name?: unknown; value?: unknown; url?: unknown };
+  return typeof rec.name === "string" && "value" in rec && !("url" in rec);
+}
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return !!value && typeof value === "object" && !Array.isArray(value);
