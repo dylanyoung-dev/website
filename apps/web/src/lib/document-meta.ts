@@ -95,8 +95,7 @@ export function resolvePageMeta(
 }
 
 function getCategoryTitle(post: IAmplifyPost | undefined): string | undefined {
-  const first = post?.categories?.[0];
-  return first?.title?.trim() || undefined;
+  return asString(post?.categories?.[0]?.title);
 }
 
 function getPostImage(post: IAmplifyPost): { url?: string; alt?: string } {
@@ -147,7 +146,7 @@ export function resolveArticleMeta(
     ogImageAlt: image.alt || title,
     ogType: "article",
     keywords: (post?.categories || [])
-      .map((c) => c.title?.trim())
+      .map((c) => asString(c?.title))
       .filter(Boolean)
       .join(", "),
     twitterCard: "summary_large_image",

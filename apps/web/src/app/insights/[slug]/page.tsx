@@ -59,12 +59,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     ? await fetchPageConfigServer(route, trackingId)
     : null;
 
-  return (
-    metadataFromPageConfig(pageConfig, {
-      baseUrl,
-      pathname: `/insights/${slug}`,
-    }) ?? {}
-  );
+  // Metadata is best-effort: a bad field shape must not 500 the page.
+  try {
+    return (
+      metadataFromPageConfig(pageConfig, {
+        baseUrl,
+        pathname: `/insights/${slug}`,
+      }) ?? {}
+    );
+  } catch (error) {
+    console.error(`[insights] generateMetadata failed for ${route}`, error);
+    return {};
+  }
 }
 
 export default async function InsightsSlugPage({ params }: Props) {
