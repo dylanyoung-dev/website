@@ -94,8 +94,14 @@ export function resolvePageMeta(
   };
 }
 
+function categoryTitleText(title: unknown): string | undefined {
+  if (typeof title === "string") return asString(title);
+  if (isRecord(title) && "value" in title) return asString(title.value);
+  return undefined;
+}
+
 function getCategoryTitle(post: IAmplifyPost | undefined): string | undefined {
-  return asString(post?.categories?.[0]?.title);
+  return categoryTitleText(post?.categories?.[0]?.title);
 }
 
 function getPostImage(post: IAmplifyPost): { url?: string; alt?: string } {
@@ -146,7 +152,7 @@ export function resolveArticleMeta(
     ogImageAlt: image.alt || title,
     ogType: "article",
     keywords: (post?.categories || [])
-      .map((c) => asString(c?.title))
+      .map((c) => categoryTitleText(c?.title))
       .filter(Boolean)
       .join(", "),
     twitterCard: "summary_large_image",

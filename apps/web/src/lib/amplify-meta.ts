@@ -62,6 +62,13 @@ export function extractPageMetaFromPageConfig(
   return propsFromNode(node) as IPageMeta;
 }
 
+function present<T>(value: T | null | undefined): T | undefined {
+  if (value == null) return undefined;
+  if (typeof value === "string" && !value.trim()) return undefined;
+  if (Array.isArray(value) && value.length === 0) return undefined;
+  return value;
+}
+
 /** Pull ArticleMeta fields from a server-fetched Edge pageConfig. */
 export function extractArticleMetaFromPageConfig(
   pageConfig: PageConfig | null | undefined
@@ -69,7 +76,26 @@ export function extractArticleMetaFromPageConfig(
   const node = findFirstNode(pageConfig, "ArticleMeta");
   if (!node) return undefined;
 
-  const props = propsFromNode(node) as IArticleMeta;
+  const meta = propsFromNode(node) as IArticleMeta;
+  const detailNode = findFirstNode(pageConfig, "ArticleDetail");
+  const detail = detailNode
+    ? (propsFromNode(detailNode) as IArticleMeta)
+    : undefined;
+
+  const props: IArticleMeta = {
+    ...detail,
+    metaTitle: present(meta.metaTitle) ?? detail?.metaTitle,
+    metaDescription: present(meta.metaDescription) ?? detail?.metaDescription,
+    excerpt: present(meta.excerpt) ?? detail?.excerpt,
+    title: present(meta.title) ?? detail?.title,
+    slug: present(meta.slug) ?? detail?.slug,
+    publishedAt: present(meta.publishedAt) ?? detail?.publishedAt,
+    canonicalUrl: present(meta.canonicalUrl) ?? detail?.canonicalUrl,
+    landscapeImage: present(meta.landscapeImage) ?? detail?.landscapeImage,
+    socialImage: present(meta.socialImage) ?? detail?.socialImage,
+    categories: present(meta.categories) ?? detail?.categories,
+  };
+
   const post = {
     title: props.title ?? "",
     slug: props.slug ?? "",
