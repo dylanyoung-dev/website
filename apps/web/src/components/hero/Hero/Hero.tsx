@@ -246,7 +246,7 @@ export function Hero({
           )}
         >
           <div className="flex flex-wrap items-center gap-3">
-            {(fields.actions.value ?? []).map((action) => (
+            {(fields.actions?.value ?? []).map((action) => (
               <HeroActionButton
                 key={action.id}
                 action={action as ListRow<IHeroAction>}
@@ -255,7 +255,7 @@ export function Hero({
             ))}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            {(fields.secondaryLinks.value ?? []).map((link) => {
+            {(fields.secondaryLinks?.value ?? []).map((link) => {
               const row = link as ListRow<IHeroSecondaryLink>;
               const href = row.href?.value?.trim();
               if (!href) return null;

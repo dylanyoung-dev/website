@@ -13,11 +13,13 @@ Placeable details: `.cursor/skills/amplifyup-placeables/SKILL.md` · [lists docs
 
 - **Do not reimplement** SDK features (no local catalogs, Edge clients, preview frameworks).
 - **Never nest a second `AmplifyUpProvider`.** One root provider. From-page `pageContext` goes on that provider. Nesting breaks under SDK 0.1.77+.
-- **`renderAmplifyComponent` stays thin:** map `component_id` → placeable, wrap `ComponentContextProvider`, return.
+- **SDK ≥ 0.2 owns the component registry.** No `renderComponent`, no lookup map, no `ComponentContextProvider` (removed). `withAmplifyUp` (next.config.js) generates `src/.amplifyup/component-registry` — never edit it.
+- **Placeables live only in `apps/web/src/components/amplifyup/placeables/`** (registry root, set in `amplifyup.config.ts`). One flat `<Name>.tsx` per component; file name = Composer `component_id`; export a component with that name. Helpers/subcomponents go in `components/amplifyup/internal/` — any `.tsx` in the root with a matching export gets registered, and duplicate names fail the build.
+- Pages render `<AmplifyPage />` from `@/.amplifyup/component-registry` (via `AmplifyRoutePage` in the `app/[[...slug]]` catch-all).
 - **Trust field envelopes:** `{ value, name, ref? }`. Editable → `<Field|RichText|Image field={…} />`. Non-visible → `.value` (or plain `id`/`slug` on list rows).
 - **`<Field>` is scalar-only.** Object lists are `ListRow[]` — map `fields.posts.value`, use `<Field field={post.title} />`. No `<Collection>`. Never `Field` + `render`.
 - **One field per binding** — no `a || b` in `field={…}`.
-- Empty hide: `if (!fields.x.value && !isComposerPreview()) return null`.
+- Empty hide: `if (!fields.x.value && !inComposer) return null` with `const inComposer = useInComposer()` (preferred in 0.2; `isComposerPreview()` still works).
 - Search/load-more: `queryContent` + `searchSpec` / `nextPageSpec` from `postsPagination` — never hand-build `spec`.
 - Do not fix Composer bugs in this site — uptick/fix the SDK.
 

@@ -1,4 +1,5 @@
 const path = require("path");
+const { withAmplifyUp } = require("@amplifyup/sdk/next");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -73,4 +74,4 @@ const nextConfig = {
     }
 };
 
-module.exports = nextConfig;
+module.exports = withAmplifyUp(nextConfig);

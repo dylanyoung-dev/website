@@ -4,7 +4,7 @@ description: >-
   Build and edit AmplifyUP placeable components without overengineering or
   fighting the SDK. Use when creating or changing placeables, Field/RichText/Image/
   Slot bindings, ListRow lists, fields envelopes, ArticleDetail/Hero/ArticleGrid,
-  Composer preview, queryContent, pagination, renderAmplifyComponent, or @amplifyup/sdk.
+  Composer preview, queryContent, pagination, the component registry, or @amplifyup/sdk.
 ---
 
 # AmplifyUP SDK — placeables & site wiring
@@ -25,8 +25,8 @@ and **thin page wiring**.
 ## Mental model
 
 ```
-Composer (author) → Deploy → Edge /v1/resolve → AmplifyPageContent
-  → renderAmplifyComponent → ComponentContextProvider → YourPlaceable({ fields, …settings })
+Composer (author) → Deploy → Edge /v1/resolve → app/[[...slug]] → AmplifyRoutePage
+  → <AmplifyPage /> (generated registry) → YourPlaceable({ fields, …settings })
 ```
 
 Every content entry is a **field envelope**, identical on live, draft, and Composer:
@@ -60,14 +60,14 @@ fields.posts.value[0]
    `fields.tags.value`.
 6. **Computed display:** `value={…}` **and** `name={fields.x.name}` together.
 7. **Empty hide:** `if (!fields.x.value && !isComposerPreview()) return null`.
-8. **Composer vs live:** `isComposerPreview()` (docs may say `useInComposer`).
+8. **Composer vs live:** `const inComposer = useInComposer()` (0.2; `isComposerPreview()` still exported).
    Branch one element, not the whole tree.
 9. **Settings** (`variant`, `showFeatured`, `postsPagination`) are plain props.
 10. **Search / load more:** `queryContent` + `searchSpec` / `nextPageSpec` from
     `{field}Pagination` (e.g. `postsPagination`). Same row renderer for Edge list
     and query results. Never hand-build `spec`.
 11. **Do not reimplement the SDK.**
-12. **`renderAmplifyComponent` stays thin.**
+12. **Registry is generated (SDK ≥ 0.2).** Add a placeable = add `components/amplifyup/placeables/<Name>.tsx` (file name = component_id). No map, no `renderComponent`. Helpers go in `components/amplifyup/internal/`.
 13. **Do not fix Composer bugs here** — uptick/fix the SDK.
 
 ---
@@ -83,7 +83,7 @@ fields.posts.value[0]
 
 ```tsx
 import {
-  Field, RichText, Image, Slot, isComposerPreview,
+  Field, RichText, Image, Slot, useInComposer,
   queryContent, nextPageSpec, searchSpec,
   type Fields, type ListRow, type QueryPagination, type ImageValue,
 } from "@amplifyup/sdk/react";
@@ -179,14 +179,15 @@ resolveAmplifyPost / live || post
 - [ ] `key={post.id}`; `href` from plain `slug` / `.value`
 - [ ] Search/load-more via `searchSpec` / `nextPageSpec` only
 - [ ] Empty hide uses `&& !isComposerPreview()`
-- [ ] Thin `renderAmplifyComponent`; Deploy after Composer binds
+- [ ] File is `placeables/<ComponentId>.tsx` with a matching named export; Deploy after Composer binds
 
 ---
 
 ## Page wiring (allowed)
 
 - `AmplifyUpProvider` + `trackingId`
-- `AmplifyPageContent` + thin `renderAmplifyComponent`
+- `<AmplifyPage />` from `@/.amplifyup/component-registry` (wrapped by `AmplifyRoutePage`)
 - `fetchPageConfigServer` / `generateAmplifyStaticParams` / `listPublishedRoutes`
+- `amplifyup.config.ts` (registry roots/output) + `withAmplifyUp` in `next.config.js`
 - `pageContext` at provider init for From-page routes
 - `queryContent` / `searchSpec` / `nextPageSpec`

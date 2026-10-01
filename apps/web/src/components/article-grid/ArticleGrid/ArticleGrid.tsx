@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useCallback, useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   Field,
   Image,
@@ -21,7 +21,6 @@ import { Button } from "@/components/ui/button";
 import { formatPublishedDate } from "@/lib/utils";
 
 const TRACKING_ID = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID?.trim() || "";
-const ROUTE = "/insights";
 
 /** Schema shape for list rows — SDK wraps each as `ListRow<Post>`. */
 type Post = {
@@ -209,6 +208,8 @@ function ArticleGridInner({
 }: ArticleGridProps) {
   const q = useSearchParams().get("q")?.trim() || "";
   const inComposer = isComposerPreview();
+  // Query the route this grid is placed on (trailingSlash: true → strip it).
+  const route = usePathname().replace(/\/+$/, "") || "/";
 
   /** `null` = show Edge-resolved list (+ any load-more append). */
   const [searchRows, setSearchRows] = useState<PostRow[] | null>(null);
@@ -239,7 +240,7 @@ function ArticleGridInner({
 
     queryContent<Post>({
       trackingId: TRACKING_ID,
-      route: ROUTE,
+      route,
       spec: searchSpec(postsPagination, "title", q),
     })
       .then((result) => {
@@ -264,7 +265,7 @@ function ArticleGridInner({
     return () => {
       cancelled = true;
     };
-  }, [q, postsPagination]);
+  }, [q, postsPagination, route]);
 
   const initial = fields.posts.value ?? [];
   const posts = searchRows ?? [...initial, ...appended];
@@ -276,7 +277,7 @@ function ArticleGridInner({
     try {
       const result = await queryContent<Post>({
         trackingId: TRACKING_ID,
-        route: ROUTE,
+        route,
         spec: nextPageSpec(pageMeta),
       });
 
@@ -291,7 +292,7 @@ function ArticleGridInner({
     } finally {
       setLoadingMore(false);
     }
-  }, [pageMeta, loadingMore, searchRows]);
+  }, [pageMeta, loadingMore, searchRows, route]);
 
   const showLoadMore =
     Boolean(pageMeta?.hasMore) && Boolean(TRACKING_ID) && !inComposer;

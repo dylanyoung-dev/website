@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 import {
   Field,
+  Image,
   isComposerPreview,
+  type ImageValue,
   type LayoutComponentProps,
 } from "@amplifyup/sdk/react";
 import type { IPageMeta } from "@/interfaces/IPageMeta";
@@ -85,7 +87,15 @@ export function PageMeta({ fields }: LayoutComponentProps<PageMetaContent>) {
         <Field field={fields.metaTitle} />
         <Field field={fields.metaDescription} />
         <Field field={fields.canonicalUrl} />
-        <Field field={fields.ogImage} />
+        {typeof fields.ogImage?.value === "string" ? (
+          <Field value={fields.ogImage.value} name={fields.ogImage.name} />
+        ) : fields.ogImage ? (
+          <Image
+            field={fields.ogImage as { value: ImageValue | null; name: string }}
+            loading="lazy"
+            alt=""
+          />
+        ) : null}
         <Field field={fields.ogType} />
         <Field field={fields.keywords} />
         <Field field={fields.robots} />

@@ -5,6 +5,8 @@ const V2_TYPES = [
   "articleGrid",
   "subscribeBanner",
   "awardsSection",
+  "pageMeta",
+  "contentSection",
 ] as const;
 
 /**
@@ -25,6 +27,8 @@ export const structure: StructureResolver = (S) =>
               S.documentTypeListItem("articleGrid").title("Article Grid"),
               S.documentTypeListItem("subscribeBanner").title("Subscribe Banner"),
               S.documentTypeListItem("awardsSection").title("Awards Section"),
+              S.documentTypeListItem("pageMeta").title("Page Meta"),
+              S.documentTypeListItem("contentSection").title("Content Section"),
             ])
         ),
       S.divider(),

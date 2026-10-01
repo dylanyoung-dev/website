@@ -1022,3 +1022,156 @@ export const awardsSection = {
     }
 };
 
+
+export const pageMeta = {
+    name: 'pageMeta',
+    title: 'Page Meta',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Title',
+            description: 'Internal label in Studio (e.g. "Home meta", "About meta")',
+            type: 'string',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'metaTitle',
+            title: 'Meta title',
+            description: 'Browser / search result title',
+            type: 'string'
+        },
+        {
+            name: 'metaDescription',
+            title: 'Meta description',
+            type: 'text',
+            rows: 3
+        },
+        {
+            name: 'canonicalUrl',
+            title: 'Canonical URL',
+            description: 'Absolute or site-relative (defaults to the page path)',
+            type: 'string'
+        },
+        {
+            name: 'ogImage',
+            title: 'Open Graph image',
+            type: 'image',
+            fields: [
+                {
+                    name: 'alt',
+                    title: 'Alternative text',
+                    type: 'string'
+                }
+            ]
+        },
+        {
+            name: 'ogType',
+            title: 'Open Graph type',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Website', value: 'website' },
+                    { title: 'Article', value: 'article' },
+                    { title: 'Profile', value: 'profile' }
+                ],
+                layout: 'radio'
+            },
+            initialValue: 'website'
+        },
+        {
+            name: 'keywords',
+            title: 'Keywords',
+            description: 'Comma-separated',
+            type: 'string'
+        },
+        {
+            name: 'robots',
+            title: 'Robots',
+            description: 'e.g. "noindex, nofollow" (leave empty to index)',
+            type: 'string'
+        },
+        {
+            name: 'twitterCard',
+            title: 'Twitter card',
+            type: 'string',
+            options: {
+                list: [
+                    { title: 'Summary', value: 'summary' },
+                    { title: 'Summary large image', value: 'summary_large_image' }
+                ],
+                layout: 'radio'
+            },
+            initialValue: 'summary_large_image'
+        },
+        {
+            name: 'siteName',
+            title: 'Site name',
+            type: 'string',
+            initialValue: 'Dylan Young'
+        }
+    ],
+    preview: {
+        select: {
+            title: 'title',
+            subtitle: 'metaTitle'
+        }
+    }
+};
+
+export const contentSection = {
+    name: 'contentSection',
+    title: 'Content Section',
+    type: 'document',
+    fields: [
+        {
+            name: 'title',
+            title: 'Title',
+            description: 'Internal label in Studio (e.g. "About intro", "About me")',
+            type: 'string',
+            validation: (Rule: any) => Rule.required()
+        },
+        {
+            name: 'eyebrow',
+            title: 'Eyebrow',
+            type: 'string'
+        },
+        {
+            name: 'heading',
+            title: 'Heading',
+            type: 'string'
+        },
+        {
+            name: 'description',
+            title: 'Description',
+            type: 'text',
+            rows: 3
+        },
+        {
+            name: 'body',
+            title: 'Body',
+            type: 'markdown'
+        },
+        {
+            name: 'image',
+            title: 'Image',
+            description: 'Shown when the Composer imagePosition setting is not "none"',
+            type: 'image',
+            options: { hotspot: true },
+            fields: [
+                {
+                    name: 'alt',
+                    title: 'Alternative text',
+                    type: 'string'
+                }
+            ]
+        }
+    ],
+    preview: {
+        select: {
+            title: 'title',
+            subtitle: 'heading',
+            media: 'image'
+        }
+    }
+};
