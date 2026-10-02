@@ -2,13 +2,35 @@ import { NextResponse, type NextRequest } from "next/server";
 import { listPublishedRoutes } from "@amplifyup/sdk/server";
 
 /**
- * Migration gate: any route without a published AmplifyUP view gets a 503
+ * Migration gate: any non-legacy route without a published AmplifyUP view gets a 503
  * (Retry-After: 1h) so crawlers back off instead of indexing the migration
  * page. Remove in phase 3 once every view is published.
  */
 
 const trackingId = process.env.NEXT_PUBLIC_AMPLIFYUP_TRACKING_ID;
 const CACHE_TTL_MS = 60_000;
+
+/**
+ * Sections still served by legacy `app/<section>/page.tsx` routes — never
+ * gated. Remove a prefix when its legacy route is deleted and the view is
+ * published in AmplifyUP.
+ */
+const LEGACY_PREFIXES = [
+  "/about",
+  "/contact",
+  "/apps",
+  "/up-to",
+  "/speaking",
+  "/videos",
+  "/snippets",
+  "/insights/series",
+];
+
+function isLegacyRoute(path: string): boolean {
+  return LEGACY_PREFIXES.some(
+    (prefix) => path === prefix || path.startsWith(`${prefix}/`)
+  );
+}
 
 let cached: { routes: Set<string>; expires: number } | null = null;
 let inflight: Promise<Set<string>> | null = null;
@@ -55,14 +77,19 @@ const MIGRATION_HTML = `<!doctype html>
 
 export async function middleware(request: NextRequest) {
   // Composer preview must reach the page to edit unpublished views.
-  if (!trackingId || request.nextUrl.searchParams.has("preview")) {
+  const path = normalize(request.nextUrl.pathname);
+  if (
+    !trackingId ||
+    request.nextUrl.searchParams.has("preview") ||
+    isLegacyRoute(path)
+  ) {
     return NextResponse.next();
   }
 
   const routes = await publishedRoutes();
   // Fail open: if Edge is down, let the page render (it falls back to the
   // noindex MigrationInProgress) rather than 503 the whole site.
-  if (!routes.size || routes.has(normalize(request.nextUrl.pathname))) {
+  if (!routes.size || routes.has(path)) {
     return NextResponse.next();
   }
 
