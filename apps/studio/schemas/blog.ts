@@ -621,13 +621,6 @@ export const articleGrid = {
             type: 'string'
         },
         {
-            name: 'showFeatured',
-            title: 'Show featured post',
-            description: 'First result uses featured layout',
-            type: 'boolean',
-            initialValue: false
-        },
-        {
             name: 'showViewAll',
             title: 'Show View All',
             type: 'boolean',

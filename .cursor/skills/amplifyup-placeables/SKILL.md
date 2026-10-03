@@ -62,7 +62,7 @@ fields.posts.value[0]
 7. **Empty hide:** `if (!fields.x.value && !isComposerPreview()) return null`.
 8. **Composer vs live:** `const inComposer = useInComposer()` (0.2; `isComposerPreview()` still exported).
    Branch one element, not the whole tree.
-9. **Settings** (`variant`, `showFeatured`, `postsPagination`) are plain props.
+9. **Settings** (`variant`, `postsPagination`) are plain props.
 10. **Search / load more:** `queryContent` + `searchSpec` / `nextPageSpec` from
     `{field}Pagination` (e.g. `postsPagination`). Same row renderer for Edge list
     and query results. Never hand-build `spec`.

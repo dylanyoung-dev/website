@@ -12,7 +12,6 @@ export interface IArticleGrid {
   heading?: string;
   description?: string;
   posts?: IAmplifyPost[];
-  showFeatured?: boolean;
 }
 
 export type ArticleGridProps = IArticleGrid;
