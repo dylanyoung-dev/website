@@ -30,11 +30,14 @@ async function fetchPosts() {
 }
 
 function generateRSSFeed(posts = []) {
-  const rssItems = posts.map((post) => {
+  const rssItems = posts
+    .filter((post) => post?.slug?.current && post.title)
+    .map((post) => {
     const postUrl = `${baseUrl}/insights/${post.slug.current}`;
     const pubDate = post.publishedAt 
       ? new Date(post.publishedAt).toUTCString()
       : new Date().toUTCString();
+    const categories = (post.categories || []).filter((cat) => cat?.title);
     
     return `
     <item>
@@ -43,8 +46,8 @@ function generateRSSFeed(posts = []) {
       <guid isPermaLink="true">${postUrl}</guid>
       <description><![CDATA[${post.excerpt || ''}]]></description>
       <pubDate>${pubDate}</pubDate>
-      ${post.categories && post.categories.length > 0 
-        ? post.categories.map((cat) => `<category><![CDATA[${cat.title}]]></category>`).join('\n      ')
+      ${categories.length > 0
+        ? categories.map((cat) => `<category><![CDATA[${cat.title}]]></category>`).join('\n      ')
         : ''
       }
       ${post.landscapeImageUrl || post.mainImageUrl
