@@ -160,7 +160,7 @@ export function SeriesPosts({ series }: SeriesPostsProps) {
                       prose-a:text-primary prose-a:no-underline hover:prose-a:text-primary/80 hover:prose-a:underline
                       prose-strong:text-foreground prose-strong:font-semibold
                       prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm
-                      prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg
+                      prose-pre:bg-muted prose-pre:border prose-pre:rounded-lg prose-pre:text-foreground prose-pre:overflow-x-auto
                       prose-blockquote:border-l-primary prose-blockquote:text-muted-foreground prose-blockquote:pl-6
                       prose-img:rounded-lg prose-img:shadow-md
                       prose-hr:border-border prose-hr:my-12

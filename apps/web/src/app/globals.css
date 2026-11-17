@@ -152,7 +152,7 @@
     @apply rounded bg-muted px-1.5 py-0.5 text-sm text-foreground;
   }
   .prose pre {
-    @apply my-4 overflow-x-auto rounded-lg border border-border bg-muted p-3 text-sm;
+    @apply my-4 overflow-x-auto rounded-lg border border-border bg-muted p-3 text-sm text-foreground;
   }
   .prose pre code {
     @apply bg-transparent p-0 text-inherit;
